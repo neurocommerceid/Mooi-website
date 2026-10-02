@@ -33,6 +33,14 @@ export default function Media({
       ) : (
         <Placeholder label={label} tone={tone} />
       )}
+      {photo && label && (
+        <>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent" />
+          <span className="absolute bottom-5 left-5 font-serif text-lg italic tracking-wide text-white/90 transition-transform duration-700 group-hover:-translate-y-1">
+            {label}
+          </span>
+        </>
+      )}
     </div>
   );
 }

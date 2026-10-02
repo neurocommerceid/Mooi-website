@@ -21,7 +21,6 @@ export default function Branches() {
             <Reveal as="article" key={b.slug} delay={i * 150} className="group">
               <Media
                 photo={media.branches[b.slug]}
-                label={b.name.replace('Mooi ', '')}
                 tone="dark"
                 className="aspect-[4/5] w-full rounded-t-[999px]"
                 sizes="(min-width:768px) 33vw, 100vw"

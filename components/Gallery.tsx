@@ -19,9 +19,9 @@ export default function Gallery() {
     <section className="section">
       <div className="mx-auto max-w-[1400px]">
         <SectionHead
-          kicker="Portofolio"
-          title={<>Hasil kerja yang <em className="text-gold-sheen">berbicara</em>.</>}
-          sub="Sebagian karya tim Mooi dari tiga cabang."
+          kicker="Galeri"
+          title={<>Detail yang <em className="text-gold-sheen">dirawat</em>.</>}
+          sub="Dari potongan rambut hingga sentuhan akhir."
           center
         />
         <div className="mt-20 grid grid-cols-2 gap-4 md:grid-cols-12 md:gap-6">

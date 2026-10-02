@@ -6,7 +6,7 @@ export const metadata = { title: 'Galeri | Mooi Hair Studio & Beauty Bar' };
 export default function Page() {
   return (
     <>
-      <PageHeader kicker="Galeri" title="Hasil Kerja Kami" />
+      <PageHeader kicker="Galeri" title="Galeri" />
       <Gallery />
       <CTA />
     </>

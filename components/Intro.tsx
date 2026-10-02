@@ -9,10 +9,10 @@ export default function Intro() {
       <div className="mx-auto grid max-w-[1400px] items-center gap-16 lg:grid-cols-[1fr_1.05fr] lg:gap-24">
         <div className="relative">
           <Reveal variant="img">
-            <Media photo={media.about} label="Studio Mooi" className="aspect-[4/5] w-full rounded-t-[999px]" sizes="(min-width:1024px) 45vw, 100vw" />
+            <Media photo={media.about} className="aspect-[4/5] w-full rounded-t-[999px]" sizes="(min-width:1024px) 45vw, 100vw" />
           </Reveal>
           <Reveal variant="img" delay={300} className="animate-float absolute -bottom-10 -right-4 w-[42%] md:-right-10">
-            <Media photo={media.aboutDetail} label="Detail" className="aspect-square w-full rounded-full border-[6px] border-ivory shadow-2xl" sizes="20vw" />
+            <Media photo={media.aboutDetail} className="aspect-square w-full rounded-full border-[6px] border-ivory shadow-2xl" sizes="20vw" />
           </Reveal>
         </div>
 
