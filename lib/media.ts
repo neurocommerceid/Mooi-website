@@ -6,7 +6,7 @@
 // melihat salon Anda, bukan salon orang lain.
 
 export type Photo = { src: string; alt: string; credit?: string } | null;
-export type Video = { src: string; poster?: string; credit?: string } | null;
+export type Video = { src: string; webm?: string; poster?: string; credit?: string } | null;
 
 // Foto stok dari Unsplash (lisensi Unsplash: bebas dipakai komersial, tanpa
 // atribusi). Dipakai sebagai ilustrasi suasana — BUKAN foto salon/hasil kerja Mooi.
@@ -14,8 +14,9 @@ export type Video = { src: string; poster?: string; credit?: string } | null;
 const p = (file: string, alt: string): Photo => ({ src: `/media/${file}.jpg`, alt });
 
 export const media = {
-  // Isi dengan { src: '/media/hero.mp4', poster: '/media/hero.jpg' } untuk video latar.
-  heroVideo: null as Video,
+  // Video vertikal: layar penuh di ponsel, jendela kubah di desktop.
+  // Sumber: Pexels — "Combing Dark Hair" (lisensi Pexels, bebas pakai komersial).
+  heroVideo: { src: '/media/hero.mp4', webm: '/media/hero.webm', poster: '/media/hero-poster.jpg', credit: 'Pexels' } as Video,
   heroPhoto: p('hero', 'Stylist mencuci rambut pelanggan di wastafel salon'),
   about: p('about', 'Perempuan dengan rambut panjang bergelombang'),
   aboutDetail: p('about-detail', 'Serum perawatan rambut dengan pipet'),
