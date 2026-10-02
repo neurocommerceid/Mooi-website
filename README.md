@@ -19,7 +19,7 @@ Buka http://localhost:3000
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL project Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon/publishable key Supabase |
-| `NEXT_PUBLIC_WHATSAPP` | Nomor WhatsApp format internasional tanpa `+`, mis. `6281288451500` |
+| `NEXT_PUBLIC_WHATSAPP` | Nomor WhatsApp format internasional tanpa `+`, mis. `62817773343` |
 
 ## Supabase
 
@@ -53,4 +53,4 @@ public/logo.png   Logo Mooi (transparan)
 - [ ] Tautan Google Maps tiap cabang (`lib/data.ts`)
 - [ ] Daftar harga layanan yang sebenarnya (`lib/data.ts`)
 - [ ] Teks halaman Tentang Kami (`app/tentang/page.tsx`)
-- [ ] Nomor WhatsApp resmi (env `NEXT_PUBLIC_WHATSAPP`)
+- [x] Nomor WhatsApp resmi (env `NEXT_PUBLIC_WHATSAPP`)

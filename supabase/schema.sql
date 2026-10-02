@@ -17,3 +17,7 @@ create policy "anon dapat mengirim reservasi"
   on reservasi for insert
   to anon
   with check (true);
+
+-- Hak akses eksplisit untuk role anon (dibutuhkan agar insert lewat API berjalan)
+grant insert on reservasi to anon;
+grant usage on sequence reservasi_id_seq to anon;

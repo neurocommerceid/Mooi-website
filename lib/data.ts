@@ -1,4 +1,4 @@
-export const WA = process.env.NEXT_PUBLIC_WHATSAPP ?? '6281288451500';
+export const WA = process.env.NEXT_PUBLIC_WHATSAPP ?? '62817773343';
 
 export const waLink = (text = 'Halo Mooi, saya mau reservasi.') =>
   `https://wa.me/${WA}?text=${encodeURIComponent(text)}`;
