@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+
+body {
+  background: #FDFAF8;
+  color: #4A3730;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold tracking-wide text-white transition;
+    background-image: linear-gradient(135deg, #C89078, #B0674F);
+  }
+  .btn:hover { filter: brightness(1.06); }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border-[1.5px] border-rose-light px-8 py-3.5 text-sm font-semibold tracking-wide text-rose-deep transition;
+    background-image: none;
+  }
+  .btn-ghost:hover { @apply bg-cream-soft; }
+  .kicker { @apply text-[11.5px] font-semibold uppercase tracking-[0.25em] text-rose-deep; }
+  .card { @apply rounded-2xl border border-line bg-white p-7; }
+  .section { @apply px-6 py-20 md:px-16 lg:px-20; }
+}
