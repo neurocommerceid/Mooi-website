@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
-import { Poppins, Lora } from 'next/font/google';
+import { Jost, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFab from '@/components/WhatsAppFab';
 
-const poppins = Poppins({
+const jost = Jost({ subsets: ['latin'], weight: ['300', '400', '500'], variable: '--font-jost' });
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-poppins',
+  weight: ['300', '400', '500'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
 });
-const lora = Lora({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-lora' });
 
 export const metadata: Metadata = {
   title: 'Mooi Hair Studio & Beauty Bar | Kedoya · Alam Sutera · Kelapa Gading',
@@ -26,8 +27,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${poppins.variable} ${lora.variable}`}>
-      <body className="font-sans">
+    <html lang="id" className={`${jost.variable} ${cormorant.variable}`}>
+      <body className="font-sans font-light">
         <Navbar />
         <main>{children}</main>
         <Footer />

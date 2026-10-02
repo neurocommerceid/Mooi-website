@@ -18,12 +18,7 @@ export const branches = [
   { slug: 'kelapa-gading', name: 'Mooi Kelapa Gading', address: 'Jl. [alamat cabang Kelapa Gading]', hours: 'Setiap hari · 09.00 – 20.00', maps: '#', ig: 'https://instagram.com/mooihairstudio_klpgdg' },
 ];
 
-export const gallery = [
-  { label: 'Coloring', from: '#EBD2C5', to: '#D2A590' },
-  { label: 'Smoothing', from: '#E7CBBC', to: '#C08E78' },
-  { label: 'Bridal', from: '#F0DED4', to: '#D9AE9A' },
-  { label: 'Hair Spa', from: '#E3C3B2', to: '#BA846C' },
-];
+export const gallery = ['Coloring', 'Smoothing', 'Bridal', 'Hair Spa', 'Styling', 'Beauty Bar'];
 
 export const nav = [
   { href: '/', label: 'Beranda' },

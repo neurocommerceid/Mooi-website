@@ -30,20 +30,21 @@ export default function ReservationForm() {
     }
   }
 
-  const field = 'w-full rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-rose-light';
+  const field =
+    'w-full border-0 border-b border-line bg-transparent px-0 py-4 text-[15px] font-light text-ink placeholder:text-ink-faint outline-none transition-colors duration-500 focus:border-gold focus:ring-0';
 
   if (state === 'ok')
     return (
-      <div className="card text-center">
-        <p className="font-serif text-xl text-ink">Terima kasih!</p>
-        <p className="mt-2 text-sm text-ink-muted">
+      <div className="border border-line bg-ivory-soft p-10 text-center">
+        <p className="font-serif text-4xl font-light italic text-gold-deep">Terima kasih.</p>
+        <p className="mt-4 text-sm text-ink-muted">
           Permintaan reservasi Anda sudah kami terima. Tim Mooi akan menghubungi via WhatsApp.
         </p>
       </div>
     );
 
   return (
-    <form onSubmit={onSubmit} className="card grid gap-3">
+    <form onSubmit={onSubmit} className="grid gap-2">
       {/* Honeypot: hidden from people, bots fill it */}
       <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <input name="nama" required maxLength={100} placeholder="Nama lengkap" className={field} />
@@ -61,7 +62,7 @@ export default function ReservationForm() {
 
       {state === 'error' && <p className="text-sm text-red-600">{msg}</p>}
 
-      <button type="submit" disabled={state === 'sending'} className="btn mt-1 disabled:opacity-60">
+      <button type="submit" disabled={state === 'sending'} className="btn mt-8 disabled:opacity-60">
         {state === 'sending' ? 'Mengirim…' : 'Kirim Permintaan Reservasi'}
       </button>
     </form>

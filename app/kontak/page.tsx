@@ -1,40 +1,41 @@
 import ReservationForm from '@/components/ReservationForm';
+import PageHeader from '@/components/ui/PageHeader';
+import Reveal from '@/components/ui/Reveal';
 import { branches, waLink } from '@/lib/data';
 export const metadata = { title: 'Kontak & Reservasi | Mooi Hair Studio & Beauty Bar' };
 
 export default function Page() {
   return (
     <>
-      <section className="bg-gradient-to-br from-cream-soft to-cream-deep px-6 py-14 text-center md:px-16 lg:px-20">
-        <p className="kicker">Kontak</p>
-        <h1 className="mt-3 font-serif text-3xl text-ink md:text-5xl">Reservasi</h1>
-      </section>
+      <PageHeader kicker="Kontak" title="Reservasi" sub="Tim kami akan menghubungi via WhatsApp untuk konfirmasi jadwal." />
 
       <section className="section">
-        <div className="mx-auto grid max-w-[1100px] gap-10 lg:grid-cols-2">
-          <div>
-            <h2 className="font-serif text-2xl text-ink">Isi formulir</h2>
-            <p className="mt-2 text-sm text-ink-muted">
-              Tim kami akan menghubungi via WhatsApp untuk konfirmasi jadwal.
-            </p>
-            <div className="mt-5"><ReservationForm /></div>
-          </div>
+        <div className="mx-auto grid max-w-[1300px] gap-20 lg:grid-cols-[1.1fr_0.9fr]">
+          <Reveal>
+            <h2 className="font-serif text-4xl font-light text-ink">Isi formulir</h2>
+            <div className="mt-10"><ReservationForm /></div>
+          </Reveal>
 
-          <div>
-            <h2 className="font-serif text-2xl text-ink">Atau langsung hubungi cabang</h2>
-            <div className="mt-5 space-y-4">
+          <Reveal delay={150}>
+            <h2 className="font-serif text-4xl font-light text-ink">Atau hubungi cabang</h2>
+            <div className="mt-10 border-t border-line">
               {branches.map((b) => (
-                <div key={b.slug} className="card">
-                  <h3 className="font-serif text-lg text-ink">{b.name}</h3>
-                  <p className="mt-1.5 text-sm text-ink-muted">{b.address}<br />{b.hours}</p>
-                  <a href={waLink(`Halo Mooi ${b.name}, saya mau reservasi.`)} target="_blank" rel="noopener"
-                    className="mt-3 inline-block rounded-full border border-[#E3C9BD] px-4 py-2 text-[12.5px] text-rose-deep">
+                <div key={b.slug} className="border-b border-line py-7">
+                  <h3 className="font-serif text-2xl font-light text-ink">{b.name}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-muted">{b.address}<br />{b.hours}</p>
+                  <a
+                    href={waLink(`Halo ${b.name}, saya mau reservasi.`)}
+                    target="_blank"
+                    rel="noopener"
+                    className="group mt-4 inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-gold-deep"
+                  >
                     WhatsApp cabang ini
+                    <span className="h-px w-8 bg-gold transition-all duration-500 group-hover:w-14" />
                   </a>
                 </div>
               ))}
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
     </>

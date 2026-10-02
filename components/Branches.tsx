@@ -1,41 +1,46 @@
 import { branches, waLink } from '@/lib/data';
+import { media } from '@/lib/media';
+import Media from './ui/Media';
+import Reveal from './ui/Reveal';
+import SectionHead from './ui/SectionHead';
+
+const pill = 'rounded-full border border-espresso-line px-5 py-2.5 text-[11px] uppercase tracking-[0.2em] text-ivory/80 transition-colors duration-500 hover:border-gold hover:text-gold-light';
 
 export default function Branches() {
   return (
-    <section className="section">
-      <div className="mx-auto max-w-[1440px]">
-        <div className="text-center">
-          <p className="kicker">Lokasi</p>
-          <h2 className="mt-3 font-serif text-3xl text-ink md:text-[42px]">Tiga cabang, satu standar</h2>
-          <p className="mt-3 text-[15px] text-ink-muted">
-            Kunjungi cabang terdekat atau reservasi lebih dulu via WhatsApp.
-          </p>
-        </div>
-
-        <div className="mt-11 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {branches.map((b) => (
-            <article key={b.slug} className="overflow-hidden rounded-2xl border border-line bg-white">
-              {/* Ganti dengan foto cabang */}
-              <div className="h-40 bg-gradient-to-br from-[#EBD2C5] to-[#C08E78]" />
-              <div className="p-6">
-                <h3 className="font-serif text-xl text-ink">{b.name}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+    <section className="section grain relative overflow-hidden bg-espresso text-ivory">
+      <div className="relative mx-auto max-w-[1400px]">
+        <SectionHead
+          kicker="Lokasi"
+          title={<>Tiga cabang, <em className="text-gold-sheen">satu standar</em>.</>}
+          sub="Kunjungi cabang terdekat, atau reservasi lebih dulu via WhatsApp."
+          dark
+        />
+        <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-8">
+          {branches.map((b, i) => (
+            <Reveal as="article" key={b.slug} delay={i * 150} className="group">
+              <Media
+                photo={media.branches[b.slug]}
+                label={b.name.replace('Mooi ', '')}
+                tone="dark"
+                className="aspect-[4/5] w-full rounded-t-[999px]"
+                sizes="(min-width:768px) 33vw, 100vw"
+              />
+              <div className="pt-7">
+                <p className="font-serif text-sm italic text-gold">0{i + 1}</p>
+                <h3 className="mt-1 font-serif text-3xl font-light">{b.name}</h3>
+                <p className="mt-3 text-[14px] leading-relaxed text-ivory/60">
                   {b.address}
                   <br />
                   {b.hours}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <a href={waLink(`Halo Mooi ${b.name}, saya mau reservasi.`)} target="_blank" rel="noopener"
-                    className="rounded-full border border-[#E3C9BD] px-4 py-2 text-[12.5px] text-rose-deep">WhatsApp</a>
-                  {b.maps !== '#' && (
-                    <a href={b.maps} target="_blank" rel="noopener"
-                      className="rounded-full border border-[#E3C9BD] px-4 py-2 text-[12.5px] text-rose-deep">Google Maps</a>
-                  )}
-                  <a href={b.ig} target="_blank" rel="noopener"
-                    className="rounded-full border border-[#E3C9BD] px-4 py-2 text-[12.5px] text-rose-deep">Instagram</a>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <a href={waLink(`Halo ${b.name}, saya mau reservasi.`)} target="_blank" rel="noopener" className={pill}>WhatsApp</a>
+                  {b.maps !== '#' && <a href={b.maps} target="_blank" rel="noopener" className={pill}>Maps</a>}
+                  <a href={b.ig} target="_blank" rel="noopener" className={pill}>Instagram</a>
                 </div>
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>

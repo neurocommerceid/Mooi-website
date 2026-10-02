@@ -1,4 +1,6 @@
 import Hero from '@/components/Hero';
+import Marquee from '@/components/Marquee';
+import Intro from '@/components/Intro';
 import Services from '@/components/Services';
 import Gallery from '@/components/Gallery';
 import Branches from '@/components/Branches';
@@ -9,10 +11,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <div className="flex flex-wrap justify-center gap-x-12 gap-y-2 border-b border-line bg-white px-6 py-6 text-[12.5px] uppercase tracking-[0.2em] text-ink-muted">
-        <span>Hair Treatment</span><span>Coloring</span><span>Smoothing</span>
-        <span>Beauty Bar</span><span>Bridal</span>
-      </div>
+      <Marquee />
+      <Intro />
       <Services />
       <Gallery />
       <Branches />
