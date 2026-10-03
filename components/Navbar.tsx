@@ -3,9 +3,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { nav, waLink } from '@/lib/data';
 
-export default function Navbar() {
+import { nav } from '@/lib/nav';
+
+export default function Navbar({ wa }: { wa: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const path = usePathname();
@@ -61,7 +62,7 @@ export default function Navbar() {
           })}
         </nav>
 
-        <a href={waLink()} target="_blank" rel="noopener" className="btn hidden !px-7 !py-3 lg:inline-flex">
+        <a href={wa} target="_blank" rel="noopener" className="btn hidden !px-7 !py-3 lg:inline-flex">
           Reservasi
         </a>
 
@@ -91,7 +92,7 @@ export default function Navbar() {
                 {n.label}
               </Link>
             ))}
-            <a href={waLink()} target="_blank" rel="noopener" className="btn mt-8 w-full">
+            <a href={wa} target="_blank" rel="noopener" className="btn mt-8 w-full">
               Reservasi via WhatsApp
             </a>
           </div>

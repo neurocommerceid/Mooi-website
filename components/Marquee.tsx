@@ -1,6 +1,5 @@
-const items = ['Hair Cut & Styling', 'Coloring', 'Smoothing & Keratin', 'Hair Spa', 'Beauty Bar', 'Bridal & Event'];
-
-export default function Marquee() {
+export default function Marquee({ items }: { items: string[] }) {
+  if (!items.length) return null;
   const row = [...items, ...items];
   return (
     <div className="overflow-hidden border-y border-line bg-ivory py-7">

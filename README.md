@@ -27,6 +27,32 @@ Jalankan `supabase/schema.sql` di SQL Editor Supabase. Isinya membuat tabel
 `reservasi` beserta Row Level Security — pengunjung hanya bisa **insert**,
 tidak bisa membaca data orang lain.
 
+## CMS (panel admin)
+
+Buka **`/admin`**. Semua teks, foto, video, layanan & harga, cabang, galeri, dan
+nomor WhatsApp bisa diubah di sana tanpa menyentuh kode. Setelah **Simpan**,
+website diperbarui dalam hitungan detik.
+
+- **Reservasi**: daftar isian formulir Kontak, dengan status (Baru → Dihubungi →
+  Selesai / Batal) dan tombol WhatsApp langsung ke pelanggan.
+- **Teks *miring emas***: apit kata dengan bintang, mis. `Tiga cabang, *satu standar*.`
+- **Foto/video** diunggah ke Supabase Storage (bucket `media`, maks. 8 MB foto,
+  50 MB video).
+- Bagian yang belum pernah disimpan memakai isi bawaan di `lib/cms/content.ts`.
+
+### Menambah admin
+
+1. Supabase → Authentication → Users → **Add user** → isi email & kata sandi,
+   centang *Auto Confirm User*.
+2. Supabase → SQL Editor:
+   `insert into public.admins (email) values ('email@contoh.com');`
+
+Hak akses dijaga oleh Row Level Security di database: akun yang tidak terdaftar
+di tabel `admins` tidak bisa mengubah apa pun, walaupun berhasil login.
+
+**Matikan pendaftaran publik**: Supabase → Authentication → Sign In / Providers →
+nonaktifkan *Allow new users to sign up*.
+
 ## Deploy ke Vercel
 
 1. Push repo ini ke GitHub
@@ -41,16 +67,22 @@ tidak bisa membaca data orang lain.
 app/              Halaman (Beranda, Tentang, Layanan, Galeri, Lokasi, Kontak)
 app/api/reservasi Endpoint penyimpanan form reservasi ke Supabase
 components/       Komponen UI per bagian
-lib/data.ts       Data layanan, cabang, dan navigasi  ← edit di sini
-lib/supabase.ts   Klien Supabase
+app/(site)/       Halaman publik
+app/admin/        Panel admin (CMS)
+lib/cms/          Model konten, isi bawaan, skema form admin
+lib/supabase/     Klien Supabase (server & browser)
+public/media/     Foto & video bawaan (stok Unsplash/Pexels)
 public/logo.png   Logo Mooi (transparan)
 ```
 
 ## Yang masih perlu diisi
 
-- [ ] Foto interior & hasil kerja (hero, galeri, cabang) — ganti blok gradien
-- [ ] Alamat lengkap & jam operasional tiap cabang (`lib/data.ts`)
-- [ ] Tautan Google Maps tiap cabang (`lib/data.ts`)
-- [ ] Daftar harga layanan yang sebenarnya (`lib/data.ts`)
-- [ ] Teks halaman Tentang Kami (`app/tentang/page.tsx`)
+Semua bisa diisi lewat `/admin`:
+
+- [ ] Foto asli Mooi untuk galeri & cabang (sekarang foto stok)
+- [ ] Alamat lengkap & jam operasional tiap cabang
+- [ ] Tautan Google Maps tiap cabang
+- [ ] Daftar harga layanan yang sebenarnya
+- [ ] Nilai "Produk pilihan" di halaman Tentang
+- [ ] Testimoni asli dari ulasan Google
 - [x] Nomor WhatsApp resmi (env `NEXT_PUBLIC_WHATSAPP`)

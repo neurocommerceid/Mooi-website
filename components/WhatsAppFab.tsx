@@ -1,9 +1,7 @@
-import { waLink } from '@/lib/data';
-
-export default function WhatsAppFab() {
+export default function WhatsAppFab({ wa }: { wa: string }) {
   return (
     <a
-      href={waLink()}
+      href={wa}
       target="_blank"
       rel="noopener"
       aria-label="Reservasi via WhatsApp"

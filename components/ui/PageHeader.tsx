@@ -1,6 +1,8 @@
 import Ornament from './Ornament';
 
-export default function PageHeader({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
+import type { PageHead } from '@/lib/cms/content';
+
+export default function PageHeader({ kicker, title, sub }: PageHead) {
   return (
     <section className="grain relative overflow-hidden bg-espresso px-6 pb-20 pt-40 text-center text-ivory md:px-16 md:pb-28 md:pt-48 lg:px-24">
       <Ornament className="pointer-events-none absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 opacity-40" />

@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
-import type { Video } from '@/lib/media';
+import type { Vid } from '@/lib/cms/content';
 
 // Merender video hanya untuk breakpoint yang sesuai, agar pengunjung tidak
 // mengunduh dua salinan. Menghormati prefers-reduced-motion (poster saja).
-export default function HeroVideo({ video, desktop, className = '' }: { video: NonNullable<Video>; desktop: boolean; className?: string }) {
+export default function HeroVideo({ video, desktop, className = '' }: { video: Vid; desktop: boolean; className?: string }) {
   const [show, setShow] = useState(false);
   const [still, setStill] = useState(false);
 
@@ -29,7 +29,7 @@ export default function HeroVideo({ video, desktop, className = '' }: { video: N
   return (
     <video className={className} poster={video.poster} autoPlay muted loop playsInline preload="auto" aria-hidden>
       {video.webm && <source src={video.webm} type="video/webm" />}
-      <source src={video.src} type="video/mp4" />
+      {video.mp4 && <source src={video.mp4} type="video/mp4" />}
     </video>
   );
 }

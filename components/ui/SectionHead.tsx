@@ -1,4 +1,5 @@
 import Reveal from './Reveal';
+import Rich from './Rich';
 
 export default function SectionHead({
   kicker,
@@ -8,7 +9,7 @@ export default function SectionHead({
   dark = false,
 }: {
   kicker: string;
-  title: React.ReactNode;
+  title: string;
   sub?: string;
   center?: boolean;
   dark?: boolean;
@@ -18,7 +19,7 @@ export default function SectionHead({
       <Reveal><p className={`kicker ${center ? 'justify-center' : ''}`}>{kicker}</p></Reveal>
       <Reveal delay={120}>
         <h2 className={`mt-5 font-serif text-4xl font-light leading-[1.08] md:text-6xl ${dark ? 'text-ivory' : 'text-ink'}`}>
-          {title}
+          <Rich text={title} />
         </h2>
       </Reveal>
       {sub && (

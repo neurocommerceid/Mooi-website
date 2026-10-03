@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { Photo } from '@/lib/media';
+import type { Img } from '@/lib/cms/content';
 
 // Gambar dengan fallback gradien beranimasi bila slot belum diisi.
 export default function Media({
@@ -11,7 +11,7 @@ export default function Media({
   zoom = true,
   tone = 'light',
 }: {
-  photo: Photo;
+  photo?: Img | null;
   label?: string;
   className?: string;
   sizes?: string;
@@ -21,7 +21,7 @@ export default function Media({
 }) {
   return (
     <div className={`group relative overflow-hidden ${className}`}>
-      {photo ? (
+      {photo?.src ? (
         <Image
           src={photo.src}
           alt={photo.alt}
@@ -33,7 +33,7 @@ export default function Media({
       ) : (
         <Placeholder label={label} tone={tone} />
       )}
-      {photo && label && (
+      {photo?.src && label && (
         <>
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent" />
           <span className="absolute bottom-5 left-5 font-serif text-lg italic tracking-wide text-white/90 transition-transform duration-700 group-hover:-translate-y-1">

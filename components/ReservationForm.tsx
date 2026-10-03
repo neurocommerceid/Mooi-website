@@ -1,8 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { branches, services } from '@/lib/data';
-
-export default function ReservationForm() {
+export default function ReservationForm({ branches, services }: { branches: string[]; services: string[] }) {
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
   const [msg, setMsg] = useState('');
 
@@ -51,11 +49,11 @@ export default function ReservationForm() {
       <input name="whatsapp" required type="tel" inputMode="tel" maxLength={20} placeholder="Nomor WhatsApp" className={field} />
       <select name="cabang" required defaultValue="" className={field}>
         <option value="" disabled>Pilih cabang</option>
-        {branches.map((b) => <option key={b.slug} value={b.name}>{b.name}</option>)}
+        {branches.map((b) => <option key={b} value={b}>{b}</option>)}
       </select>
       <select name="layanan" defaultValue="" className={field}>
         <option value="">Pilih layanan (opsional)</option>
-        {services.map((s) => <option key={s.name} value={s.name}>{s.name}</option>)}
+        {services.map((s) => <option key={s} value={s}>{s}</option>)}
       </select>
       <input name="tanggal" type="date" className={field} />
       <textarea name="catatan" rows={3} maxLength={1000} placeholder="Catatan (opsional)" className={field} />

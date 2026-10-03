@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { branches, services } from '@/lib/data';
+import { supabase } from '@/lib/supabase/anon';
+import { getContent } from '@/lib/cms/get';
 
 const str = (v: unknown, max: number) =>
   typeof v === 'string' ? v.trim().slice(0, max) : '';
@@ -25,10 +25,11 @@ export async function POST(req: Request) {
     if (!/^\+?\d{9,15}$/.test(whatsapp)) {
       return NextResponse.json({ error: 'Nomor WhatsApp tidak valid.' }, { status: 400 });
     }
-    if (!branches.some((b) => b.name === cabang)) {
+    const content = await getContent();
+    if (!content.branches.items.some((b) => b.name === cabang)) {
       return NextResponse.json({ error: 'Cabang tidak dikenal.' }, { status: 400 });
     }
-    if (layanan && !services.some((s) => s.name === layanan)) {
+    if (layanan && !content.services.items.some((s) => s.name === layanan)) {
       return NextResponse.json({ error: 'Layanan tidak dikenal.' }, { status: 400 });
     }
     if (tanggal && !/^\d{4}-\d{2}-\d{2}$/.test(tanggal)) {
