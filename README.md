@@ -36,8 +36,11 @@ website diperbarui dalam hitungan detik.
 - **Reservasi**: daftar isian formulir Kontak, dengan status (Baru → Dihubungi →
   Selesai / Batal) dan tombol WhatsApp langsung ke pelanggan.
 - **Teks *miring emas***: apit kata dengan bintang, mis. `Tiga cabang, *satu standar*.`
-- **Foto/video** diunggah ke Supabase Storage (bucket `media`, maks. 8 MB foto,
-  50 MB video).
+- **Foto** dikompres otomatis di browser sebelum diunggah (maks. sisi 2400 px,
+  WebP/JPEG) — foto kamera 5 MB biasanya jadi ±400 KB. Foto asli maks. 30 MB.
+- **Video** tidak dikompres otomatis (maks. 50 MB, idealnya < 15 MB). Kecilkan
+  dulu, mis. dengan HandBrake atau aplikasi kompres video di ponsel.
+- Semua media disimpan di Supabase Storage (bucket `media`).
 - Bagian yang belum pernah disimpan memakai isi bawaan di `lib/cms/content.ts`.
 
 ### Menambah admin
