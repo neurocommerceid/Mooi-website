@@ -37,8 +37,11 @@ website diperbarui dalam hitungan detik.
   data diri. Menu layanan (durasi & harga), stylist, jam buka cabang, dan aturan
   jadwal diatur di **Admin → Konten → Booking**. Harga & durasi bawaan hanyalah contoh.
 - **Reservasi**: semua permintaan booking, dengan status Baru → Dihubungi →
-  **Dikonfirmasi** → Selesai / Batal. Jam yang *Dikonfirmasi* otomatis tertutup
-  untuk stylist tersebut di halaman booking. Tidak ada pengingat otomatis —
+  **Dikonfirmasi** → Selesai / Batal, plus kolom **Ditugaskan** (stylist yang
+  mengerjakan). Booking *Dikonfirmasi* menempati satu stylist: yang ditugaskan,
+  pilihan pelanggan, atau — bila "Siapa saja" dan belum ditugaskan — satu stylist
+  mana pun. Slot tertutup saat tidak ada stylist yang bebas. Bila daftar stylist
+  kosong, kapasitas tidak diketahui sehingga slot tidak pernah ditutup. Tidak ada pengingat otomatis —
   konfirmasi dilakukan manual via WhatsApp.
 - **Teks *miring emas***: apit kata dengan bintang, mis. `Tiga cabang, *satu standar*.`
 - **Foto** dikompres otomatis di browser sebelum diunggah (maks. sisi 2400 px,

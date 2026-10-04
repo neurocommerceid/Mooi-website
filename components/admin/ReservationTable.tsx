@@ -5,7 +5,7 @@ import { durasi, rupiah } from '@/lib/booking';
 
 export type Row = {
   id: number; nama: string; whatsapp: string; cabang: string; layanan: string | null;
-  layanan_list: { name: string; price: number; from: boolean }[] | null; stylist: string | null;
+  layanan_list: { name: string; price: number; from: boolean }[] | null; stylist: string | null; ditugaskan: string | null;
   tanggal: string | null; jam: string | null; durasi: number | null; estimasi: number | null;
   catatan: string | null; status: string; created_at: string;
 };
@@ -19,7 +19,7 @@ const tone: Record<string, string> = {
 // 08xx → 628xx untuk tautan wa.me
 const toWa = (n: string) => n.replace(/\D/g, '').replace(/^0/, '62');
 
-export default function ReservationTable({ rows: initial }: { rows: Row[] }) {
+export default function ReservationTable({ rows: initial, teams }: { rows: Row[]; teams: Record<string, string[]> }) {
   const [rows, setRows] = useState(initial);
   const [filter, setFilter] = useState('semua');
   const [err, setErr] = useState('');
@@ -29,6 +29,13 @@ export default function ReservationTable({ rows: initial }: { rows: Row[] }) {
     const prev = rows;
     setRows(rows.map((r) => (r.id === id ? { ...r, status } : r)));
     const { error } = await supabaseBrowser().from('reservasi').update({ status }).eq('id', id);
+    if (error) { setRows(prev); setErr(error.message); }
+  }
+
+  async function assign(id: number, ditugaskan: string) {
+    const prev = rows;
+    setRows(rows.map((r) => (r.id === id ? { ...r, ditugaskan: ditugaskan || null } : r)));
+    const { error } = await supabaseBrowser().from('reservasi').update({ ditugaskan: ditugaskan || null }).eq('id', id);
     if (error) { setRows(prev); setErr(error.message); }
   }
 
@@ -75,7 +82,20 @@ export default function ReservationTable({ rows: initial }: { rows: Row[] }) {
                   {r.tanggal ? fmtDate(r.tanggal) : 'Tanggal belum dipilih'}{r.jam ? ` · ${r.jam}` : ''}
                   <span className="font-normal text-ink-muted"> · {r.cabang}</span>
                 </p>
-                {r.stylist && <p className="text-ink-muted">Stylist: {r.stylist}</p>}
+                {r.stylist && <p className="text-ink-muted">Pilihan pelanggan: {r.stylist}</p>}
+                {(teams[r.cabang]?.length ?? 0) > 0 && (
+                  <label className="mt-1 flex items-center gap-2 text-[13px]">
+                    <span className="text-ink-muted">Ditugaskan:</span>
+                    <select
+                      value={r.ditugaskan ?? ''}
+                      onChange={(e) => assign(r.id, e.target.value)}
+                      className={`rounded-lg border px-2 py-1 text-[13px] ${!r.ditugaskan && (!r.stylist || r.stylist === 'Siapa saja') && r.status === 'dikonfirmasi' ? 'border-amber-400 bg-amber-50' : 'border-line bg-white'}`}
+                    >
+                      <option value="">{r.stylist && r.stylist !== 'Siapa saja' ? `Sesuai pilihan (${r.stylist})` : '— belum —'}</option>
+                      {teams[r.cabang].map((n) => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                  </label>
+                )}
                 <p className="text-ink-muted">
                   {r.layanan_list?.length ? r.layanan_list.map((l) => l.name).join(', ') : r.layanan || 'Layanan belum dipilih'}
                 </p>

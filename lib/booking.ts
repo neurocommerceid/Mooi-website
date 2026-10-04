@@ -61,9 +61,10 @@ const overlaps = (a: number, aLen: number, b: number, bLen: number) => a < b + b
 
 /**
  * Slot mulai yang tersedia. Slot tertutup bila: sudah lewat / terlalu dekat
- * (leadMinutes), layanan tidak selesai sebelum tutup, atau bentrok dengan
- * booking yang SUDAH DIKONFIRMASI admin untuk stylist tersebut. Untuk
- * "Siapa saja", slot tertutup hanya bila semua stylist di cabang sibuk.
+ * (leadMinutes), layanan tidak selesai sebelum tutup, atau tidak ada stylist
+ * yang bebas. Booking terkonfirmasi tanpa stylist ("Siapa saja") dihitung
+ * memakai satu stylist mana pun. Bila cabang tidak punya daftar stylist,
+ * kapasitas tidak diketahui sehingga slot tidak pernah ditutup.
  */
 export function slotsFor(opts: {
   date: string;
@@ -82,16 +83,25 @@ export function slotsFor(opts: {
   const nowJ = jakartaNow(opts.now);
   const earliest = opts.date === nowJ.date ? nowJ.minutes + Math.max(0, opts.leadMinutes) : -1;
   const pastDay = opts.date < nowJ.date;
+  const team = opts.stylistNames;
+  const wanted = opts.stylist && opts.stylist !== ANY ? opts.stylist : '';
 
-  const busy = (who: string, t: number) =>
-    opts.taken.some((x) => x.stylist === who && overlaps(t, dur, toMin(x.jam), x.durasi || 60));
+  const hits = (t: number) => opts.taken.filter((x) => overlaps(t, dur, toMin(x.jam), x.durasi || 60));
 
   const out: Slot[] = [];
   for (let t = opts.open; t + dur <= opts.close; t += step) {
     let ok = !pastDay && t >= earliest;
-    if (ok) {
-      if (opts.stylist && opts.stylist !== ANY) ok = !busy(opts.stylist, t);
-      else if (opts.stylistNames.length) ok = opts.stylistNames.some((n) => !busy(n, t));
+    if (ok && team.length) {
+      const h = hits(t);
+      const named = new Set(h.map((x) => x.stylist).filter((n) => team.includes(n)));
+      const anon = h.filter((x) => !team.includes(x.stylist)).length; // "Siapa saja" / tak dikenal
+      const free = team.filter((n) => !named.has(n));
+      if (wanted) {
+        // Stylist ini harus bebas, dan sisa stylist bebas lain cukup untuk booking tanpa nama.
+        ok = !named.has(wanted) && free.length - 1 >= anon;
+      } else {
+        ok = free.length > anon;
+      }
     }
     out.push({ time: fromMin(t), ok });
   }

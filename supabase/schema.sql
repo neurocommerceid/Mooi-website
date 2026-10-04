@@ -97,3 +97,14 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.taken_slots(text, date) from public;
 grant execute on function public.taken_slots(text, date) to anon, authenticated;
+
+-- Stylist yang ditugaskan admin (pilihan pelanggan tetap di kolom stylist).
+alter table public.reservasi add column if not exists ditugaskan text;
+
+create or replace function public.taken_slots(p_cabang text, p_tanggal date)
+returns table (stylist text, jam text, durasi integer)
+language sql stable security definer set search_path = '' as $$
+  select coalesce(nullif(r.ditugaskan, ''), r.stylist, 'Siapa saja'), r.jam, coalesce(r.durasi, 60)
+  from public.reservasi r
+  where r.cabang = p_cabang and r.tanggal = p_tanggal and r.status = 'dikonfirmasi' and r.jam is not null;
+$$;
