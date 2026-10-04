@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { nav } from '@/lib/nav';
 
-export default function Navbar({ wa }: { wa: string }) {
+export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const path = usePathname();
@@ -62,9 +62,9 @@ export default function Navbar({ wa }: { wa: string }) {
           })}
         </nav>
 
-        <a href={wa} target="_blank" rel="noopener" className="btn hidden !px-7 !py-3 lg:inline-flex">
-          Reservasi
-        </a>
+        <Link href="/booking" className="btn hidden !px-7 !py-3 lg:inline-flex">
+          Booking
+        </Link>
 
         <button
           onClick={() => setOpen(!open)}
@@ -92,9 +92,9 @@ export default function Navbar({ wa }: { wa: string }) {
                 {n.label}
               </Link>
             ))}
-            <a href={wa} target="_blank" rel="noopener" className="btn mt-8 w-full">
-              Reservasi via WhatsApp
-            </a>
+            <Link href="/booking" className="btn mt-8 w-full">
+              Booking Sekarang
+            </Link>
           </div>
         </nav>
       </div>

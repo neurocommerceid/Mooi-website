@@ -10,7 +10,7 @@ export default async function Page() {
   return (
     <>
       <PageHeader {...c.pages.layanan} />
-      <Services c={c.services} whatsapp={c.settings.whatsapp} />
+      <Services c={c.services} />
       <CTA c={c.cta} wa={waLink(c.settings.whatsapp, c.settings.waGreeting)} />
     </>
   );

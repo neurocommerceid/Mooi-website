@@ -50,7 +50,18 @@ export type Content = {
     kicker: string;
     title: string;
     sub: string;
-    items: { name: string; address: string; hours: string; maps: string; instagram: string; image: Img }[];
+    items: { name: string; address: string; hours: string; open: string; close: string; maps: string; instagram: string; image: Img }[];
+  };
+  booking: {
+    title: string;
+    sub: string;
+    policies: string[];
+    categories: { name: string; items: BookingService[] }[];
+    stylists: Stylist[];
+    interval: number;
+    leadMinutes: number;
+    daysAhead: number;
+    successNote: string;
   };
   testimonial: { kicker: string; quote: string; author: string };
   cta: { kicker: string; title: string; sub: string; primary: string; secondary: string; image: Img };
@@ -65,6 +76,8 @@ export type Content = {
 };
 
 export type PageHead = { kicker: string; title: string; sub: string };
+export type BookingService = { name: string; note: string; duration: number; price: number; from: boolean };
+export type Stylist = { name: string; role: string; years: string; bio: string; photo: Img; branches: string[] };
 export type SectionKey = keyof Content;
 
 const img = (file: string, alt: string): Img => ({ src: `/media/${file}.jpg`, alt });
@@ -84,7 +97,7 @@ export const defaults: Content = {
     line2: '*dirawat* dengan',
     line3: 'sepenuh hati.',
     sub: 'Potongan, warna, dan perawatan rambut oleh tim profesional Mooi — di Kedoya, Alam Sutera, dan Kelapa Gading.',
-    ctaPrimary: 'Reservasi Sekarang',
+    ctaPrimary: 'Booking Sekarang',
     ctaSecondary: 'Lihat Layanan',
     photo: img('hero', 'Stylist mencuci rambut pelanggan di wastafel salon'),
     video: { mp4: '/media/hero.mp4', webm: '/media/hero.webm', poster: '/media/hero-poster.jpg' },
@@ -136,10 +149,59 @@ export const defaults: Content = {
     title: 'Tiga cabang, *satu standar*.',
     sub: 'Kunjungi cabang terdekat, atau reservasi lebih dulu via WhatsApp.',
     items: [
-      { name: 'Mooi Kedoya', address: 'Jl. [alamat cabang Kedoya]', hours: 'Setiap hari · 09.00 – 20.00', maps: '', instagram: 'https://instagram.com/mooihairstudio_kedoya', image: img('br-1', 'Minyak perawatan diteteskan ke tangan') },
-      { name: 'Mooi Alam Sutera', address: 'Jl. [alamat cabang Alam Sutera]', hours: 'Setiap hari · 09.00 – 20.00', maps: '', instagram: 'https://instagram.com/mooihairstudio_alsut', image: img('br-2', 'Lilin dan botol minyak aromaterapi') },
-      { name: 'Mooi Kelapa Gading', address: 'Jl. [alamat cabang Kelapa Gading]', hours: 'Setiap hari · 09.00 – 20.00', maps: '', instagram: 'https://instagram.com/mooihairstudio_klpgdg', image: img('br-3', 'Masker rambut') },
+      { name: 'Mooi Kedoya', address: 'Jl. [alamat cabang Kedoya]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', maps: '', instagram: 'https://instagram.com/mooihairstudio_kedoya', image: img('br-1', 'Minyak perawatan diteteskan ke tangan') },
+      { name: 'Mooi Alam Sutera', address: 'Jl. [alamat cabang Alam Sutera]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', maps: '', instagram: 'https://instagram.com/mooihairstudio_alsut', image: img('br-2', 'Lilin dan botol minyak aromaterapi') },
+      { name: 'Mooi Kelapa Gading', address: 'Jl. [alamat cabang Kelapa Gading]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', maps: '', instagram: 'https://instagram.com/mooihairstudio_klpgdg', image: img('br-3', 'Masker rambut') },
     ],
+  },
+  booking: {
+    title: 'Booking *tanpa ribet*.',
+    sub: 'Pilih cabang, layanan, stylist, dan jam. Tim kami mengonfirmasi via WhatsApp.',
+    policies: [
+      'Permintaan booking dikonfirmasi tim Mooi via WhatsApp.',
+      'Bayar di salon — tunai, debit, atau QRIS.',
+      'Ingin ganti jadwal? Kabari kami via WhatsApp.',
+    ],
+    categories: [
+      {
+        name: 'Hair',
+        items: [
+          { name: 'Haircut & Blow Dry', note: 'Termasuk keramas', duration: 45, price: 150000, from: false },
+          { name: 'Wash & Blow', note: '', duration: 30, price: 120000, from: false },
+          { name: 'Hair Styling / Updo', note: 'Untuk acara', duration: 60, price: 250000, from: true },
+        ],
+      },
+      {
+        name: 'Coloring',
+        items: [
+          { name: 'Full Hair Coloring', note: 'Termasuk toner', duration: 120, price: 450000, from: true },
+          { name: 'Balayage / Highlight', note: 'Dengan bond treatment', duration: 180, price: 900000, from: true },
+        ],
+      },
+      {
+        name: 'Treatment',
+        items: [
+          { name: 'Keratin Smoothing', note: '', duration: 150, price: 650000, from: true },
+          { name: 'Hair Spa & Scalp Massage', note: '', duration: 60, price: 200000, from: false },
+        ],
+      },
+      {
+        name: 'Nails',
+        items: [
+          { name: 'Manicure', note: '', duration: 45, price: 125000, from: false },
+          { name: 'Gel Polish', note: 'Tangan', duration: 60, price: 175000, from: true },
+        ],
+      },
+      {
+        name: 'Makeup',
+        items: [{ name: 'Party Makeup', note: '', duration: 60, price: 450000, from: true }],
+      },
+    ],
+    stylists: [],
+    interval: 30,
+    leadMinutes: 120,
+    daysAhead: 14,
+    successNote: 'Tim kami akan mengonfirmasi jadwal Anda via WhatsApp pada jam operasional.',
   },
   testimonial: {
     kicker: 'Kata Pelanggan',
@@ -150,8 +212,8 @@ export const defaults: Content = {
     kicker: 'Reservasi',
     title: 'Saatnya merawat *diri sendiri*.',
     sub: 'Pilih cabang terdekat, kami siapkan jadwal untuk Anda.',
-    primary: 'Reservasi via WhatsApp',
-    secondary: 'Isi Formulir',
+    primary: 'Booking Sekarang',
+    secondary: 'Chat WhatsApp',
     image: img('cta', 'Perawatan dengan minyak hangat'),
   },
   about: {

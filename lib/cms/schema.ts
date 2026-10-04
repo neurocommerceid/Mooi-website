@@ -1,7 +1,7 @@
 import type { SectionKey } from './content';
 
 export type Field =
-  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings'; help?: string }
+  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings' | 'number' | 'boolean'; help?: string }
   | { key: string; label: string; type: 'list'; help?: string; item: string; fields: Field[] }
   | { key: string; label: string; type: 'group'; help?: string; fields: Field[] };
 
@@ -11,6 +11,7 @@ const ACCENT = 'Apit kata dengan *bintang* agar tampil miring berwarna rose-gold
 const t = (key: string, label: string, help?: string): Field => ({ key, label, type: 'text', help });
 const ta = (key: string, label: string, help?: string): Field => ({ key, label, type: 'textarea', help });
 const im = (key: string, label: string, help?: string): Field => ({ key, label, type: 'image', help });
+const num = (key: string, label: string, help?: string): Field => ({ key, label, type: 'number', help });
 const head = [t('kicker', 'Label kecil'), t('title', 'Judul', ACCENT), ta('sub', 'Subjudul')];
 const page = (key: string, label: string): Field => ({
   key, label, type: 'group', fields: [t('kicker', 'Label kecil'), t('title', 'Judul'), ta('sub', 'Subjudul')],
@@ -37,7 +38,7 @@ export const schema: Record<SectionKey, Section> = {
       t('line2', 'Judul — baris 2', ACCENT),
       t('line3', 'Judul — baris 3', ACCENT),
       ta('sub', 'Paragraf'),
-      t('ctaPrimary', 'Tombol utama (WhatsApp)'),
+      t('ctaPrimary', 'Tombol utama (ke halaman Booking)'),
       t('ctaSecondary', 'Tombol kedua (ke Layanan)'),
       { key: 'video', label: 'Video', type: 'video', help: 'Video vertikal (portrait) 8–15 detik, tanpa suara. Layar penuh di ponsel, jendela kubah di desktop.' },
       im('photo', 'Foto latar (desktop)', 'Tampil di belakang video pada layar lebar, dan menggantikan video bila video kosong.'),
@@ -90,12 +91,55 @@ export const schema: Record<SectionKey, Section> = {
         fields: [
           t('name', 'Nama cabang'),
           ta('address', 'Alamat'),
-          t('hours', 'Jam buka'),
+          t('hours', 'Jam buka (teks)', 'Tampil di website, mis. "Setiap hari · 09.00 – 20.00".'),
+          t('open', 'Jam buka untuk booking', 'Format 24 jam, mis. 09:00.'),
+          t('close', 'Jam tutup untuk booking', 'Format 24 jam, mis. 20:00. Layanan harus selesai sebelum jam ini.'),
           t('maps', 'Tautan Google Maps', 'Salin dari Google Maps → Bagikan → Salin link. Kosongkan untuk menyembunyikan tombol.'),
           t('instagram', 'Tautan Instagram'),
           im('image', 'Foto'),
         ],
       },
+    ],
+  },
+  booking: {
+    title: 'Booking',
+    desc: 'Menu layanan, stylist, dan aturan jadwal untuk halaman Booking. Harga & durasi bawaan hanyalah contoh — sesuaikan.',
+    fields: [
+      t('title', 'Judul', ACCENT),
+      ta('sub', 'Subjudul'),
+      { key: 'policies', label: 'Kebijakan (tampil saat konfirmasi)', type: 'strings', help: 'Tulis hanya yang benar-benar berlaku di salon.' },
+      {
+        key: 'categories', label: 'Kategori layanan', type: 'list', item: 'Kategori',
+        fields: [
+          t('name', 'Nama kategori', 'Mis. Hair, Coloring, Nails.'),
+          {
+            key: 'items', label: 'Layanan', type: 'list', item: 'Layanan',
+            fields: [
+              t('name', 'Nama layanan'),
+              t('note', 'Keterangan singkat', 'Opsional, mis. "Termasuk keramas".'),
+              num('duration', 'Durasi (menit)', 'Dipakai untuk menghitung jam yang tersedia.'),
+              num('price', 'Harga (Rp)', 'Angka saja, tanpa titik. Mis. 150000.'),
+              { key: 'from', label: 'Harga "mulai dari"', type: 'boolean', help: 'Centang bila harga bisa naik sesuai panjang/kondisi rambut.' },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'stylists', label: 'Stylist', type: 'list', item: 'Stylist',
+        help: 'Kosongkan bila pelanggan tidak memilih stylist — langkah ini otomatis dilewati.',
+        fields: [
+          t('name', 'Nama'),
+          t('role', 'Keahlian', 'Mis. Senior Colorist.'),
+          t('years', 'Pengalaman', 'Mis. 8 tahun. Kosongkan bila tidak ingin ditampilkan.'),
+          ta('bio', 'Kalimat singkat', 'Opsional.'),
+          im('photo', 'Foto'),
+          { key: 'branches', label: 'Cabang', type: 'strings', help: 'Tulis nama cabang persis seperti di bagian Cabang. Kosongkan = semua cabang.' },
+        ],
+      },
+      num('interval', 'Jarak antar slot (menit)', 'Mis. 30.'),
+      num('leadMinutes', 'Minimal booking sebelum jam (menit)', 'Mis. 120 = tidak bisa booking untuk 2 jam ke depan.'),
+      num('daysAhead', 'Bisa booking berapa hari ke depan', 'Mis. 14.'),
+      ta('successNote', 'Pesan setelah booking terkirim'),
     ],
   },
   testimonial: {
@@ -110,8 +154,8 @@ export const schema: Record<SectionKey, Section> = {
       t('kicker', 'Label kecil'),
       t('title', 'Judul', ACCENT),
       ta('sub', 'Subjudul'),
-      t('primary', 'Tombol utama (WhatsApp)'),
-      t('secondary', 'Tombol kedua (ke formulir)'),
+      t('primary', 'Tombol utama (ke halaman Booking)'),
+      t('secondary', 'Tombol kedua (WhatsApp)'),
       im('image', 'Foto latar', 'Ditampilkan samar di belakang teks.'),
     ],
   },

@@ -6,7 +6,7 @@ import Ornament from './ui/Ornament';
 import { Placeholder } from './ui/Media';
 import Rich from './ui/Rich';
 
-export default function Hero({ c, wa }: { c: Content['hero']; wa: string }) {
+export default function Hero({ c }: { c: Content['hero'] }) {
   const video = c.video?.mp4 || c.video?.webm ? c.video : null;
   const photo = c.photo?.src ? c.photo : null;
 
@@ -55,7 +55,7 @@ export default function Hero({ c, wa }: { c: Content['hero']; wa: string }) {
             {c.sub}
           </p>
           <div className="flex flex-col gap-3 sm:flex-row" style={{ animation: 'rise 1.2s .85s both' }}>
-            <a href={wa} target="_blank" rel="noopener" className="btn">{c.ctaPrimary}</a>
+            <Link href="/booking" className="btn">{c.ctaPrimary}</Link>
             <Link href="/layanan" className="btn-line text-ivory/90">{c.ctaSecondary}</Link>
           </div>
         </div>

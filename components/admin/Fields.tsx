@@ -23,6 +23,8 @@ function blank(fields: Field[]): Obj {
         : f.type === 'video' ? { mp4: '', webm: '', poster: '' }
         : f.type === 'list' || f.type === 'strings' ? []
         : f.type === 'group' ? blank(f.fields)
+        : f.type === 'number' ? 0
+        : f.type === 'boolean' ? false
         : '',
     ]),
   );
@@ -45,6 +47,22 @@ function FieldInput({ f, value, onChange }: { f: Field; value: unknown; onChange
         <label className="block">
           <Label f={f} />
           <input className={`${input} mt-2`} value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} />
+        </label>
+      );
+    case 'number':
+      return (
+        <label className="block">
+          <Label f={f} />
+          <input type="number" inputMode="numeric" min={0} className={`${input} mt-2 max-w-[220px]`}
+            value={Number.isFinite(value as number) ? (value as number) : ''}
+            onChange={(e) => onChange(e.target.value === '' ? 0 : Math.max(0, Math.round(Number(e.target.value))))} />
+        </label>
+      );
+    case 'boolean':
+      return (
+        <label className="flex items-start gap-3">
+          <input type="checkbox" className="mt-1 h-4 w-4 accent-[#9E6449]" checked={Boolean(value)} onChange={(e) => onChange(e.target.checked)} />
+          <span><Label f={f} /></span>
         </label>
       );
     case 'textarea':

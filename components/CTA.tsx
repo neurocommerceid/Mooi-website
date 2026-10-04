@@ -27,8 +27,8 @@ export default function CTA({ c, wa }: { c: Content['cta']; wa: string }) {
         )}
         <Reveal delay={360}>
           <div className="mt-12 flex flex-col justify-center gap-3 sm:flex-row">
-            <a href={wa} target="_blank" rel="noopener" className="btn">{c.primary}</a>
-            <Link href="/kontak" className="btn-line text-ivory/90">{c.secondary}</Link>
+            <Link href="/booking" className="btn">{c.primary}</Link>
+            <a href={wa} target="_blank" rel="noopener" className="btn-line text-ivory/90">{c.secondary}</a>
           </div>
         </Reveal>
       </div>

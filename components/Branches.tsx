@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { safeUrl, waLink, type Content } from '@/lib/cms/content';
 import Media from './ui/Media';
 import Reveal from './ui/Reveal';
@@ -25,6 +26,7 @@ export default function Branches({ c, whatsapp }: { c: Content['branches']; what
                     {b.hours && <><br />{b.hours}</>}
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2">
+                    <Link href={`/booking?cabang=${encodeURIComponent(b.name)}`} className={`${pill} !border-gold/60 !text-gold-light`}>Booking</Link>
                     <a href={waLink(whatsapp, `Halo ${b.name}, saya mau reservasi.`)} target="_blank" rel="noopener" className={pill}>WhatsApp</a>
                     {maps && <a href={maps} target="_blank" rel="noopener" className={pill}>Maps</a>}
                     {ig && <a href={ig} target="_blank" rel="noopener" className={pill}>Instagram</a>}

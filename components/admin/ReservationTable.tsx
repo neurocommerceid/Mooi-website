@@ -1,15 +1,19 @@
 'use client';
 import { useMemo, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/browser';
+import { durasi, rupiah } from '@/lib/booking';
 
 export type Row = {
   id: number; nama: string; whatsapp: string; cabang: string; layanan: string | null;
-  tanggal: string | null; catatan: string | null; status: string; created_at: string;
+  layanan_list: { name: string; price: number; from: boolean }[] | null; stylist: string | null;
+  tanggal: string | null; jam: string | null; durasi: number | null; estimasi: number | null;
+  catatan: string | null; status: string; created_at: string;
 };
 
-const STATUS: Record<string, string> = { baru: 'Baru', dihubungi: 'Dihubungi', selesai: 'Selesai', batal: 'Batal' };
+const STATUS: Record<string, string> = { baru: 'Baru', dihubungi: 'Dihubungi', dikonfirmasi: 'Dikonfirmasi', selesai: 'Selesai', batal: 'Batal' };
 const tone: Record<string, string> = {
-  baru: 'bg-gold/15 text-gold-deep', dihubungi: 'bg-sky-100 text-sky-800', selesai: 'bg-emerald-100 text-emerald-800', batal: 'bg-ink/10 text-ink-muted',
+  baru: 'bg-gold/15 text-gold-deep', dihubungi: 'bg-sky-100 text-sky-800', dikonfirmasi: 'bg-violet-100 text-violet-800',
+  selesai: 'bg-emerald-100 text-emerald-800', batal: 'bg-ink/10 text-ink-muted',
 };
 
 // 08xx → 628xx untuk tautan wa.me
@@ -58,15 +62,28 @@ export default function ReservationTable({ rows: initial }: { rows: Row[] }) {
             <article key={r.id} className="grid gap-4 rounded-xl border border-line bg-white p-5 md:grid-cols-[1.3fr_1fr_auto] md:items-center">
               <div>
                 <p className="font-medium">{r.nama}</p>
-                <a href={`https://wa.me/${toWa(r.whatsapp)}?text=${encodeURIComponent(`Halo ${r.nama}, kami dari ${r.cabang}. Terima kasih sudah reservasi.`)}`}
+                <a href={`https://wa.me/${toWa(r.whatsapp)}?text=${encodeURIComponent(
+                  `Halo ${r.nama}, kami dari ${r.cabang}. Booking Anda${r.tanggal ? ` untuk ${fmtDate(r.tanggal)}${r.jam ? ` pukul ${r.jam}` : ''}` : ''}${r.stylist && r.stylist !== 'Siapa saja' ? ` dengan ${r.stylist}` : ''} sudah kami terima. `
+                )}`}
                   target="_blank" rel="noopener" className="text-[14px] text-gold-deep hover:underline">
                   {r.whatsapp} · WhatsApp ↗
                 </a>
                 <p className="mt-1 text-[12px] text-ink-faint">Masuk {fmt(r.created_at)}</p>
               </div>
               <div className="text-[14px]">
-                <p>{r.cabang}</p>
-                <p className="text-ink-muted">{r.layanan || 'Layanan belum dipilih'}{r.tanggal ? ` · ${fmtDate(r.tanggal)}` : ''}</p>
+                <p className="font-medium">
+                  {r.tanggal ? fmtDate(r.tanggal) : 'Tanggal belum dipilih'}{r.jam ? ` · ${r.jam}` : ''}
+                  <span className="font-normal text-ink-muted"> · {r.cabang}</span>
+                </p>
+                {r.stylist && <p className="text-ink-muted">Stylist: {r.stylist}</p>}
+                <p className="text-ink-muted">
+                  {r.layanan_list?.length ? r.layanan_list.map((l) => l.name).join(', ') : r.layanan || 'Layanan belum dipilih'}
+                </p>
+                {(r.estimasi ?? 0) > 0 && (
+                  <p className="text-[13px] text-ink-faint">
+                    Estimasi {r.layanan_list?.some((l) => l.from) ? 'mulai ' : ''}{rupiah(r.estimasi!)}{r.durasi ? ` · ${durasi(r.durasi)}` : ''}
+                  </p>
+                )}
                 {r.catatan && <p className="mt-1 whitespace-pre-line text-[13px] text-ink-muted">“{r.catatan}”</p>}
               </div>
               <div className="flex items-center gap-2">

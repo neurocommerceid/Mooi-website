@@ -14,10 +14,10 @@ export default async function Home() {
   const wa = waLink(c.settings.whatsapp, c.settings.waGreeting);
   return (
     <>
-      <Hero c={c.hero} wa={wa} />
+      <Hero c={c.hero} />
       <Marquee items={c.marquee.items} />
       <Intro c={c.intro} />
-      <Services c={c.services} whatsapp={c.settings.whatsapp} />
+      <Services c={c.services} />
       <Gallery c={c.gallery} />
       <Branches c={c.branches} whatsapp={c.settings.whatsapp} />
       <Testimonial c={c.testimonial} />

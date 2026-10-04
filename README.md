@@ -33,8 +33,13 @@ Buka **`/admin`**. Semua teks, foto, video, layanan & harga, cabang, galeri, dan
 nomor WhatsApp bisa diubah di sana tanpa menyentuh kode. Setelah **Simpan**,
 website diperbarui dalam hitungan detik.
 
-- **Reservasi**: daftar isian formulir Kontak, dengan status (Baru → Dihubungi →
-  Selesai / Batal) dan tombol WhatsApp langsung ke pelanggan.
+- **Booking** (`/booking`): pelanggan memilih cabang → layanan → stylist → jadwal →
+  data diri. Menu layanan (durasi & harga), stylist, jam buka cabang, dan aturan
+  jadwal diatur di **Admin → Konten → Booking**. Harga & durasi bawaan hanyalah contoh.
+- **Reservasi**: semua permintaan booking, dengan status Baru → Dihubungi →
+  **Dikonfirmasi** → Selesai / Batal. Jam yang *Dikonfirmasi* otomatis tertutup
+  untuk stylist tersebut di halaman booking. Tidak ada pengingat otomatis —
+  konfirmasi dilakukan manual via WhatsApp.
 - **Teks *miring emas***: apit kata dengan bintang, mis. `Tiga cabang, *satu standar*.`
 - **Foto** dikompres otomatis di browser sebelum diunggah (maks. sisi 2400 px,
   WebP/JPEG) — foto kamera 5 MB biasanya jadi ±400 KB. Foto asli maks. 30 MB.
@@ -88,4 +93,6 @@ Semua bisa diisi lewat `/admin`:
 - [ ] Daftar harga layanan yang sebenarnya
 - [ ] Nilai "Produk pilihan" di halaman Tentang
 - [ ] Testimoni asli dari ulasan Google
+- [ ] Menu booking: harga & durasi asli, daftar stylist, jam buka tiap cabang
+- [ ] Kebijakan booking yang benar-benar berlaku (DP, reschedule, pembatalan)
 - [x] Nomor WhatsApp resmi (env `NEXT_PUBLIC_WHATSAPP`)

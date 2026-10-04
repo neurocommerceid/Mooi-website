@@ -1,9 +1,10 @@
-import { waLink, type Content } from '@/lib/cms/content';
+import Link from 'next/link';
+import type { Content } from '@/lib/cms/content';
 import Media from './ui/Media';
 import Reveal from './ui/Reveal';
 import SectionHead from './ui/SectionHead';
 
-export default function Services({ c, whatsapp }: { c: Content['services']; whatsapp: string }) {
+export default function Services({ c }: { c: Content['services'] }) {
   return (
     <section className="section bg-ivory-soft">
       <div className="mx-auto max-w-[1400px]">
@@ -19,10 +20,8 @@ export default function Services({ c, whatsapp }: { c: Content['services']; what
         <ul className="mt-16 border-t border-line">
           {c.items.map((s, i) => (
             <Reveal as="li" key={`${s.name}-${i}`} delay={i * 70}>
-              <a
-                href={waLink(whatsapp, `Halo Mooi, saya ingin reservasi ${s.name}.`)}
-                target="_blank"
-                rel="noopener"
+              <Link
+                href="/booking"
                 className="group relative grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-4 border-b border-line py-8 transition-colors duration-500 hover:bg-ivory md:grid-cols-[80px_1.1fr_1.4fr_auto_auto] md:gap-x-10 md:px-4"
               >
                 <span className="font-serif text-lg italic text-gold">{String(i + 1).padStart(2, '0')}</span>
@@ -37,7 +36,7 @@ export default function Services({ c, whatsapp }: { c: Content['services']; what
                 <span className="hidden h-24 w-0 overflow-hidden rounded-full transition-all duration-700 ease-out group-hover:w-24 md:block">
                   <Media photo={s.image} className="h-24 w-24" sizes="96px" zoom={false} />
                 </span>
-              </a>
+              </Link>
             </Reveal>
           ))}
         </ul>

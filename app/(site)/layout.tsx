@@ -22,7 +22,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const wa = waLink(c.settings.whatsapp, c.settings.waGreeting);
   return (
     <>
-      <Navbar wa={wa} />
+      <Navbar />
       <main>{children}</main>
       <Footer c={c} />
       <WhatsAppFab wa={wa} />

@@ -72,3 +72,28 @@ on conflict (id) do nothing;
 create policy "admin upload media" on storage.objects for insert to authenticated with check (bucket_id = 'media' and public.is_admin());
 create policy "admin ubah media" on storage.objects for update to authenticated using (bucket_id = 'media' and public.is_admin());
 create policy "admin hapus media" on storage.objects for delete to authenticated using (bucket_id = 'media' and public.is_admin());
+
+-- =====================================================================
+-- Booking: kolom detail, status "dikonfirmasi", dan slot terisi
+-- =====================================================================
+alter table public.reservasi
+  add column if not exists stylist text,
+  add column if not exists jam text check (jam is null or jam ~ '^[0-2][0-9]:[0-5][0-9]$'),
+  add column if not exists layanan_list jsonb,
+  add column if not exists durasi integer check (durasi is null or durasi between 0 and 1440),
+  add column if not exists estimasi integer check (estimasi is null or estimasi >= 0);
+
+alter table public.reservasi drop constraint if exists reservasi_status_check;
+alter table public.reservasi add constraint reservasi_status_check
+  check (status in ('baru', 'dihubungi', 'dikonfirmasi', 'selesai', 'batal'));
+
+-- Hanya stylist, jam, durasi — tanpa data pelanggan.
+create or replace function public.taken_slots(p_cabang text, p_tanggal date)
+returns table (stylist text, jam text, durasi integer)
+language sql stable security definer set search_path = '' as $$
+  select r.stylist, r.jam, coalesce(r.durasi, 60) from public.reservasi r
+  where r.cabang = p_cabang and r.tanggal = p_tanggal and r.status = 'dikonfirmasi'
+    and r.jam is not null and r.stylist is not null;
+$$;
+revoke all on function public.taken_slots(text, date) from public;
+grant execute on function public.taken_slots(text, date) to anon, authenticated;
