@@ -4,11 +4,11 @@ import { useRouter } from 'next/navigation';
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import { defaults, type SectionKey } from '@/lib/cms/content';
 import type { Field } from '@/lib/cms/schema';
-import { FieldList } from './Fields';
+import { BranchOptions, FieldList } from './Fields';
 
 type Obj = Record<string, unknown>;
 
-export default function Editor({ sectionKey, fields, initial }: { sectionKey: SectionKey; fields: Field[]; initial: Obj }) {
+export default function Editor({ sectionKey, fields, initial, branchNames = [] }: { sectionKey: SectionKey; fields: Field[]; initial: Obj; branchNames?: string[] }) {
   const router = useRouter();
   const [value, setValue] = useState<Obj>(initial);
   const [saved, setSaved] = useState(JSON.stringify(initial));
@@ -46,7 +46,9 @@ export default function Editor({ sectionKey, fields, initial }: { sectionKey: Se
 
   return (
     <div className="mt-8 pb-28">
-      <FieldList fields={fields} value={value} onChange={(v) => { setValue(v); setState('idle'); }} />
+      <BranchOptions.Provider value={branchNames}>
+        <FieldList fields={fields} value={value} onChange={(v) => { setValue(v); setState('idle'); }} />
+      </BranchOptions.Provider>
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-ivory/95 px-5 py-4 backdrop-blur lg:left-[260px] md:px-10">
         <div className="flex max-w-3xl flex-wrap items-center gap-3">

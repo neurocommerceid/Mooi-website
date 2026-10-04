@@ -31,8 +31,17 @@ export function branchHours(b: Content['branches']['items'][number]) {
   return { open: Number.isFinite(open) ? open : 540, close: Number.isFinite(close) ? close : 1200 };
 }
 
+// "Mooi Kelapa Gading", "Kelapa Gading", "kelapa  gading" dianggap cabang yang sama.
+export const branchKey = (s: string) => (s ?? '').toLowerCase().replace(/^\s*mooi\s+/, '').replace(/\s+/g, ' ').trim();
+export const sameBranch = (a: string, b: string) => !!branchKey(a) && branchKey(a) === branchKey(b);
+
 export const stylistsAt = (stylists: Stylist[], branch: string) =>
-  stylists.filter((s) => s.name && (!s.branches?.length || s.branches.includes(branch)));
+  stylists
+    .map((s) => ({ ...s, name: (s.name ?? '').trim() }))
+    .filter((s) => {
+      const list = (s.branches ?? []).filter((b) => b?.trim());
+      return s.name && (!list.length || list.some((b) => sameBranch(b, branch)));
+    });
 
 export function findServices(categories: Content['booking']['categories'], names: string[]) {
   const all = categories.flatMap((c) => c.items.map((i) => ({ ...i, category: c.name })));

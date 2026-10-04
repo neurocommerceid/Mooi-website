@@ -1,7 +1,12 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
+import { createContext, useContext } from 'react';
 import type { Field } from '@/lib/cms/schema';
+import { sameBranch } from '@/lib/booking';
 import Upload from './Upload';
+
+// Daftar nama cabang untuk isian bertipe 'branches' (diisi oleh Editor).
+export const BranchOptions = createContext<string[]>([]);
 
 type Obj = Record<string, unknown>;
 const input = 'w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[15px] outline-none transition focus:border-gold';
@@ -21,7 +26,7 @@ function blank(fields: Field[]): Obj {
       f.key,
       f.type === 'image' ? { src: '', alt: '' }
         : f.type === 'video' ? { mp4: '', webm: '', poster: '' }
-        : f.type === 'list' || f.type === 'strings' ? []
+        : f.type === 'list' || f.type === 'strings' || f.type === 'branches' ? []
         : f.type === 'group' ? blank(f.fields)
         : f.type === 'number' ? 0
         : f.type === 'boolean' ? false
@@ -58,6 +63,8 @@ function FieldInput({ f, value, onChange }: { f: Field; value: unknown; onChange
             onChange={(e) => onChange(e.target.value === '' ? 0 : Math.max(0, Math.round(Number(e.target.value))))} />
         </label>
       );
+    case 'branches':
+      return <BranchPicker f={f} value={(value as string[]) ?? []} onChange={onChange} />;
     case 'boolean':
       return (
         <label className="flex items-start gap-3">
@@ -201,4 +208,32 @@ function FieldInput({ f, value, onChange }: { f: Field; value: unknown; onChange
       );
     }
   }
+}
+
+function BranchPicker({ f, value, onChange }: { f: Field; value: string[]; onChange: (v: string[]) => void }) {
+  const options = useContext(BranchOptions);
+  const has = (o: string) => value.some((v) => sameBranch(v, o));
+  // Simpan nama cabang persis seperti di bagian Cabang; nilai lama yang ditulis manual ikut dirapikan.
+  const toggle = (o: string) => onChange(has(o) ? value.filter((v) => !sameBranch(v, o)) : [...value.filter((v) => options.some((x) => sameBranch(v, x))), o]);
+  const unknown = value.filter((v) => v.trim() && !options.some((o) => sameBranch(v, o)));
+  return (
+    <div>
+      <Label f={f} />
+      <div className="mt-2 flex flex-wrap gap-2">
+        {options.map((o) => (
+          <label key={o} className={`flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-[13px] transition ${has(o) ? 'border-gold bg-[#FBF4EA] text-ink' : 'border-line bg-white text-ink-muted'}`}>
+            <input type="checkbox" className="h-4 w-4 accent-[#9E6449]" checked={has(o)} onChange={() => toggle(o)} />
+            {o}
+          </label>
+        ))}
+      </div>
+      <p className="mt-2 text-[12px] text-ink-faint">{value.filter((v) => v.trim()).length ? '' : 'Saat ini: semua cabang.'}</p>
+      {unknown.length > 0 && (
+        <p className="mt-1 text-[12px] text-red-700">
+          Tidak dikenal: {unknown.join(', ')}.{' '}
+          <button type="button" className="underline" onClick={() => onChange(value.filter((v) => !unknown.includes(v)))}>Hapus</button>
+        </p>
+      )}
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 import type { SectionKey } from './content';
 
 export type Field =
-  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings' | 'number' | 'boolean'; help?: string }
+  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings' | 'number' | 'boolean' | 'branches'; help?: string }
   | { key: string; label: string; type: 'list'; help?: string; item: string; fields: Field[] }
   | { key: string; label: string; type: 'group'; help?: string; fields: Field[] };
 
@@ -133,7 +133,7 @@ export const schema: Record<SectionKey, Section> = {
           t('years', 'Pengalaman', 'Mis. 8 tahun. Kosongkan bila tidak ingin ditampilkan.'),
           ta('bio', 'Kalimat singkat', 'Opsional.'),
           im('photo', 'Foto'),
-          { key: 'branches', label: 'Cabang', type: 'strings', help: 'Tulis nama cabang persis seperti di bagian Cabang. Kosongkan = semua cabang.' },
+          { key: 'branches', label: 'Bertugas di cabang', type: 'branches', help: 'Tidak dicentang sama sekali = bertugas di semua cabang.' },
         ],
       },
       num('interval', 'Jarak antar slot (menit)', 'Mis. 30.'),
