@@ -58,8 +58,8 @@ export const menuAlamSutera: Cat[] = [
   {
     name: 'Haircut',
     items: [
-      s("Women's Haircut", 250000, 60, '250 / 300 / 398rb sesuai stylist', true),
-      s("Men's Haircut", 150000, 45, '150 / 200 / 250rb sesuai stylist', true),
+      s("Women's Haircut", 250000, 60, '250 / 300 / 398rb', true),
+      s("Men's Haircut", 150000, 45, '150 / 200 / 250rb', true),
       s('Hair Do', 200000, 60),
     ],
   },

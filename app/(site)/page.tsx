@@ -7,11 +7,10 @@ import Branches from '@/components/Branches';
 import Testimonial from '@/components/Testimonial';
 import CTA from '@/components/CTA';
 import { getContent } from '@/lib/cms/get';
-import { waLink } from '@/lib/cms/content';
+import { branchContacts } from '@/lib/cms/content';
 
 export default async function Home() {
   const c = await getContent();
-  const wa = waLink(c.settings.whatsapp, c.settings.waGreeting);
   return (
     <>
       <Hero c={c.hero} />
@@ -21,7 +20,7 @@ export default async function Home() {
       <Gallery c={c.gallery} />
       <Branches c={c.branches} whatsapp={c.settings.whatsapp} />
       <Testimonial c={c.testimonial} />
-      <CTA c={c.cta} wa={wa} />
+      <CTA c={c.cta} contacts={branchContacts(c)} greeting={c.settings.waGreeting} />
     </>
   );
 }

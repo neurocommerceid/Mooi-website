@@ -25,13 +25,14 @@ export default async function Page() {
             <div className="mt-8 border-t border-line">
               {c.branches.items.map((b, i) => {
                 const maps = safeUrl(b.maps);
+                const wa = branchWa(b, c.settings.whatsapp);
                 return (
                   <div key={`${b.name}-${i}`} className="border-b border-line py-7">
                     <h3 className="font-serif text-2xl font-light text-ink">{b.name}</h3>
                     <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink-muted">{b.address}<br />{b.hours}</p>
                     <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-gold-deep">
                       <Link href={`/booking?cabang=${encodeURIComponent(b.name)}`} className="hover:underline">Booking cabang ini</Link>
-                      <a href={waLink(branchWa(b, c.settings.whatsapp), `Halo ${b.name}, saya ingin bertanya.`)} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>
+                      {wa && <a href={waLink(wa, `Halo ${b.name}, saya ingin bertanya.`)} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>}
                       {maps && <a href={maps} target="_blank" rel="noopener" className="hover:underline">Maps</a>}
                     </div>
                   </div>

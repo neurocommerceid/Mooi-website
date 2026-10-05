@@ -22,8 +22,8 @@ export const schema: Record<SectionKey, Section> = {
     title: 'Pengaturan Umum',
     desc: 'Nomor WhatsApp, judul untuk Google, dan teks footer.',
     fields: [
-      t('whatsapp', 'Nomor WhatsApp', 'Format internasional tanpa + atau spasi, mis. 62817773343. Dipakai semua tombol reservasi.'),
-      t('waGreeting', 'Pesan pembuka WhatsApp', 'Teks yang otomatis terisi saat pengunjung menekan tombol reservasi.'),
+      t('whatsapp', 'Nomor WhatsApp cadangan (opsional)', 'Hanya dipakai untuk cabang yang belum punya nomor sendiri. Nomor tiap cabang diatur di bagian Cabang.'),
+      t('waGreeting', 'Pesan pembuka WhatsApp', 'Teks yang otomatis terisi. Kata "Mooi" diganti nama cabang yang dipilih.'),
       t('siteTitle', 'Judul website (Google)', 'Tampil di tab browser dan hasil pencarian. Idealnya di bawah 60 karakter.'),
       ta('siteDescription', 'Deskripsi website (Google)', 'Ringkasan di hasil pencarian. Idealnya 120–160 karakter.'),
       ta('footerText', 'Teks footer'),
@@ -69,7 +69,7 @@ export const schema: Record<SectionKey, Section> = {
       ...head,
       {
         key: 'items', label: 'Layanan', type: 'list', item: 'Layanan',
-        fields: [t('name', 'Nama layanan'), ta('desc', 'Deskripsi'), t('price', 'Harga', 'Mis. "Mulai Rp 150.000" atau "Konsultasi".'), im('image', 'Foto')],
+        fields: [t('name', 'Nama layanan'), ta('desc', 'Deskripsi'), t('price', 'Teks harga (opsional)', 'Harga berbeda tiap cabang — sebaiknya kosongkan. Bila diisi, WAJIB sama persis dengan price list.'), im('image', 'Foto')],
       },
     ],
   },

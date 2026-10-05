@@ -30,7 +30,7 @@ export default function Services({ c }: { c: Content['services'] }) {
                 </h3>
                 <p className="col-span-2 text-[14px] leading-relaxed text-ink-muted md:col-span-1">{s.desc}</p>
                 <span className="col-span-2 text-[12px] uppercase tracking-[0.2em] text-gold-deep md:col-span-1 md:text-right">
-                  {s.price}
+                  {s.price || 'Lihat harga per cabang →'}
                 </span>
                 {/* Pratinjau foto yang membuka saat hover (desktop) */}
                 <span className="hidden h-24 w-0 overflow-hidden rounded-full transition-all duration-700 ease-out group-hover:w-24 md:block">

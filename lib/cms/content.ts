@@ -95,7 +95,7 @@ const img = (file: string, alt: string): Img => ({ src: `/media/${file}.jpg`, al
 
 export const defaults: Content = {
   settings: {
-    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP ?? '62817773343',
+    whatsapp: '',
     waGreeting: 'Halo Mooi, saya mau reservasi.',
     siteTitle: 'Mooi Hair Studio & Beauty Bar | Kedoya · Alam Sutera · Kelapa Gading',
     siteDescription:
@@ -134,12 +134,12 @@ export const defaults: Content = {
     title: 'Ritual perawatan, *untuk Anda*.',
     sub: 'Harga menyesuaikan panjang dan kondisi rambut. Konsultasi sebelum setiap tindakan.',
     items: [
-      { name: 'Hair Cut & Styling', desc: 'Potongan yang disesuaikan dengan bentuk wajah dan gaya keseharian Anda.', price: 'Mulai Rp 150.000', image: img('svc-haircut', 'Stylist menata rambut pelanggan') },
-      { name: 'Coloring & Highlight', desc: 'Pewarnaan modern dengan produk premium yang menjaga kesehatan rambut.', price: 'Mulai Rp 450.000', image: img('svc-coloring', 'Rambut berwarna lavender') },
-      { name: 'Smoothing & Keratin', desc: 'Rambut lebih halus, mudah diatur, dan tetap sehat dalam jangka panjang.', price: 'Mulai Rp 650.000', image: img('svc-smoothing', 'Rambut dikeringkan dan diluruskan') },
-      { name: 'Hair Spa & Treatment', desc: 'Perawatan intensif untuk rambut kering, rusak, dan rontok.', price: 'Mulai Rp 200.000', image: img('svc-spa', 'Pelanggan menikmati cuci rambut') },
-      { name: 'Beauty Bar', desc: 'Perawatan kuku, bulu mata, dan makeup untuk tampilan sempurna.', price: 'Mulai Rp 125.000', image: img('svc-beauty', 'Kuku dengan cat gelap') },
-      { name: 'Bridal & Event', desc: 'Paket rambut dan makeup untuk hari pernikahan dan acara spesial.', price: 'Konsultasi', image: img('svc-bridal', 'Makeup artist merias wajah') },
+      { name: 'Hair Cut & Styling', desc: 'Potongan yang disesuaikan dengan bentuk wajah dan gaya keseharian Anda.', price: '', image: img('svc-haircut', 'Stylist menata rambut pelanggan') },
+      { name: 'Coloring & Highlight', desc: 'Pewarnaan modern dengan produk premium yang menjaga kesehatan rambut.', price: '', image: img('svc-coloring', 'Rambut berwarna lavender') },
+      { name: 'Smoothing & Keratin', desc: 'Rambut lebih halus, mudah diatur, dan tetap sehat dalam jangka panjang.', price: '', image: img('svc-smoothing', 'Rambut dikeringkan dan diluruskan') },
+      { name: 'Hair Spa & Treatment', desc: 'Perawatan intensif untuk rambut kering, rusak, dan rontok.', price: '', image: img('svc-spa', 'Pelanggan menikmati cuci rambut') },
+      { name: 'Beauty Bar', desc: 'Perawatan kuku, bulu mata, dan makeup untuk tampilan sempurna.', price: '', image: img('svc-beauty', 'Kuku dengan cat gelap') },
+      { name: 'Bridal & Event', desc: 'Paket rambut dan makeup untuk hari pernikahan dan acara spesial.', price: '', image: img('svc-bridal', 'Makeup artist merias wajah') },
     ],
   },
   gallery: {
@@ -221,8 +221,15 @@ export const defaults: Content = {
 
 export const sectionKeys = Object.keys(defaults) as SectionKey[];
 
-/** Nomor WhatsApp cabang, atau nomor utama bila cabang belum punya. */
-export const branchWa = (b: { whatsapp?: string } | undefined, fallback: string) => (b?.whatsapp?.replace(/\D/g, '') || fallback);
+/** Nomor WhatsApp cabang, atau nomor cadangan bila cabang belum punya. Bisa kosong. */
+export const branchWa = (b: { whatsapp?: string } | undefined, fallback: string) =>
+  (b?.whatsapp?.replace(/\D/g, '') || fallback?.replace(/\D/g, '') || '');
+
+/** Daftar kontak WhatsApp per cabang (yang punya nomor saja). */
+export const branchContacts = (c: Pick<Content, 'branches' | 'settings'>) =>
+  c.branches.items
+    .map((b) => ({ name: b.name, wa: branchWa(b, c.settings.whatsapp) }))
+    .filter((x) => x.wa);
 
 export const waLink = (number: string, text: string) =>
   `https://wa.me/${number.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;

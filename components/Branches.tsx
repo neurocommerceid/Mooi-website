@@ -15,6 +15,7 @@ export default function Branches({ c, whatsapp }: { c: Content['branches']; what
           {c.items.map((b, i) => {
             const maps = safeUrl(b.maps);
             const ig = safeUrl(b.instagram);
+            const wa = branchWa(b, whatsapp);
             return (
               <Reveal as="article" key={`${b.name}-${i}`} delay={(i % 3) * 150} className="group">
                 <Media photo={b.image} tone="dark" className="aspect-[4/5] w-full rounded-t-[999px]" sizes="(min-width:768px) 33vw, 100vw" />
@@ -27,7 +28,7 @@ export default function Branches({ c, whatsapp }: { c: Content['branches']; what
                   </p>
                   <div className="mt-6 flex flex-wrap gap-2">
                     <Link href={`/booking?cabang=${encodeURIComponent(b.name)}`} className={`${pill} !border-gold/60 !text-gold-light`}>Booking</Link>
-                    <a href={waLink(branchWa(b, whatsapp), `Halo ${b.name}, saya mau reservasi.`)} target="_blank" rel="noopener" className={pill}>WhatsApp</a>
+                    {wa && <a href={waLink(wa, `Halo ${b.name}, saya mau bertanya.`)} target="_blank" rel="noopener" className={pill}>WhatsApp</a>}
                     {maps && <a href={maps} target="_blank" rel="noopener" className={pill}>Maps</a>}
                     {ig && <a href={ig} target="_blank" rel="noopener" className={pill}>Instagram</a>}
                   </div>

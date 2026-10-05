@@ -19,7 +19,6 @@ Buka http://localhost:3000
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL project Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon/publishable key Supabase |
-| `NEXT_PUBLIC_WHATSAPP` | Nomor WhatsApp format internasional tanpa `+`, mis. `62817773343` |
 
 ## Supabase
 
@@ -71,7 +70,7 @@ nonaktifkan *Allow new users to sign up*.
 
 1. Push repo ini ke GitHub
 2. Vercel → New Project → import repo
-3. Tambahkan tiga environment variable di atas
+3. Tambahkan dua environment variable di atas
 4. Deploy
 5. Setelah domain siap: Settings → Domains → tambahkan domain Mooi
 
@@ -101,4 +100,4 @@ Semua bisa diisi lewat `/admin`:
 - [ ] Testimoni asli dari ulasan Google
 - [ ] Menu booking: harga & durasi asli, daftar stylist, jam buka tiap cabang
 - [ ] Kebijakan booking yang benar-benar berlaku (DP, reschedule, pembatalan)
-- [x] Nomor WhatsApp resmi (env `NEXT_PUBLIC_WHATSAPP`)
+- [x] Nomor WhatsApp per cabang (Admin → Cabang)

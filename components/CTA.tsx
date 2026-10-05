@@ -4,8 +4,9 @@ import Media from './ui/Media';
 import Ornament from './ui/Ornament';
 import Reveal from './ui/Reveal';
 import Rich from './ui/Rich';
+import WaChooser, { type Contact } from './ui/WaChooser';
 
-export default function CTA({ c, wa }: { c: Content['cta']; wa: string }) {
+export default function CTA({ c, contacts, greeting }: { c: Content['cta']; contacts: Contact[]; greeting: string }) {
   return (
     <section className="grain relative overflow-hidden bg-espresso px-6 py-32 text-center text-ivory md:py-44">
       <div className="absolute inset-0 opacity-35">
@@ -28,7 +29,7 @@ export default function CTA({ c, wa }: { c: Content['cta']; wa: string }) {
         <Reveal delay={360}>
           <div className="mt-12 flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="/booking" className="btn">{c.primary}</Link>
-            <a href={wa} target="_blank" rel="noopener" className="btn-line text-ivory/90">{c.secondary}</a>
+            <WaChooser contacts={contacts} greeting={greeting} label={c.secondary} className="btn-line w-full text-ivory/90 sm:w-auto" />
           </div>
         </Reveal>
       </div>

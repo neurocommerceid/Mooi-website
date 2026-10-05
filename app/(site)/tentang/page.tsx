@@ -3,7 +3,7 @@ import CTA from '@/components/CTA';
 import PageHeader from '@/components/ui/PageHeader';
 import Reveal from '@/components/ui/Reveal';
 import { getContent } from '@/lib/cms/get';
-import { waLink } from '@/lib/cms/content';
+import { branchContacts } from '@/lib/cms/content';
 export const metadata = { title: 'Tentang Kami | Mooi Hair Studio & Beauty Bar' };
 
 export default async function Page() {
@@ -25,7 +25,7 @@ export default async function Page() {
           </div>
         </section>
       )}
-      <CTA c={c.cta} wa={waLink(c.settings.whatsapp, c.settings.waGreeting)} />
+      <CTA c={c.cta} contacts={branchContacts(c)} greeting={c.settings.waGreeting} />
     </>
   );
 }

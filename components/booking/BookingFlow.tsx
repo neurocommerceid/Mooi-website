@@ -220,7 +220,11 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
           <Summary cabang={cabang} items={items} who={who} date={date} time={time} total={sum} />
         </div>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href={waLink(branchWa(branch, whatsapp), waText)} target="_blank" rel="noopener" className="btn">Kirim detail ke WhatsApp</a>
+          {branchWa(branch, whatsapp) && (
+            <a href={waLink(branchWa(branch, whatsapp), waText)} target="_blank" rel="noopener" className="btn">
+              Kirim detail ke WhatsApp {cabang.replace(/^Mooi\s+/, '')}
+            </a>
+          )}
           <Link href="/" className="btn-line text-ink">Kembali ke beranda</Link>
         </div>
       </div>
