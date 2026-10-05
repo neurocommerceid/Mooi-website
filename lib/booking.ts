@@ -1,6 +1,6 @@
 // Logika jadwal booking — dipakai di browser (menampilkan slot) dan di server
 // (memvalidasi permintaan), supaya aturannya selalu sama.
-import type { BookingService, Content, Stylist } from './cms/content';
+import type { BookingService, Category, Content, Stylist } from './cms/content';
 
 export const ANY = 'Siapa saja';
 const TZ_OFFSET_MIN = 7 * 60; // WIB
@@ -43,7 +43,34 @@ export const stylistsAt = (stylists: Stylist[], branch: string) =>
       return s.name && (!list.length || list.some((b) => sameBranch(b, branch)));
     });
 
-export function findServices(categories: Content['booking']['categories'], names: string[]) {
+// ---------- hari kerja stylist ----------
+export const DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const DAY_ALIAS: Record<string, number> = {
+  minggu: 0, ahad: 0, sun: 0, sunday: 0, senin: 1, mon: 1, monday: 1, selasa: 2, tue: 2, tuesday: 2,
+  rabu: 3, wed: 3, wednesday: 3, kamis: 4, thu: 4, thursday: 4, jumat: 5, "jum'at": 5, fri: 5, friday: 5,
+  sabtu: 6, sat: 6, saturday: 6,
+};
+export const dayIndex = (d: string) => DAY_ALIAS[(d ?? '').toLowerCase().trim()] ?? -1;
+export const weekday = (date: string) => new Date(`${date}T00:00:00Z`).getUTCDay();
+
+/** Stylist bertugas pada tanggal tsb. Daftar hari kosong = setiap hari. */
+export const worksOn = (s: Stylist, date: string) => {
+  const days = (s.days ?? []).map(dayIndex).filter((i) => i >= 0);
+  return !days.length || days.includes(weekday(date));
+};
+export const daysLabel = (s: Stylist) => {
+  const days = (s.days ?? []).map(dayIndex).filter((i) => i >= 0).sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));
+  return days.length && days.length < 7 ? `Hanya ${days.map((i) => DAYS[i]).join(' & ')}` : '';
+};
+
+/** Menu untuk cabang: menu khusus cabang, atau menu umum bila tidak ada. */
+export function menuFor(booking: Content['booking'], branch: string): Category[] {
+  const m = (booking.menus ?? []).find((x) => (x.branches ?? []).some((b) => sameBranch(b, branch)))
+    ?? (booking.menus ?? []).find((x) => !(x.branches ?? []).filter((b) => b?.trim()).length);
+  return (m?.categories?.length ? m.categories : booking.categories ?? []).filter((c) => c.items?.length);
+}
+
+export function findServices(categories: Category[], names: string[]) {
   const all = categories.flatMap((c) => c.items.map((i) => ({ ...i, category: c.name })));
   return names.map((n) => all.find((i) => i.name === n)).filter(Boolean) as (BookingService & { category: string })[];
 }

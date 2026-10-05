@@ -34,8 +34,11 @@ nomor WhatsApp bisa diubah di sana tanpa menyentuh kode. Setelah **Simpan**,
 website diperbarui dalam hitungan detik.
 
 - **Booking** (`/booking`): pelanggan memilih cabang → layanan → stylist → jadwal →
-  data diri. Menu layanan (durasi & harga), stylist, jam buka cabang, dan aturan
-  jadwal diatur di **Admin → Konten → Booking**. Harga & durasi bawaan hanyalah contoh.
+  data diri. **Menu & harga per cabang** (dari price list resmi, Okt 2026), stylist
+  beserta cabang & hari kerjanya, jam buka, dan aturan jadwal diatur di
+  **Admin → Konten → Booking**. Durasi layanan masih estimasi — mohon dicek.
+- **WhatsApp per cabang**: Admin → Konten → Cabang. Kosong = nomor utama.
+- **Foto iPhone (HEIC)** bisa diunggah langsung; dikonversi otomatis di browser.
 - **Reservasi**: semua permintaan booking, dengan status Baru → Dihubungi →
   **Dikonfirmasi** → Selesai / Batal, plus kolom **Ditugaskan** (stylist yang
   mengerjakan). Booking *Dikonfirmasi* menempati satu stylist: yang ditugaskan,

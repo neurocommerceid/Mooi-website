@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { createContext, useContext } from 'react';
 import type { Field } from '@/lib/cms/schema';
-import { sameBranch } from '@/lib/booking';
+import { DAYS, dayIndex, sameBranch } from '@/lib/booking';
 import Upload from './Upload';
 
 // Daftar nama cabang untuk isian bertipe 'branches' (diisi oleh Editor).
@@ -26,7 +26,7 @@ function blank(fields: Field[]): Obj {
       f.key,
       f.type === 'image' ? { src: '', alt: '' }
         : f.type === 'video' ? { mp4: '', webm: '', poster: '' }
-        : f.type === 'list' || f.type === 'strings' || f.type === 'branches' ? []
+        : f.type === 'list' || f.type === 'strings' || f.type === 'branches' || f.type === 'days' ? []
         : f.type === 'group' ? blank(f.fields)
         : f.type === 'number' ? 0
         : f.type === 'boolean' ? false
@@ -63,6 +63,25 @@ function FieldInput({ f, value, onChange }: { f: Field; value: unknown; onChange
             onChange={(e) => onChange(e.target.value === '' ? 0 : Math.max(0, Math.round(Number(e.target.value))))} />
         </label>
       );
+    case 'days': {
+      const v = (value as string[]) ?? [];
+      const on = new Set(v.map(dayIndex));
+      const order = [1, 2, 3, 4, 5, 6, 0];
+      return (
+        <div>
+          <Label f={f} />
+          <div className="mt-2 flex flex-wrap gap-2">
+            {order.map((i) => (
+              <label key={i} className={`flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-[13px] transition ${on.has(i) ? 'border-gold bg-[#FBF4EA] text-ink' : 'border-line bg-white text-ink-muted'}`}>
+                <input type="checkbox" className="h-4 w-4 accent-[#9E6449]" checked={on.has(i)}
+                  onChange={() => onChange(order.filter((d) => (d === i ? !on.has(i) : on.has(d))).map((d) => DAYS[d]))} />
+                {DAYS[i]}
+              </label>
+            ))}
+          </div>
+        </div>
+      );
+    }
     case 'branches':
       return <BranchPicker f={f} value={(value as string[]) ?? []} onChange={onChange} />;
     case 'boolean':
@@ -183,7 +202,9 @@ function FieldInput({ f, value, onChange }: { f: Field; value: unknown; onChange
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3">
                   <span className="font-medium">
                     <span className="mr-2 text-gold">{String(i + 1).padStart(2, '0')}</span>
-                    {String(item.name ?? item.label ?? item.title ?? item.value ?? f.item)}
+                    {String(item.name || item.label || item.title || item.value
+                      || (Array.isArray(item.branches) && (item.branches as string[]).filter(Boolean).join(', '))
+                      || (Array.isArray(item.branches) ? 'Semua cabang' : f.item))}
                   </span>
                   <span className="flex items-center gap-1" onClick={(e) => e.preventDefault()}>
                     <button type="button" className={btn} disabled={i === 0} onClick={() => move(i, -1)} aria-label="Naik">↑</button>

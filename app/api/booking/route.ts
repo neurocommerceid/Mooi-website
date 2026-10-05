@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/anon';
 import { getContent } from '@/lib/cms/get';
-import { ANY, addDays, branchHours, findServices, isDate, jakartaNow, slotsFor, stylistsAt, totals, type Taken } from '@/lib/booking';
+import { ANY, addDays, branchHours, findServices, isDate, jakartaNow, menuFor, slotsFor, stylistsAt, totals, worksOn, type Taken } from '@/lib/booking';
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const bad = (error: string, status = 400) => NextResponse.json({ error }, { status });
@@ -34,16 +34,21 @@ export async function POST(req: Request) {
   const branch = c.branches.items.find((b) => b.name === cabang);
   if (!branch) return bad('Cabang tidak dikenal.');
 
-  const items = findServices(c.booking.categories, names);
+  const items = findServices(menuFor(c.booking, cabang), names);
   if (!items.length || items.length !== names.length) return bad('Pilih minimal satu layanan yang tersedia.');
 
-  const team = stylistsAt(c.booking.stylists, cabang).map((s) => s.name);
-  if (stylist !== ANY && !team.includes(stylist)) return bad('Stylist tidak tersedia di cabang ini.');
+  const teamAll = stylistsAt(c.booking.stylists, cabang);
+  if (stylist !== ANY && !teamAll.some((s) => s.name === stylist)) return bad('Stylist tidak tersedia di cabang ini.');
 
   const today = jakartaNow().date;
   if (!isDate(tanggal) || tanggal < today || tanggal > addDays(today, Math.max(1, c.booking.daysAhead || 14))) {
     return bad('Tanggal di luar jangkauan booking.');
   }
+
+  const onDuty = teamAll.filter((s) => worksOn(s, tanggal));
+  if (stylist !== ANY && !onDuty.some((s) => s.name === stylist)) return bad('Stylist tidak bertugas di tanggal tersebut.');
+  if (teamAll.length && !onDuty.length) return bad('Tidak ada stylist yang bertugas di tanggal tersebut.');
+  const team = onDuty.map((s) => s.name);
 
   const { duration, price } = totals(items);
   if (!supabase) return bad('Sistem booking belum dikonfigurasi.', 500);

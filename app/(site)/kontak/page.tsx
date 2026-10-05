@@ -2,7 +2,7 @@ import Link from 'next/link';
 import PageHeader from '@/components/ui/PageHeader';
 import Reveal from '@/components/ui/Reveal';
 import { getContent } from '@/lib/cms/get';
-import { safeUrl, waLink } from '@/lib/cms/content';
+import { branchWa, safeUrl, waLink } from '@/lib/cms/content';
 export const metadata = { title: 'Kontak | Mooi Hair Studio & Beauty Bar' };
 
 export default async function Page() {
@@ -31,7 +31,7 @@ export default async function Page() {
                     <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink-muted">{b.address}<br />{b.hours}</p>
                     <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-gold-deep">
                       <Link href={`/booking?cabang=${encodeURIComponent(b.name)}`} className="hover:underline">Booking cabang ini</Link>
-                      <a href={waLink(c.settings.whatsapp, `Halo ${b.name}, saya ingin bertanya.`)} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>
+                      <a href={waLink(branchWa(b, c.settings.whatsapp), `Halo ${b.name}, saya ingin bertanya.`)} target="_blank" rel="noopener" className="hover:underline">WhatsApp</a>
                       {maps && <a href={maps} target="_blank" rel="noopener" className="hover:underline">Maps</a>}
                     </div>
                   </div>

@@ -2,7 +2,7 @@
 import { useRef, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import { slugify } from '@/lib/cms/content';
-import { compressImage, mb } from '@/lib/compress';
+import { compressImage, isHeic, mb } from '@/lib/compress';
 
 // Foto asli boleh besar (langsung dari kamera) karena dikompres dulu.
 // Video tidak dikompres di browser, jadi batasnya ketat.
@@ -27,12 +27,17 @@ export default function Upload({ kind, onDone }: { kind: 'image' | 'video'; onDo
     let file = picked;
     let note = '';
     if (kind === 'image') {
-      setStep('Mengompres…');
+      setStep(isHeic(picked) ? 'Mengonversi HEIC…' : 'Mengompres…');
       try {
         const c = await compressImage(picked);
         file = c.file;
         note = c.after < c.before ? `Dikompres ${mb(c.before)} → ${mb(c.after)} (${c.width}×${c.height}).` : `Ukuran ${mb(c.before)}.`;
       } catch {
+        if (isHeic(picked)) {
+          setState('error');
+          setMsg('Foto HEIC ini tidak bisa dibaca. Buka di iPhone → Bagikan → Simpan sebagai JPG, lalu unggah ulang.');
+          return;
+        }
         note = 'Foto diunggah tanpa kompresi (format tidak bisa dibaca browser).';
       }
     } else if (picked.size > VIDEO_WARN * 1048576) {
@@ -61,7 +66,7 @@ export default function Upload({ kind, onDone }: { kind: 'image' | 'video'; onDo
         ref={ref}
         type="file"
         hidden
-        accept={kind === 'image' ? 'image/jpeg,image/png,image/webp,image/avif' : 'video/mp4,video/webm'}
+        accept={kind === 'image' ? 'image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif' : 'video/mp4,video/webm'}
         onChange={(e) => {
           const f = e.target.files?.[0];
           if (f) onPick(f);

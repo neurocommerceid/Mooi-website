@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { Content } from '@/lib/cms/content';
-import { waLink } from '@/lib/cms/content';
+import { branchWa, waLink } from '@/lib/cms/content';
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import {
-  ANY, addDays, branchHours, durasi, findServices, jakartaNow, rupiah, slotsFor, stylistsAt, tanggalPanjang, totals, type Taken,
+  ANY, addDays, branchHours, daysLabel, durasi, findServices, jakartaNow, menuFor, rupiah, slotsFor, stylistsAt, tanggalPanjang, totals, worksOn, type Taken,
 } from '@/lib/booking';
 
 type Branch = Content['branches']['items'][number];
@@ -68,7 +68,8 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
   const team = useMemo(() => stylistsAt(booking.stylists, cabang), [booking.stylists, cabang]);
   const steps: StepId[] = team.length ? ['cabang', 'layanan', 'stylist', 'jadwal', 'data'] : ['cabang', 'layanan', 'jadwal', 'data'];
   const idx = steps.indexOf(step);
-  const items = useMemo(() => findServices(booking.categories, picked), [booking.categories, picked]);
+  const categories = useMemo(() => menuFor(booking, cabang), [booking, cabang]);
+  const items = useMemo(() => findServices(categories, picked), [categories, picked]);
   const sum = totals(items);
   const who = stylist || ANY;
   const today = jakartaNow().date;
@@ -100,12 +101,23 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
         leadMinutes: booking.leadMinutes,
         duration: sum.duration,
         stylist: who,
-        stylistNames: team.map((s) => s.name),
       },
-    [branch, booking.interval, booking.leadMinutes, sum.duration, who, team],
+    [branch, booking.interval, booking.leadMinutes, sum.duration, who],
   );
-  const slots = useMemo(() => (slotArgs && date ? slotsFor({ ...slotArgs, date, taken }) : []), [slotArgs, date, taken]);
-  const countFor = (d: string) => (slotArgs ? slotsFor({ ...slotArgs, date: d, taken: d === date ? taken : [] }).filter((s) => s.ok).length : 0);
+  // Hanya stylist yang bertugas di tanggal itu yang dihitung.
+  const slotsOn = useMemo(
+    () => (d: string, tk: Taken[]) => {
+      if (!slotArgs) return [];
+      const onDuty = team.filter((t) => worksOn(t, d));
+      const list = slotsFor({ ...slotArgs, date: d, taken: tk, stylistNames: onDuty.map((t) => t.name) });
+      const chosen = team.find((t) => t.name === who);
+      const nobody = team.length > 0 && onDuty.length === 0;
+      return nobody || (chosen && !worksOn(chosen, d)) ? list.map((x) => ({ ...x, ok: false })) : list;
+    },
+    [slotArgs, team, who],
+  );
+  const slots = useMemo(() => (date ? slotsOn(date, taken) : []), [slotsOn, date, taken]);
+  const countFor = (d: string) => slotsOn(d, d === date ? taken : []).filter((s) => s.ok).length;
 
   // Pilihan yang tidak lagi valid (mis. ganti layanan → jam tak muat) dibersihkan.
   useEffect(() => {
@@ -114,6 +126,11 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
   useEffect(() => {
     if (stylist && stylist !== ANY && !team.some((t) => t.name === stylist)) setStylist('');
   }, [team, stylist]);
+  useEffect(() => {
+    if (!restored.current || !cabang) return;
+    const valid = picked.filter((n) => categories.some((c) => c.items.some((i) => i.name === n)));
+    if (valid.length !== picked.length) setPicked(valid);
+  }, [categories, picked, cabang]);
 
   // ---------- navigasi ----------
   const canNext: Record<StepId, boolean> = {
@@ -204,7 +221,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
           <Summary cabang={cabang} items={items} who={who} date={date} time={time} total={sum} />
         </div>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a href={waLink(whatsapp, waText)} target="_blank" rel="noopener" className="btn">Kirim detail ke WhatsApp</a>
+          <a href={waLink(branchWa(branch, whatsapp), waText)} target="_blank" rel="noopener" className="btn">Kirim detail ke WhatsApp</a>
           <Link href="/" className="btn-line text-ink">Kembali ke beranda</Link>
         </div>
       </div>
@@ -267,7 +284,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
 
           {step === 'layanan' && (
             <Step title="Pilih layanan" sub={`${cabang} · boleh lebih dari satu`}>
-              <Services categories={booking.categories} picked={picked} onToggle={(n) => setPicked((p) => (p.includes(n) ? p.filter((x) => x !== n) : [...p, n]))} />
+              <Services key={cabang} categories={categories} picked={picked} onToggle={(n) => setPicked((p) => (p.includes(n) ? p.filter((x) => x !== n) : [...p, n]))} />
             </Step>
           )}
 
@@ -277,7 +294,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                 <StylistCard name={ANY} role="Kami pilihkan yang sedang tersedia" hint="Paling banyak pilihan jam" on={who === ANY}
                   onClick={() => { setStylist(ANY); advanceSoon('jadwal'); }} />
                 {team.map((s) => (
-                  <StylistCard key={s.name} name={s.name} role={[s.role, s.years].filter(Boolean).join(' · ')} hint={s.bio} photo={s.photo?.src}
+                  <StylistCard key={s.name} name={s.name} role={[s.role, s.years, daysLabel(s)].filter(Boolean).join(' · ')} hint={s.bio} photo={s.photo?.src}
                     on={stylist === s.name} onClick={() => { setStylist(s.name); advanceSoon('jadwal'); }} />
                 ))}
               </div>

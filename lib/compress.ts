@@ -32,9 +32,25 @@ async function decode(file: File): Promise<ImageBitmap | HTMLImageElement> {
   }
 }
 
+export const isHeic = (f: File) => /image\/hei[cf]/i.test(f.type) || /\.hei[cf]$/i.test(f.name);
+
+// Foto iPhone (HEIC): Safari bisa membacanya langsung; browser lain perlu
+// dikonversi dulu. Library konversi (±1,3 MB) hanya dimuat saat dibutuhkan.
+async function decodeAny(file: File) {
+  try {
+    return await decode(file);
+  } catch (e) {
+    if (!isHeic(file)) throw e;
+    const heic2any = (await import('heic2any')).default;
+    const out = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 });
+    const blob = Array.isArray(out) ? out[0] : out;
+    return decode(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+  }
+}
+
 export async function compressImage(file: File): Promise<Compressed> {
   const before = file.size;
-  const src = await decode(file);
+  const src = await decodeAny(file);
   const w0 = 'naturalWidth' in src ? src.naturalWidth : src.width;
   const h0 = 'naturalHeight' in src ? src.naturalHeight : src.height;
   const scale = Math.min(1, MAX_EDGE / Math.max(w0, h0));
@@ -52,7 +68,7 @@ export async function compressImage(file: File): Promise<Compressed> {
 
   let blob = await toBlob(canvas, 'image/webp', QUALITY);
   if (!blob || blob.type !== 'image/webp') blob = await toBlob(canvas, 'image/jpeg', QUALITY);
-  if (!blob || (blob.size >= before && scale === 1)) return { file, before, after: before, width: w0, height: h0 };
+  if (!blob || (blob.size >= before && scale === 1 && !isHeic(file))) return { file, before, after: before, width: w0, height: h0 };
 
   const ext = blob.type === 'image/webp' ? 'webp' : 'jpg';
   const name = file.name.replace(/\.[^.]+$/, '') + '.' + ext;

@@ -50,13 +50,15 @@ export type Content = {
     kicker: string;
     title: string;
     sub: string;
-    items: { name: string; address: string; hours: string; open: string; close: string; maps: string; instagram: string; image: Img }[];
+    items: { name: string; address: string; hours: string; open: string; close: string; whatsapp: string; maps: string; instagram: string; image: Img }[];
   };
   booking: {
     title: string;
     sub: string;
     policies: string[];
-    categories: { name: string; items: BookingService[] }[];
+    menus: { branches: string[]; categories: Category[] }[];
+    /** Menu lama (satu untuk semua cabang) — dipakai bila cabang tidak punya menu sendiri. */
+    categories: Category[];
     stylists: Stylist[];
     interval: number;
     leadMinutes: number;
@@ -77,8 +79,11 @@ export type Content = {
 
 export type PageHead = { kicker: string; title: string; sub: string };
 export type BookingService = { name: string; note: string; duration: number; price: number; from: boolean };
-export type Stylist = { name: string; role: string; years: string; bio: string; photo: Img; branches: string[] };
+export type Category = { name: string; items: BookingService[] };
+export type Stylist = { name: string; role: string; years: string; bio: string; photo: Img; branches: string[]; days: string[] };
 export type SectionKey = keyof Content;
+
+import { menuAlamSutera, menuKedoya, menuKelapaGading } from './menus';
 
 const img = (file: string, alt: string): Img => ({ src: `/media/${file}.jpg`, alt });
 
@@ -149,9 +154,9 @@ export const defaults: Content = {
     title: 'Tiga cabang, *satu standar*.',
     sub: 'Kunjungi cabang terdekat, atau reservasi lebih dulu via WhatsApp.',
     items: [
-      { name: 'Mooi Kedoya', address: 'Jl. [alamat cabang Kedoya]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', maps: '', instagram: 'https://instagram.com/mooihairstudio_kedoya', image: img('br-1', 'Minyak perawatan diteteskan ke tangan') },
-      { name: 'Mooi Alam Sutera', address: 'Jl. [alamat cabang Alam Sutera]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', maps: '', instagram: 'https://instagram.com/mooihairstudio_alsut', image: img('br-2', 'Lilin dan botol minyak aromaterapi') },
-      { name: 'Mooi Kelapa Gading', address: 'Jl. [alamat cabang Kelapa Gading]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', maps: '', instagram: 'https://instagram.com/mooihairstudio_klpgdg', image: img('br-3', 'Masker rambut') },
+      { name: 'Mooi Kedoya', address: 'Jl. [alamat cabang Kedoya]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', whatsapp: '', maps: '', instagram: 'https://instagram.com/mooihairstudio_kedoya', image: img('br-1', 'Minyak perawatan diteteskan ke tangan') },
+      { name: 'Mooi Alam Sutera', address: 'Jl. Sutera Boulevard, Pakualam, Serpong Utara, Tangerang Selatan', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', whatsapp: '6282121209858', maps: '', instagram: 'https://instagram.com/mooihairstudio_alsut', image: img('br-2', 'Lilin dan botol minyak aromaterapi') },
+      { name: 'Mooi Kelapa Gading', address: 'Jl. [alamat cabang Kelapa Gading]', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', whatsapp: '', maps: '', instagram: 'https://instagram.com/mooihairstudio_klpgdg', image: img('br-3', 'Masker rambut') },
     ],
   },
   booking: {
@@ -162,42 +167,18 @@ export const defaults: Content = {
       'Bayar di salon — tunai, debit, atau QRIS.',
       'Ingin ganti jadwal? Kabari kami via WhatsApp.',
     ],
-    categories: [
-      {
-        name: 'Hair',
-        items: [
-          { name: 'Haircut & Blow Dry', note: 'Termasuk keramas', duration: 45, price: 150000, from: false },
-          { name: 'Wash & Blow', note: '', duration: 30, price: 120000, from: false },
-          { name: 'Hair Styling / Updo', note: 'Untuk acara', duration: 60, price: 250000, from: true },
-        ],
-      },
-      {
-        name: 'Coloring',
-        items: [
-          { name: 'Full Hair Coloring', note: 'Termasuk toner', duration: 120, price: 450000, from: true },
-          { name: 'Balayage / Highlight', note: 'Dengan bond treatment', duration: 180, price: 900000, from: true },
-        ],
-      },
-      {
-        name: 'Treatment',
-        items: [
-          { name: 'Keratin Smoothing', note: '', duration: 150, price: 650000, from: true },
-          { name: 'Hair Spa & Scalp Massage', note: '', duration: 60, price: 200000, from: false },
-        ],
-      },
-      {
-        name: 'Nails',
-        items: [
-          { name: 'Manicure', note: '', duration: 45, price: 125000, from: false },
-          { name: 'Gel Polish', note: 'Tangan', duration: 60, price: 175000, from: true },
-        ],
-      },
-      {
-        name: 'Makeup',
-        items: [{ name: 'Party Makeup', note: '', duration: 60, price: 450000, from: true }],
-      },
+    menus: [
+      { branches: ['Mooi Kedoya'], categories: menuKedoya },
+      { branches: ['Mooi Alam Sutera'], categories: menuAlamSutera },
+      { branches: ['Mooi Kelapa Gading'], categories: menuKelapaGading },
     ],
-    stylists: [],
+    categories: [],
+    stylists: [
+      { name: 'Samuel', role: 'Hair Stylist', years: '', bio: '', photo: { src: '', alt: '' }, branches: ['Mooi Kedoya'], days: ['Rabu', 'Minggu'] },
+      { name: 'Oscar', role: 'Hair Stylist', years: '', bio: '', photo: { src: '', alt: '' }, branches: ['Mooi Kedoya'], days: [] },
+      { name: 'Eddy Casper', role: 'Hair Stylist', years: '', bio: '', photo: { src: '', alt: '' }, branches: ['Mooi Kedoya'], days: [] },
+      { name: 'Shandy', role: 'Hair Stylist', years: '', bio: '', photo: { src: '', alt: '' }, branches: ['Mooi Kedoya'], days: [] },
+    ],
     interval: 30,
     leadMinutes: 120,
     daysAhead: 14,
@@ -233,6 +214,9 @@ export const defaults: Content = {
 };
 
 export const sectionKeys = Object.keys(defaults) as SectionKey[];
+
+/** Nomor WhatsApp cabang, atau nomor utama bila cabang belum punya. */
+export const branchWa = (b: { whatsapp?: string } | undefined, fallback: string) => (b?.whatsapp?.replace(/\D/g, '') || fallback);
 
 export const waLink = (number: string, text: string) =>
   `https://wa.me/${number.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;

@@ -1,7 +1,7 @@
 import type { SectionKey } from './content';
 
 export type Field =
-  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings' | 'number' | 'boolean' | 'branches'; help?: string }
+  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings' | 'number' | 'boolean' | 'branches' | 'days'; help?: string }
   | { key: string; label: string; type: 'list'; help?: string; item: string; fields: Field[] }
   | { key: string; label: string; type: 'group'; help?: string; fields: Field[] };
 
@@ -94,6 +94,7 @@ export const schema: Record<SectionKey, Section> = {
           t('hours', 'Jam buka (teks)', 'Tampil di website, mis. "Setiap hari · 09.00 – 20.00".'),
           t('open', 'Jam buka untuk booking', 'Format 24 jam, mis. 09:00.'),
           t('close', 'Jam tutup untuk booking', 'Format 24 jam, mis. 20:00. Layanan harus selesai sebelum jam ini.'),
+          t('whatsapp', 'WhatsApp cabang', 'Format 62xxx tanpa + atau spasi. Kosongkan untuk memakai nomor utama di Pengaturan Umum.'),
           t('maps', 'Tautan Google Maps', 'Salin dari Google Maps → Bagikan → Salin link. Kosongkan untuk menyembunyikan tombol.'),
           t('instagram', 'Tautan Instagram'),
           im('image', 'Foto'),
@@ -109,17 +110,24 @@ export const schema: Record<SectionKey, Section> = {
       ta('sub', 'Subjudul'),
       { key: 'policies', label: 'Kebijakan (tampil saat konfirmasi)', type: 'strings', help: 'Tulis hanya yang benar-benar berlaku di salon.' },
       {
-        key: 'categories', label: 'Kategori layanan', type: 'list', item: 'Kategori',
+        key: 'menus', label: 'Menu per cabang', type: 'list', item: 'Menu',
+        help: 'Tiap cabang bisa punya menu & harga sendiri. Menu tanpa cabang dicentang berlaku untuk cabang yang belum punya menu.',
         fields: [
-          t('name', 'Nama kategori', 'Mis. Hair, Coloring, Nails.'),
+          { key: 'branches', label: 'Berlaku di cabang', type: 'branches' },
           {
-            key: 'items', label: 'Layanan', type: 'list', item: 'Layanan',
+            key: 'categories', label: 'Kategori layanan', type: 'list', item: 'Kategori',
             fields: [
-              t('name', 'Nama layanan'),
-              t('note', 'Keterangan singkat', 'Opsional, mis. "Termasuk keramas".'),
-              num('duration', 'Durasi (menit)', 'Dipakai untuk menghitung jam yang tersedia.'),
-              num('price', 'Harga (Rp)', 'Angka saja, tanpa titik. Mis. 150000.'),
-              { key: 'from', label: 'Harga "mulai dari"', type: 'boolean', help: 'Centang bila harga bisa naik sesuai panjang/kondisi rambut.' },
+              t('name', 'Nama kategori', 'Mis. Hair, Coloring, Nails.'),
+              {
+                key: 'items', label: 'Layanan', type: 'list', item: 'Layanan',
+                fields: [
+                  t('name', 'Nama layanan'),
+                  t('note', 'Keterangan singkat', 'Opsional, mis. "Termasuk keramas".'),
+                  num('duration', 'Durasi (menit)', 'Dipakai untuk menghitung jam yang tersedia.'),
+                  num('price', 'Harga (Rp)', 'Angka saja, tanpa titik. Mis. 150000.'),
+                  { key: 'from', label: 'Harga "mulai dari"', type: 'boolean', help: 'Centang bila harga bisa naik sesuai panjang/kondisi rambut.' },
+                ],
+              },
             ],
           },
         ],
@@ -134,6 +142,7 @@ export const schema: Record<SectionKey, Section> = {
           ta('bio', 'Kalimat singkat', 'Opsional.'),
           im('photo', 'Foto'),
           { key: 'branches', label: 'Bertugas di cabang', type: 'branches', help: 'Tidak dicentang sama sekali = bertugas di semua cabang.' },
+          { key: 'days', label: 'Hari kerja', type: 'days', help: 'Tidak dicentang sama sekali = setiap hari.' },
         ],
       },
       num('interval', 'Jarak antar slot (menit)', 'Mis. 30.'),
