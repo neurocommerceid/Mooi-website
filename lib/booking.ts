@@ -25,9 +25,11 @@ export function addDays(date: string, n: number) {
 
 export const isDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(`${s}T00:00:00Z`));
 
-export function branchHours(b: Content['branches']['items'][number]) {
-  const open = toMin(b.open || '09:00');
-  const close = toMin(b.close || '20:00');
+/** Jam buka cabang pada tanggal tertentu (memperhitungkan jam khusus per hari). */
+export function branchHours(b: Content['branches']['items'][number], date?: string) {
+  const sp = date ? (b.special ?? []).find((x) => (x.days ?? []).some((d) => dayIndex(d) === weekday(date))) : undefined;
+  const open = toMin(sp?.open || b.open || '09:00');
+  const close = toMin(sp?.close || b.close || '20:00');
   return { open: Number.isFinite(open) ? open : 540, close: Number.isFinite(close) ? close : 1200 };
 }
 

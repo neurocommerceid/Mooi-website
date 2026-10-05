@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   const { data: t } = await supabase.rpc('taken_slots', { p_cabang: cabang, p_tanggal: tanggal });
   if (Array.isArray(t)) taken = t as Taken[];
 
-  const { open, close } = branchHours(branch);
+  const { open, close } = branchHours(branch, tanggal);
   const slot = slotsFor({
     date: tanggal, open, close, duration, stylist, stylistNames: team, taken,
     interval: c.booking.interval, leadMinutes: c.booking.leadMinutes,

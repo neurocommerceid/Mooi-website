@@ -6,7 +6,7 @@ import type { Content } from '@/lib/cms/content';
 import { branchWa, waLink } from '@/lib/cms/content';
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import {
-  ANY, addDays, branchHours, daysLabel, durasi, findServices, jakartaNow, menuFor, rupiah, slotsFor, stylistsAt, tanggalPanjang, totals, worksOn, type Taken,
+  ANY, addDays, branchHours, fromMin, daysLabel, durasi, findServices, jakartaNow, menuFor, rupiah, slotsFor, stylistsAt, tanggalPanjang, totals, worksOn, type Taken,
 } from '@/lib/booking';
 
 type Branch = Content['branches']['items'][number];
@@ -96,7 +96,6 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
   const slotArgs = useMemo(
     () =>
       branch && {
-        ...branchHours(branch),
         interval: booking.interval,
         leadMinutes: booking.leadMinutes,
         duration: sum.duration,
@@ -109,12 +108,12 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
     () => (d: string, tk: Taken[]) => {
       if (!slotArgs) return [];
       const onDuty = team.filter((t) => worksOn(t, d));
-      const list = slotsFor({ ...slotArgs, date: d, taken: tk, stylistNames: onDuty.map((t) => t.name) });
+      const list = slotsFor({ ...slotArgs, ...branchHours(branch!, d), date: d, taken: tk, stylistNames: onDuty.map((t) => t.name) });
       const chosen = team.find((t) => t.name === who);
       const nobody = team.length > 0 && onDuty.length === 0;
       return nobody || (chosen && !worksOn(chosen, d)) ? list.map((x) => ({ ...x, ok: false })) : list;
     },
-    [slotArgs, team, who],
+    [slotArgs, team, who, branch],
   );
   const slots = useMemo(() => (date ? slotsOn(date, taken) : []), [slotsOn, date, taken]);
   const countFor = (d: string) => slotsOn(d, d === date ? taken : []).filter((s) => s.ok).length;
@@ -273,7 +272,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                       <div className="p-5">
                         <p className="font-serif text-2xl text-ink">{b.name.replace(/^Mooi\s+/, '')}</p>
                         <p className="mt-1 line-clamp-2 text-[13px] text-ink-muted">{b.address}</p>
-                        <p className="mt-2 text-[12px] text-gold-deep">{b.hours}</p>
+                        <p className="mt-2 whitespace-pre-line text-[12px] text-gold-deep">{b.hours}</p>
                       </div>
                     </button>
                   );
@@ -323,7 +322,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                 <div className="mt-8">
                   <div className="flex items-baseline justify-between">
                     <p className="font-medium text-ink">{tanggalPanjang(date)}</p>
-                    {branch && <p className="text-[12px] text-ink-faint">{branch.open || '09:00'} – {branch.close || '20:00'}</p>}
+                    {branch && (() => { const h = branchHours(branch, date); return <p className="text-[12px] text-ink-faint">{fromMin(h.open)} – {fromMin(h.close)}</p>; })()}
                   </div>
                   {[['Pagi', 0, 720], ['Siang', 720, 900], ['Sore & malam', 900, 1440]].map(([label, from, to]) => {
                     const group = slots.filter((s) => {

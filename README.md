@@ -94,8 +94,8 @@ public/logo.png   Logo Mooi (transparan)
 Semua bisa diisi lewat `/admin`:
 
 - [ ] Foto asli Mooi untuk galeri & cabang (sekarang foto stok)
-- [ ] Alamat lengkap & jam operasional tiap cabang
-- [ ] Tautan Google Maps tiap cabang
+- [x] Alamat lengkap, jam operasional & WhatsApp tiap cabang
+- [ ] Tautan Google Maps resmi tiap cabang (sekarang tautan pencarian alamat)
 - [ ] Daftar harga layanan yang sebenarnya
 - [ ] Nilai "Produk pilihan" di halaman Tentang
 - [ ] Testimoni asli dari ulasan Google

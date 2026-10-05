@@ -94,6 +94,11 @@ export const schema: Record<SectionKey, Section> = {
           t('hours', 'Jam buka (teks)', 'Tampil di website, mis. "Setiap hari · 09.00 – 20.00".'),
           t('open', 'Jam buka untuk booking', 'Format 24 jam, mis. 09:00.'),
           t('close', 'Jam tutup untuk booking', 'Format 24 jam, mis. 20:00. Layanan harus selesai sebelum jam ini.'),
+          {
+            key: 'special', label: 'Jam khusus', type: 'list', item: 'Jam khusus',
+            help: 'Untuk hari dengan jam berbeda, mis. Minggu 09:00–18:00.',
+            fields: [{ key: 'days', label: 'Hari', type: 'days' }, t('open', 'Buka', 'Mis. 09:00.'), t('close', 'Tutup', 'Mis. 18:00.')],
+          },
           t('whatsapp', 'WhatsApp cabang', 'Format 62xxx tanpa + atau spasi. Kosongkan untuk memakai nomor utama di Pengaturan Umum.'),
           t('maps', 'Tautan Google Maps', 'Salin dari Google Maps → Bagikan → Salin link. Kosongkan untuk menyembunyikan tombol.'),
           t('instagram', 'Tautan Instagram'),
