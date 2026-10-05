@@ -17,7 +17,7 @@ export default async function Home() {
       <Marquee items={c.marquee.items} />
       <Intro c={c.intro} />
       <Services c={c.services} />
-      <Gallery c={c.gallery} />
+      <Gallery c={c.gallery} branches={c.branches.items} />
       <Branches c={c.branches} whatsapp={c.settings.whatsapp} />
       <Testimonial c={c.testimonial} />
       <CTA c={c.cta} contacts={branchContacts(c)} greeting={c.settings.waGreeting} />

@@ -102,7 +102,12 @@ export const schema: Record<SectionKey, Section> = {
           t('whatsapp', 'WhatsApp cabang', 'Format 62xxx tanpa + atau spasi. Kosongkan untuk memakai nomor utama di Pengaturan Umum.'),
           t('maps', 'Tautan Google Maps', 'Salin dari Google Maps → Bagikan → Salin link. Kosongkan untuk menyembunyikan tombol.'),
           t('instagram', 'Tautan Instagram'),
-          im('image', 'Foto'),
+          im('image', 'Foto utama cabang'),
+          {
+            key: 'gallery', label: 'Galeri cabang', type: 'list', item: 'Foto',
+            help: 'Idealnya 5–8 foto. Yang tampil di website maksimal 8 foto pertama — urutkan dengan tombol ↑↓.',
+            fields: [im('image', 'Foto')],
+          },
         ],
       },
     ],

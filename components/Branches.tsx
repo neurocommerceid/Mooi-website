@@ -31,6 +31,9 @@ export default function Branches({ c, whatsapp }: { c: Content['branches']; what
                     {wa && <a href={waLink(wa, `Halo ${b.name}, saya mau bertanya.`)} target="_blank" rel="noopener" className={pill}>WhatsApp</a>}
                     {maps && <a href={maps} target="_blank" rel="noopener" className={pill}>Maps</a>}
                     {ig && <a href={ig} target="_blank" rel="noopener" className={pill}>Instagram</a>}
+                    {(b.gallery ?? []).some((g) => g.image?.src) && (
+                      <Link href={`/galeri?cabang=${encodeURIComponent(b.name)}`} className={pill}>Galeri</Link>
+                    )}
                   </div>
                 </div>
               </Reveal>
