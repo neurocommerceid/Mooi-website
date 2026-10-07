@@ -13,13 +13,32 @@ export default function ForgotPassword() {
     setBusy(true);
     setError('');
     try {
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        setError('Layanan reset belum dikonfigurasi. Hubungi pengelola Mooi.');
+        return;
+      }
       const { error } = await supabaseBrowser().auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/admin/reset-password`,
       });
-      if (error) throw error;
+      if (error) {
+        const messages: Record<string, string> = {
+          over_email_send_rate_limit: 'Batas pengiriman email tercapai. Tunggu sebelum meminta tautan lagi.',
+          over_request_rate_limit: 'Terlalu banyak permintaan. Tunggu sebelum mencoba lagi.',
+          email_address_not_authorized: 'Pengiriman ke email ini belum diizinkan oleh layanan email. Hubungi pengelola Mooi.',
+          email_provider_disabled: 'Layanan login email belum diaktifkan. Hubungi pengelola Mooi.',
+          unexpected_failure: 'Layanan reset mengalami gangguan. Hubungi pengelola Mooi.',
+        };
+        setError(messages[error.code ?? ''] ?? (error.status === 429
+          ? 'Terlalu banyak permintaan. Tunggu sebelum mencoba lagi.'
+          : 'Layanan email belum dapat mengirim tautan. Hubungi pengelola Mooi.'));
+        if (error.code && /^[a-z_]+$/.test(error.code)) {
+          setError((message) => `${message} (Kode: ${error.code})`);
+        }
+        return;
+      }
       setSent(true);
     } catch {
-      setError('Email reset belum dapat dikirim. Tunggu sebentar lalu coba lagi.');
+      setError('Tidak dapat terhubung ke layanan reset. Periksa koneksi dan coba lagi.');
     } finally { setBusy(false); }
   }
   return (
