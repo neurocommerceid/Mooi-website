@@ -7,7 +7,7 @@ import BranchStrip, { StatusDot } from './BranchStatus';
 import { P, btnDark, h2, link, muted, short, wrap } from './ui';
 
 /** Foto asli interior cabang — bukan foto stok. */
-export function Inside({ branches }: { branches: Branch[] }) {
+export function Inside({ branches, title, sub }: { branches: Branch[]; title: string; sub: string }) {
   const lists = branches.map((b) => (b.gallery ?? []).map((g) => ({ img: g.image, branch: short(b.name) })).filter((x) => x.img?.src));
   const photos: { img: Img; branch: string }[] = [];
   for (let k = 0; photos.length < 9 && lists.some((l) => l[k]); k++) for (const l of lists) if (l[k] && photos.length < 9) photos.push(l[k]);
@@ -16,8 +16,8 @@ export function Inside({ branches }: { branches: Branch[] }) {
     <section className="py-16 md:py-24">
       <div className={`${wrap} flex flex-wrap items-end justify-between gap-4`}>
         <div>
-          <h2 className={h2}>Di dalam Mooi</h2>
-          <p className={`mt-3 ${muted}`}>Foto asli dari cabang kami.</p>
+          <h2 className={h2}>{title}</h2>
+          {sub && <p className={`mt-3 ${muted}`}>{sub}</p>}
         </div>
         <Link href={P('/galeri')} className={link}>Lihat galeri</Link>
       </div>
@@ -39,8 +39,8 @@ export function Branches({ c, page = false }: { c: Content; page?: boolean }) {
   return (
     <section id="cabang" className="scroll-mt-20 pb-8 pt-16 md:pb-10 md:pt-24">
       <div className={wrap}>
-        {page ? <h1 className={h2}>Cabang Mooi</h1> : <h2 className={h2}>Tiga cabang</h2>}
-        {page && <p className={`mt-2 ${muted}`}>Alamat, jam buka, dan kontak tiap cabang.</p>}
+        {page ? <h1 className={h2}>{c.home.pages.cabang.title}</h1> : <h2 className={h2}>{c.home.branches.title}</h2>}
+        {page && c.home.pages.cabang.sub && <p className={`mt-2 ${muted}`}>{c.home.pages.cabang.sub}</p>}
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {c.branches.items.map((b) => {
             const wa = branchWa(b, c.settings.whatsapp);
@@ -111,8 +111,8 @@ export function Stylists({ c }: { c: Content }) {
       <div className={wrap}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className={h2}>Stylist kami</h2>
-            <p className={`mt-2 max-w-[34rem] ${muted}`}>Pilih stylist favorit Anda saat booking, atau serahkan pada kami.</p>
+            <h2 className={h2}>{c.home.stylists.title}</h2>
+            {c.home.stylists.sub && <p className={`mt-2 max-w-[34rem] ${muted}`}>{c.home.stylists.sub}</p>}
           </div>
           <Link href={P('/stylist')} className={link}>Lihat semua stylist</Link>
         </div>
@@ -143,8 +143,8 @@ export function StylistPage({ c }: { c: Content }) {
   const groups = stylistGroups(c);
   return (
     <section className={`${wrap} py-12 md:py-16`}>
-      <h1 className={h2}>Stylist Mooi</h1>
-      <p className={`mt-2 max-w-[36rem] ${muted}`}>Kenali tim kami, lalu booking langsung dengan stylist pilihan Anda.</p>
+      <h1 className={h2}>{c.home.pages.stylist.title}</h1>
+      {c.home.pages.stylist.sub && <p className={`mt-2 max-w-[36rem] ${muted}`}>{c.home.pages.stylist.sub}</p>}
       {groups.length === 0 && <p className={`mt-8 ${muted}`}>Profil stylist segera ditampilkan.</p>}
       {groups.map((g) => (
         <div key={g.branch} className="mt-10">
@@ -216,7 +216,10 @@ export function BranchSummary({ c }: { c: Content }) {
     <section className="pt-14 md:pt-20">
       <div className={wrap}>
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className={h2}>Cabang</h2>
+          <div>
+            <h2 className={h2}>{c.home.branches.title}</h2>
+            {c.home.branches.sub && <p className={`mt-2 ${muted}`}>{c.home.branches.sub}</p>}
+          </div>
           <Link href={P('/cabang')} className={link}>Alamat &amp; jam lengkap</Link>
         </div>
         <div className="mt-6"><BranchStrip branches={c.branches.items} fallbackWa={c.settings.whatsapp} greeting={c.settings.waGreeting} /></div>

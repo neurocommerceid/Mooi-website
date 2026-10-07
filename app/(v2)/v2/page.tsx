@@ -11,11 +11,11 @@ export default async function V2() {
   return (
     <>
       <Hero c={c} />
-      <Prices menus={menus} />
+      <Prices menus={menus} title={c.home.prices.title} sub={c.home.prices.sub} />
       <Stylists c={c} />
       <Reviews c={c} />
       <BranchSummary c={c} />
-      <Inside branches={c.branches.items} />
+      <Inside branches={c.branches.items} title={c.home.inside.title} sub={c.home.inside.sub} />
     </>
   );
 }

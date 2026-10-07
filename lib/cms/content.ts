@@ -5,7 +5,15 @@
 export type Img = { src: string; alt: string };
 export type Vid = { mp4: string; webm: string; poster: string };
 
+type Head = { title: string; sub: string };
+
 export type Content = {
+  /** Teks desain baru: judul & subjudul beranda dan tiap halaman. */
+  home: {
+    hero: { eyebrow: string; title: string };
+    prices: Head; stylists: Head; reviews: Head; branches: Head; inside: Head;
+    pages: { layanan: Head; stylist: Head; cabang: Head; galeri: Head; tentang: { eyebrow: string; title: string }; booking: Head };
+  };
   settings: {
     whatsapp: string;
     waGreeting: string;
@@ -98,6 +106,22 @@ import { menuAlamSutera, menuKedoya, menuKelapaGading } from './menus';
 const img = (file: string, alt: string): Img => ({ src: `/media/${file}.jpg`, alt });
 
 export const defaults: Content = {
+  home: {
+    hero: { eyebrow: 'Hair studio & beauty bar · sejak 2019', title: 'Perawatan rambut yang personal, teliti, dan nyaman.' },
+    prices: { title: 'Harga layanan', sub: 'Sesuai price list resmi tiap cabang. Geser untuk melihat semua.' },
+    stylists: { title: 'Stylist kami', sub: 'Pilih stylist favorit Anda saat booking, atau serahkan pada kami.' },
+    reviews: { title: 'Kata pelanggan', sub: 'Ulasan asli dari Google Maps.' },
+    branches: { title: 'Cabang', sub: '' },
+    inside: { title: 'Di dalam Mooi', sub: 'Foto asli dari cabang kami.' },
+    pages: {
+      layanan: { title: 'Harga layanan', sub: 'Sesuai price list resmi tiap cabang. Geser untuk melihat semua.' },
+      stylist: { title: 'Stylist Mooi', sub: 'Kenali tim kami, lalu booking langsung dengan stylist pilihan Anda.' },
+      cabang: { title: 'Cabang Mooi', sub: 'Alamat, jam buka, dan kontak tiap cabang.' },
+      galeri: { title: 'Galeri', sub: 'Foto asli dari cabang Mooi.' },
+      tentang: { eyebrow: 'Sejak 17 Agustus 2019', title: 'Tentang Mooi' },
+      booking: { title: 'Booking', sub: '' },
+    },
+  },
   settings: {
     whatsapp: '',
     waGreeting: 'Halo Mooi, saya mau reservasi.',

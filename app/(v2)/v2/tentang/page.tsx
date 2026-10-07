@@ -19,8 +19,8 @@ export default async function Page() {
     <>
       <section className={`${wrap} grid gap-10 py-12 md:grid-cols-2 md:items-start md:gap-16 md:py-16`}>
         <div>
-          <p className={`text-[14px] ${muted}`}>Sejak 17 Agustus 2019</p>
-          <h1 className={`mt-2 ${h2}`}>Tentang Mooi</h1>
+          {c.home.pages.tentang.eyebrow && <p className={`text-[14px] ${muted}`}>{c.home.pages.tentang.eyebrow}</p>}
+          <h1 className={`mt-2 ${h2}`}>{c.home.pages.tentang.title}</h1>
           <div className={`mt-6 space-y-5 text-[17px] leading-[1.8] ${muted}`}>
             {paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
@@ -44,7 +44,7 @@ export default async function Page() {
           </div>
         </section>
       )}
-      <Inside branches={c.branches.items} />
+      <Inside branches={c.branches.items} title={c.home.inside.title} sub={c.home.inside.sub} />
     </>
   );
 }

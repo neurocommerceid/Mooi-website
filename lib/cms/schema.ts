@@ -5,7 +5,8 @@ export type Field =
   | { key: string; label: string; type: 'list'; help?: string; item: string; fields: Field[] }
   | { key: string; label: string; type: 'group'; help?: string; fields: Field[] };
 
-export type Section = { title: string; desc: string; fields: Field[] };
+/** legacy: hanya dipakai desain lama — dikelompokkan terpisah di dasbor admin. */
+export type Section = { title: string; desc: string; fields: Field[]; legacy?: boolean };
 
 const ACCENT = 'Apit kata dengan *bintang* agar tampil miring berwarna rose-gold.';
 const t = (key: string, label: string, help?: string): Field => ({ key, label, type: 'text', help });
@@ -17,7 +18,34 @@ const page = (key: string, label: string): Field => ({
   key, label, type: 'group', fields: [t('kicker', 'Label kecil'), t('title', 'Judul'), ta('sub', 'Subjudul')],
 });
 
+const head2 = (key: string, label: string, help?: string): Field => ({
+  key, label, type: 'group', help, fields: [t('title', 'Judul'), ta('sub', 'Subjudul', 'Kosongkan untuk menyembunyikan.')],
+});
+
 export const schema: Record<SectionKey, Section> = {
+  home: {
+    title: 'Teks Desain Baru',
+    desc: 'Judul hero, judul tiap bagian di beranda, dan judul tiap halaman.',
+    fields: [
+      { key: 'hero', label: 'Hero (paling atas beranda)', type: 'group', fields: [
+        t('eyebrow', 'Baris kecil di atas judul'),
+        ta('title', 'Judul', 'Singkat — idealnya di bawah 60 karakter agar rapi di ponsel.'),
+      ] },
+      head2('prices', 'Bagian Harga'),
+      head2('stylists', 'Bagian Stylist'),
+      head2('reviews', 'Bagian Ulasan'),
+      head2('branches', 'Bagian Cabang'),
+      head2('inside', 'Bagian Foto Interior'),
+      { key: 'pages', label: 'Judul halaman', type: 'group', fields: [
+        head2('layanan', 'Halaman Harga'),
+        head2('stylist', 'Halaman Stylist'),
+        head2('cabang', 'Halaman Cabang'),
+        head2('galeri', 'Halaman Galeri'),
+        { key: 'tentang', label: 'Halaman Tentang', type: 'group', fields: [t('eyebrow', 'Baris kecil'), t('title', 'Judul')] },
+        head2('booking', 'Halaman Booking', 'Subjudul kosong = memakai subjudul dari bagian Booking.'),
+      ] },
+    ],
+  },
   settings: {
     title: 'Pengaturan Umum',
     desc: 'Nomor WhatsApp, judul untuk Google, dan teks footer.',
@@ -30,8 +58,8 @@ export const schema: Record<SectionKey, Section> = {
     ],
   },
   hero: {
-    title: 'Hero',
-    desc: 'Bagian paling atas halaman utama: judul besar, video, dan tombol.',
+    title: 'Hero — video',
+    desc: 'Video hero (dipakai kedua desain). Teks hero desain baru ada di "Teks Desain Baru".',
     fields: [
       t('kicker', 'Label kecil'),
       t('line1', 'Judul — baris 1', ACCENT),
@@ -45,13 +73,14 @@ export const schema: Record<SectionKey, Section> = {
     ],
   },
   marquee: {
+    legacy: true,
     title: 'Teks Berjalan',
     desc: 'Pita teks yang bergerak di bawah hero.',
     fields: [{ key: 'items', label: 'Teks', type: 'strings' }],
   },
   intro: {
-    title: 'Filosofi',
-    desc: 'Bagian perkenalan di halaman utama dan halaman Tentang.',
+    title: 'Profil Mooi',
+    desc: 'Paragraf tampil di halaman Tentang (desain baru). Label, judul, angka, dan foto hanya untuk desain lama.',
     fields: [
       t('kicker', 'Label kecil'),
       ta('title', 'Judul', ACCENT),
@@ -63,6 +92,7 @@ export const schema: Record<SectionKey, Section> = {
     ],
   },
   services: {
+    legacy: true,
     title: 'Layanan & Harga',
     desc: 'Daftar layanan. Nama layanan juga dipakai di formulir reservasi.',
     fields: [
@@ -74,6 +104,7 @@ export const schema: Record<SectionKey, Section> = {
     ],
   },
   gallery: {
+    legacy: true,
     title: 'Galeri',
     desc: 'Foto di halaman utama dan halaman Galeri. Tata letak berulang setiap 6 foto.',
     fields: [
@@ -180,6 +211,7 @@ export const schema: Record<SectionKey, Section> = {
     ],
   },
   cta: {
+    legacy: true,
     title: 'Ajakan Reservasi',
     desc: 'Bagian gelap di bawah setiap halaman.',
     fields: [
@@ -197,6 +229,7 @@ export const schema: Record<SectionKey, Section> = {
     fields: [{ key: 'values', label: 'Nilai', type: 'list', item: 'Nilai', fields: [t('title', 'Judul'), ta('desc', 'Deskripsi')] }],
   },
   pages: {
+    legacy: true,
     title: 'Judul Halaman',
     desc: 'Header gelap di bagian atas setiap halaman selain Beranda.',
     fields: [page('tentang', 'Tentang'), page('layanan', 'Layanan'), page('galeri', 'Galeri'), page('lokasi', 'Lokasi'), page('kontak', 'Kontak')],

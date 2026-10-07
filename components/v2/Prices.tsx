@@ -18,7 +18,7 @@ const Sparkle = ({ className = '' }: { className?: string }) => (
  * Kartu digeser ke samping; chip kategori mengikuti posisi geser.
  * `full` menambahkan daftar lengkap di bawah carousel (halaman Harga).
  */
-export default function Prices({ menus, full = false }: { menus: Menu[]; full?: boolean }) {
+export default function Prices({ menus, full = false, title, sub }: { menus: Menu[]; full?: boolean; title: string; sub: string }) {
   const [bi, setBi] = useState(0);
   const [active, setActive] = useState(0); // kartu paling kiri yang terlihat
   const [progress, setProgress] = useState(0);
@@ -70,10 +70,8 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
       <div className={wrap}>
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
-            {full
-              ? <h1 className={h2}>Harga layanan</h1>
-              : <h2 className={h2}>Harga layanan</h2>}
-            <p className={`mt-2 max-w-[34rem] ${muted}`}>Sesuai price list resmi tiap cabang. Geser untuk melihat semua.</p>
+            {full ? <h1 className={h2}>{title}</h1> : <h2 className={h2}>{title}</h2>}
+            {sub && <p className={`mt-2 max-w-[34rem] ${muted}`}>{sub}</p>}
           </div>
           <div role="tablist" aria-label="Pilih cabang" className="flex w-full gap-1 overflow-x-auto rounded-full bg-pearl-soft p-1 no-scrollbar sm:w-auto">
             {menus.map((m, idx) => (

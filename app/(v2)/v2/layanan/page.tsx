@@ -7,5 +7,5 @@ export const metadata = { title: 'Harga Layanan' };
 export default async function Page() {
   const c = await getContent();
   const menus = c.branches.items.map((b) => ({ branch: b.name, categories: menuFor(c.booking, b.name) }));
-  return <Prices menus={menus} full />;
+  return <Prices menus={menus} full title={c.home.pages.layanan.title} sub={c.home.pages.layanan.sub} />;
 }

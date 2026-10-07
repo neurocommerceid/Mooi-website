@@ -19,11 +19,16 @@ const jakarta = localFont({
   display: 'swap',
 });
 
-// Pratinjau desain baru — tidak diindeks sampai disetujui.
-export const metadata: Metadata = {
-  title: { default: 'Mooi Hair Studio & Beauty Bar', template: '%s | Mooi Hair Studio & Beauty Bar' },
-  robots: { index: false, follow: false },
-};
+// Judul & deskripsi dari Pengaturan Umum. Pratinjau: tidak diindeks sampai disetujui.
+export async function generateMetadata(): Promise<Metadata> {
+  const { settings } = await getContent();
+  return {
+    title: { default: settings.siteTitle, template: '%s | Mooi Hair Studio & Beauty Bar' },
+    description: settings.siteDescription,
+    openGraph: { title: settings.siteTitle, description: settings.siteDescription, type: 'website', locale: 'id_ID' },
+    robots: { index: false, follow: false },
+  };
+}
 export const revalidate = 3600;
 
 // Komponen lama yang dipakai ulang (mis. alur booking) memakai --font-cormorant

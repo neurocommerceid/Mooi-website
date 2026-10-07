@@ -16,8 +16,8 @@ export default function Reviews({ c }: { c: Content }) {
   return (
     <section className="py-16 md:py-24">
       <div className={wrap}>
-        <h2 className={h2}>Kata pelanggan</h2>
-        <p className={`mt-2 ${muted}`}>Ulasan asli dari Google Maps.</p>
+        <h2 className={h2}>{c.home.reviews.title}</h2>
+        {c.home.reviews.sub && <p className={`mt-2 ${muted}`}>{c.home.reviews.sub}</p>}
       </div>
       <div className="mt-8 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-3 no-scrollbar md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
         {reviews.map((r, i) => {

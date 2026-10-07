@@ -21,10 +21,10 @@ export default function Hero({ c }: { c: Content }) {
           <div className="absolute inset-0 bg-gradient-to-t from-cocoa-dark/85 via-cocoa-dark/15 to-transparent md:hidden" />
         </div>
         <div className="absolute inset-x-0 bottom-0 px-5 pb-7 text-pearl md:relative md:order-1 md:flex md:flex-col md:justify-center md:p-0 md:text-cocoa">
-          <p className="text-[14px] text-pearl/75 md:text-[15px] md:text-[#7A6352]">Hair studio &amp; beauty bar · sejak 2019</p>
+          {c.home.hero.eyebrow && <p className="text-[14px] text-pearl/75 md:text-[15px] md:text-[#7A6352]">{c.home.hero.eyebrow}</p>}
           <h1 className="hero-title mt-2 font-display text-[2.05rem] font-normal leading-[1.1] tracking-[-0.01em] md:mt-3 md:text-[3.1rem] md:leading-[1.06] md:tracking-[-0.02em] lg:text-[3.5rem]">
             <span className="sr-only">Mooi Hair Studio &amp; Beauty Bar — </span>
-            Perawatan rambut yang personal, teliti, dan nyaman.
+            {c.home.hero.title}
           </h1>
           <div className="mt-4 flex items-center gap-6 md:mt-8">
             <Link href={P('/booking')} className={`${btnDark} hidden md:inline-flex`}>Booking sekarang</Link>

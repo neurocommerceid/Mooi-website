@@ -20,15 +20,21 @@ async function fetchRows(): Promise<Rows> {
 
 const cached = unstable_cache(fetchRows, ['site-content'], { tags: [CONTENT_TAG], revalidate: 3600 });
 
-// Gabungkan isi database di atas default per bagian, sehingga field baru
-// yang belum pernah disimpan tetap punya nilai.
+const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
+
+// Isi database menang; field (termasuk di dalam grup) yang belum pernah
+// disimpan memakai nilai default. Daftar (array) diganti utuh.
+function deep(base: unknown, over: unknown): unknown {
+  if (!isObj(base) || !isObj(over)) return over === undefined ? base : over;
+  const out: Record<string, unknown> = { ...base };
+  for (const [k, v] of Object.entries(over)) out[k] = k in base ? deep(base[k], v) : v;
+  return out;
+}
+
 export function merge(rows: Rows): Content {
   const out = { ...defaults } as Record<string, unknown>;
   for (const k of Object.keys(defaults) as SectionKey[]) {
-    const v = rows[k];
-    if (v && typeof v === 'object' && !Array.isArray(v)) {
-      out[k] = { ...(defaults[k] as object), ...(v as object) };
-    }
+    if (isObj(rows[k])) out[k] = deep(defaults[k], rows[k]);
   }
   return out as Content;
 }

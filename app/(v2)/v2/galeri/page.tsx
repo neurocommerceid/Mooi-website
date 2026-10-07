@@ -9,8 +9,8 @@ export default async function Page({ searchParams }: { searchParams: { cabang?: 
   const branches = c.branches.items.map((b) => ({ name: b.name, photos: (b.gallery ?? []).map((g) => g.image).filter((i) => i?.src) }));
   return (
     <section className={`${wrap} py-12 md:py-16`}>
-      <h1 className={h2}>Galeri</h1>
-      <p className={`mt-2 ${muted}`}>Foto asli dari cabang Mooi.</p>
+      <h1 className={h2}>{c.home.pages.galeri.title}</h1>
+      {c.home.pages.galeri.sub && <p className={`mt-2 ${muted}`}>{c.home.pages.galeri.sub}</p>}
       <div className="mt-8"><Gallery branches={branches} initial={searchParams.cabang} /></div>
     </section>
   );

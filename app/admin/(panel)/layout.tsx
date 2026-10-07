@@ -36,12 +36,17 @@ export default async function Panel({ children }: { children: React.ReactNode })
           <Link href="/admin" className={link}>Ringkasan</Link>
           <Link href="/admin/reservasi" className={link}>Reservasi</Link>
           <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-gold">Konten</p>
-          {sectionKeys.map((k) => (
+          {sectionKeys.filter((k) => !schema[k].legacy).map((k) => (
             <Link key={k} href={`/admin/konten/${k}`} className={link}>{schema[k].title}</Link>
+          ))}
+          <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-ivory/40">Desain lama</p>
+          {sectionKeys.filter((k) => schema[k].legacy).map((k) => (
+            <Link key={k} href={`/admin/konten/${k}`} className={`${link} opacity-60`}>{schema[k].title}</Link>
           ))}
         </nav>
         <div className="mt-8 space-y-1 border-t border-espresso-line pt-4">
           <a href="/" target="_blank" className={link}>Lihat website ↗</a>
+          <a href="/v2" target="_blank" className={link}>Lihat desain baru ↗</a>
           <LogoutButton className={`${link} w-full text-left`} />
           <p className="truncate px-3 pt-2 text-[11px] text-ivory/40">{admin}</p>
         </div>
