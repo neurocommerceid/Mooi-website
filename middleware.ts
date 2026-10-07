@@ -9,6 +9,8 @@ export async function middleware(req: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return res;
+  // Recovery harus dapat dibuka sebelum pengguna memiliki sesi login.
+  if (['/admin/login', '/admin/forgot-password', '/admin/reset-password'].includes(req.nextUrl.pathname)) return res;
 
   const sb = createServerClient(url, key, {
     cookies: {
