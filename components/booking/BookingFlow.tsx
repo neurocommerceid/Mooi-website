@@ -10,7 +10,7 @@ import {
 } from '@/lib/booking';
 
 type Branch = Content['branches']['items'][number];
-type Props = { branches: Branch[]; booking: Content['booking']; whatsapp: string; initialBranch?: string; homeHref?: string };
+type Props = { branches: Branch[]; booking: Content['booking']; whatsapp: string; initialBranch?: string; initialStylist?: string; homeHref?: string };
 type StepId = 'cabang' | 'layanan' | 'stylist' | 'jadwal' | 'data';
 
 const LABEL: Record<StepId, string> = { cabang: 'Cabang', layanan: 'Layanan', stylist: 'Stylist', jadwal: 'Jadwal', data: 'Data diri' };
@@ -18,11 +18,14 @@ const STORE = 'mooi-booking-v1';
 
 const hari = (d: string, opt: Intl.DateTimeFormatOptions) => new Date(`${d}T00:00:00Z`).toLocaleDateString('id-ID', { ...opt, timeZone: 'UTC' });
 
-export default function BookingFlow({ branches, booking, whatsapp, initialBranch, homeHref = '/' }: Props) {
+export default function BookingFlow({ branches, booking, whatsapp, initialBranch, initialStylist, homeHref = '/' }: Props) {
   // ---------- state ----------
   const [cabang, setCabang] = useState(branches.some((b) => b.name === initialBranch) ? initialBranch! : '');
   const [picked, setPicked] = useState<string[]>([]);
-  const [stylist, setStylist] = useState('');
+  // Stylist dari tautan halaman Stylist — hanya dipakai bila memang bertugas di cabang tsb.
+  const [stylist, setStylist] = useState(
+    initialStylist && initialBranch && stylistsAt(booking.stylists, initialBranch).some((s) => s.name === initialStylist) ? initialStylist : '',
+  );
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [nama, setNama] = useState('');

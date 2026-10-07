@@ -75,10 +75,10 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
               : <h2 className={h2}>Harga layanan</h2>}
             <p className={`mt-2 max-w-[34rem] ${muted}`}>Sesuai price list resmi tiap cabang. Geser untuk melihat semua.</p>
           </div>
-          <div role="tablist" aria-label="Pilih cabang" className="flex w-full gap-1 overflow-x-auto rounded-full bg-ivory-soft p-1 no-scrollbar sm:w-auto">
+          <div role="tablist" aria-label="Pilih cabang" className="flex w-full gap-1 overflow-x-auto rounded-full bg-pearl-soft p-1 no-scrollbar sm:w-auto">
             {menus.map((m, idx) => (
               <button key={m.branch} role="tab" aria-selected={idx === bi} onClick={() => pick(idx)}
-                className={`flex-1 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors sm:flex-none ${idx === bi ? 'bg-espresso text-ivory' : 'text-ink/70 hover:text-ink'}`}>
+                className={`flex-1 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors sm:flex-none ${idx === bi ? 'bg-bronze text-pearl' : 'text-cocoa/70 hover:text-cocoa'}`}>
                 {short(m.branch)}
               </button>
             ))}
@@ -90,7 +90,7 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
             <div className="flex flex-1 gap-2 overflow-x-auto no-scrollbar">
               {cats.map((c, ci) => (
                 <button key={c.name} onClick={() => jump(firstOf[ci])}
-                  className={`whitespace-nowrap rounded-full border px-4 py-2 text-[14px] transition-colors ${activeCat === c.name ? 'border-gold-deep bg-gold/10 text-ink' : 'border-line text-ink/65 hover:text-ink'}`}>
+                  className={`whitespace-nowrap rounded-full border px-4 py-2 text-[14px] transition-colors ${activeCat === c.name ? 'border-bronze-mid bg-champagne/20 text-cocoa' : 'border-pearl-line text-cocoa/65 hover:text-cocoa'}`}>
                   {c.name}
                 </button>
               ))}
@@ -98,7 +98,7 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
             <div className="hidden shrink-0 gap-2 md:flex">
               {[-1, 1].map((d) => (
                 <button key={d} onClick={() => page(d)} aria-label={d < 0 ? 'Sebelumnya' : 'Berikutnya'}
-                  className="grid h-11 w-11 place-items-center rounded-full border border-ink/20 transition-colors hover:border-ink hover:bg-white">
+                  className="grid h-11 w-11 place-items-center rounded-full border border-cocoa/20 transition-colors hover:border-cocoa hover:bg-white">
                   <svg viewBox="0 0 24 24" className={`h-5 w-5 ${d < 0 ? 'rotate-180' : ''}`} aria-hidden><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
                 </button>
               ))}
@@ -115,15 +115,15 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
             className="mt-6 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 no-scrollbar md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
             {cards.map(({ cat, it }, k) => (
               <article key={`${cat}-${it.name}`} style={{ animationDelay: `${Math.min(k, 6) * 60}ms` }}
-                className={`price-card group flex min-h-[250px] w-[74vw] max-w-[280px] shrink-0 snap-start flex-col rounded-[22px] border bg-white/70 p-6 sm:w-[280px] ${k === active ? 'is-active border-gold/60' : 'border-line'}`}>
-                <p className="text-[13px] text-[#8A543B]">{cat}</p>
+                className={`price-card group flex min-h-[250px] w-[74vw] max-w-[280px] shrink-0 snap-start flex-col rounded-[22px] border bg-white/70 p-6 sm:w-[280px] ${k === active ? 'is-active border-champagne' : 'border-pearl-line'}`}>
+                <p className="text-[13px] text-[#7B5435]">{cat}</p>
                 <h3 className="mt-2 font-display text-[1.4rem] leading-tight">{it.name}</h3>
                 {it.note && <p className={`mt-2 line-clamp-3 text-[13px] leading-snug ${muted}`}>{it.note}</p>}
                 <div className="mt-auto pt-6">
                   <div className="relative inline-block">
                     {it.from && <span className={`block text-[13px] ${muted}`}>mulai</span>}
                     <span className="font-display text-[1.9rem] leading-none tabular-nums">{rupiah(it.price)}</span>
-                    <span className="sparkles pointer-events-none absolute -right-7 -top-4 h-11 w-9 text-gold-deep" aria-hidden>
+                    <span className="sparkles pointer-events-none absolute -right-7 -top-4 h-11 w-9 text-bronze-mid" aria-hidden>
                       <Sparkle className="twinkle absolute right-0 top-0 h-4 w-4" />
                       <Sparkle className="twinkle absolute right-5 top-4 h-2.5 w-2.5 [animation-delay:.6s]" />
                       <Sparkle className="twinkle absolute right-1 top-7 h-3 w-3 [animation-delay:1.2s]" />
@@ -134,8 +134,8 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
             ))}
           </div>
           <div className={`${wrap} mt-2`}>
-            <div className="h-[2px] w-full overflow-hidden rounded-full bg-line">
-              <div className="h-full rounded-full bg-gold-deep transition-[width] duration-200" style={{ width: `${Math.max(8, progress * 100)}%` }} />
+            <div className="h-[2px] w-full overflow-hidden rounded-full bg-pearl-line">
+              <div className="h-full rounded-full bg-bronze-mid transition-[width] duration-200" style={{ width: `${Math.max(8, progress * 100)}%` }} />
             </div>
           </div>
         </>
@@ -147,10 +147,10 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
           <div className="mt-6 grid gap-x-12 gap-y-10 md:grid-cols-2">
             {cats.map((c) => (
               <div key={c.name}>
-                <h3 className="border-b border-ink/80 pb-2 text-[15px] font-semibold">{c.name}</h3>
+                <h3 className="border-b border-cocoa/80 pb-2 text-[15px] font-semibold">{c.name}</h3>
                 <ul>
                   {c.items.map((it) => (
-                    <li key={it.name} className="border-b border-line py-3">
+                    <li key={it.name} className="border-b border-pearl-line py-3">
                       <div className="flex items-baseline justify-between gap-4">
                         <span>{it.name}</span>
                         <span className="shrink-0 tabular-nums">{it.from && <span className={`mr-1 text-[13px] ${muted}`}>mulai</span>}{rupiah(it.price)}</span>
@@ -162,7 +162,7 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
               </div>
             ))}
           </div>
-          <Link href={bookHref} className="mt-10 hidden rounded-full md:inline-flex bg-espresso px-6 py-3.5 text-[15px] font-medium text-ivory hover:bg-[#3A2C27]">
+          <Link href={bookHref} className="btn-bronze mt-10 hidden rounded-full md:inline-flex px-6 py-3.5 text-[15px] font-medium text-pearl hover:brightness-110">
             Booking di {short(cur.branch)}
           </Link>
         </div>

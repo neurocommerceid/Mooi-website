@@ -27,7 +27,7 @@ export default async function Page() {
           <Link href={P('/booking')} className={`mt-8 ${btnDark}`}>Booking sekarang</Link>
         </div>
         {pic && (
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-ivory-deep md:sticky md:top-24">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-pearl-deep md:sticky md:top-24">
             <Image src={pic.src} alt={pic.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           </div>
         )}
@@ -36,7 +36,7 @@ export default async function Page() {
         <section className="bg-white/55 py-14 md:py-20">
           <div className={`${wrap} grid gap-8 ${cols[values.length]}`}>
             {values.map((v) => (
-              <div key={v.title} className="border-t border-ink/80 pt-5">
+              <div key={v.title} className="border-t border-cocoa/80 pt-5">
                 <h2 className="font-display text-[1.5rem] leading-tight">{v.title}</h2>
                 <p className={`mt-3 ${muted}`}>{v.desc}</p>
               </div>

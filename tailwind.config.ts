@@ -10,6 +10,11 @@ const config: Config = {
         gold: { light: '#E6C3A8', DEFAULT: '#C08A6C', deep: '#9E6449' },
         ink: { DEFAULT: '#2A201C', muted: '#7A6A62', faint: '#A8978E' },
         line: '#E5D7C2',
+        // Desain v2 — palet dari materi brand Mooi (putih mutiara, bronze, champagne)
+        pearl: { DEFAULT: '#FBF8F4', soft: '#F4EEE7', deep: '#EBE2DC', line: '#E6D8C9' },
+        cocoa: { DEFAULT: '#3B2B20', muted: '#7A6352', dark: '#2B1E16', soft: '#3A2A20', line: '#4A372B' },
+        bronze: { DEFAULT: '#5C3820', mid: '#7B5435', light: '#A78967' },
+        champagne: { DEFAULT: '#D3B58F', light: '#EEDEBD', deep: '#967355' },
       },
       fontFamily: {
         sans: ['var(--font-jost)', 'sans-serif'],

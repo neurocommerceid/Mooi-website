@@ -28,12 +28,12 @@ export function useNow(intervalMs = 60_000) {
 
 export function StatusDot({ b }: { b: Branch }) {
   const now = useNow();
-  if (now === null) return <span className="text-[14px] text-[#6B5A52]">{b.hours.split('\n')[0]}</span>;
+  if (now === null) return <span className="text-[14px] text-[#7A6352]">{b.hours.split('\n')[0]}</span>;
   const s = openStatus(b, now);
   return (
     <span className="inline-flex items-center gap-2 text-[14px]">
-      <span className={`h-2 w-2 rounded-full ${s.on ? 'bg-emerald-600' : 'bg-[#B9A89D]'}`} aria-hidden />
-      <span className={s.on ? 'text-emerald-800' : 'text-[#6B5A52]'}>{s.text}</span>
+      <span className={`h-2 w-2 rounded-full ${s.on ? 'bg-emerald-600' : 'bg-[#C9B8A8]'}`} aria-hidden />
+      <span className={s.on ? 'text-emerald-800' : 'text-[#7A6352]'}>{s.text}</span>
     </span>
   );
 }
@@ -46,7 +46,7 @@ export default function BranchStrip({ branches, fallbackWa, greeting }: { branch
         const wa = branchWa(b, fallbackWa);
         const maps = safeUrl(b.maps);
         return (
-          <div key={b.name} className="rounded-2xl border border-line bg-white/60 p-5">
+          <div key={b.name} className="rounded-2xl border border-pearl-line bg-white/60 p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="font-display text-[1.3rem] leading-tight">{short(b.name)}</p>
@@ -54,14 +54,14 @@ export default function BranchStrip({ branches, fallbackWa, greeting }: { branch
               </div>
               {wa && (
                 <a href={waLink(wa, `${greeting} (${b.name})`)} target="_blank" rel="noopener" aria-label={`WhatsApp ${b.name}`}
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-ink/15 text-[#1f9d55] transition-colors hover:border-ink">
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-cocoa/15 text-[#1f9d55] transition-colors hover:border-cocoa">
                   <WaIcon />
                 </a>
               )}
             </div>
-            <p className="mt-3 line-clamp-2 text-[14px] text-[#6B5A52]">{b.address}</p>
+            <p className="mt-3 line-clamp-2 text-[14px] text-[#7A6352]">{b.address}</p>
             {maps && (
-              <a href={maps} target="_blank" rel="noopener" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-medium text-[#8A543B] hover:underline">
+              <a href={maps} target="_blank" rel="noopener" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-medium text-[#7B5435] hover:underline">
                 Petunjuk arah
                 <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
               </a>

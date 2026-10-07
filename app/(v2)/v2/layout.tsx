@@ -33,7 +33,7 @@ const remap = { '--font-cormorant': 'var(--font-fraunces)', '--font-jost': 'var(
 export default async function V2Layout({ children }: { children: React.ReactNode }) {
   const c = await getContent();
   return (
-    <div style={remap} className={`v2 ${fraunces.variable} ${jakarta.variable} min-h-screen bg-ivory font-body text-[16px] font-normal leading-relaxed text-ink antialiased`}>
+    <div style={remap} className={`v2 ${fraunces.variable} ${jakarta.variable} min-h-screen bg-pearl font-body text-[16px] font-normal leading-relaxed text-cocoa antialiased`}>
       <Nav />
       <main>{children}</main>
       <Footer c={c} />
