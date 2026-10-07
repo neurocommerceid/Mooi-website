@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Nav from '@/components/v2/Nav';
+import MobileBar from '@/components/v2/MobileBar';
+import { Footer } from '@/components/v2/Sections';
+import { getContent } from '@/lib/cms/get';
+import { branchContacts } from '@/lib/cms/content';
 
 // Font disimpan di repo (bukan diunduh dari Google saat build) supaya build
 // tidak bergantung pada jaringan. Subset latin, variable font.
 const fraunces = localFont({
-  src: [
-    { path: '../../fonts/fraunces.woff2', weight: '100 900', style: 'normal' },
-  ],
+  src: [{ path: '../../fonts/fraunces.woff2', weight: '100 900', style: 'normal' }],
   variable: '--font-fraunces',
   display: 'swap',
 });
@@ -17,17 +20,24 @@ const jakarta = localFont({
 });
 
 // Pratinjau desain baru — tidak diindeks sampai disetujui.
-
 export const metadata: Metadata = {
-  title: 'Mooi Hair Studio & Beauty Bar — pratinjau desain',
+  title: { default: 'Mooi Hair Studio & Beauty Bar', template: '%s | Mooi Hair Studio & Beauty Bar' },
   robots: { index: false, follow: false },
 };
 export const revalidate = 3600;
 
-export default function V2Layout({ children }: { children: React.ReactNode }) {
+// Komponen lama yang dipakai ulang (mis. alur booking) memakai --font-cormorant
+// dan --font-jost; di sini keduanya diarahkan ke font baru.
+const remap = { '--font-cormorant': 'var(--font-fraunces)', '--font-jost': 'var(--font-jakarta)' } as React.CSSProperties;
+
+export default async function V2Layout({ children }: { children: React.ReactNode }) {
+  const c = await getContent();
   return (
-    <div className={`${fraunces.variable} ${jakarta.variable} min-h-screen bg-ivory font-body font-normal text-[16px] leading-relaxed text-ink antialiased`}>
-      {children}
+    <div style={remap} className={`v2 ${fraunces.variable} ${jakarta.variable} min-h-screen bg-ivory font-body text-[16px] font-normal leading-relaxed text-ink antialiased`}>
+      <Nav />
+      <main>{children}</main>
+      <Footer c={c} />
+      <MobileBar contacts={branchContacts(c)} greeting={c.settings.waGreeting} />
     </div>
   );
 }

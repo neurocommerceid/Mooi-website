@@ -10,7 +10,7 @@ import {
 } from '@/lib/booking';
 
 type Branch = Content['branches']['items'][number];
-type Props = { branches: Branch[]; booking: Content['booking']; whatsapp: string; initialBranch?: string };
+type Props = { branches: Branch[]; booking: Content['booking']; whatsapp: string; initialBranch?: string; homeHref?: string };
 type StepId = 'cabang' | 'layanan' | 'stylist' | 'jadwal' | 'data';
 
 const LABEL: Record<StepId, string> = { cabang: 'Cabang', layanan: 'Layanan', stylist: 'Stylist', jadwal: 'Jadwal', data: 'Data diri' };
@@ -18,7 +18,7 @@ const STORE = 'mooi-booking-v1';
 
 const hari = (d: string, opt: Intl.DateTimeFormatOptions) => new Date(`${d}T00:00:00Z`).toLocaleDateString('id-ID', { ...opt, timeZone: 'UTC' });
 
-export default function BookingFlow({ branches, booking, whatsapp, initialBranch }: Props) {
+export default function BookingFlow({ branches, booking, whatsapp, initialBranch, homeHref = '/' }: Props) {
   // ---------- state ----------
   const [cabang, setCabang] = useState(branches.some((b) => b.name === initialBranch) ? initialBranch! : '');
   const [picked, setPicked] = useState<string[]>([]);
@@ -225,7 +225,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
               Kirim detail ke WhatsApp {cabang.replace(/^Mooi\s+/, '')}
             </a>
           )}
-          <Link href="/" className="btn-line text-ink">Kembali ke beranda</Link>
+          <Link href={homeHref} className="btn-line text-ink">Kembali ke beranda</Link>
         </div>
       </div>
     );
@@ -270,7 +270,9 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                       onClick={() => { setCabang(b.name); setTime(''); advanceSoon('layanan'); }}
                       className={`group overflow-hidden rounded-3xl border bg-white text-left transition duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_-25px_rgba(60,40,30,.45)] ${on ? 'border-gold ring-2 ring-gold/30' : 'border-line'}`}>
                       <div className="relative aspect-[4/3] overflow-hidden bg-ivory-deep">
-                        {b.image?.src && <img src={b.image.src} alt="" className="h-full w-full object-cover transition duration-1000 group-hover:scale-105" />}
+                        {b.image?.src
+                          ? <img src={b.image.src} alt="" className="h-full w-full object-cover transition duration-1000 group-hover:scale-105" />
+                          : <span className="absolute inset-0 grid place-items-center bg-espresso"><img src="/logo.png" alt="" className="h-16 w-auto opacity-90" /></span>}
                         <span className={`absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full text-[13px] transition ${on ? 'bg-gold text-white' : 'bg-white/80 text-transparent'}`}>✓</span>
                       </div>
                       <div className="p-5">

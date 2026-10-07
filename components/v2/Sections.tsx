@@ -4,15 +4,13 @@ import type { Branch, Content, Img } from '@/lib/cms/content';
 import { branchWa, safeUrl, waLink } from '@/lib/cms/content';
 import { daysLabel, stylistsAt } from '@/lib/booking';
 import { StatusDot } from './BranchStatus';
-import { btnDark, h2, link, muted, wrap } from './ui';
-
-const short = (name: string) => name.replace(/^Mooi\s+/i, '');
+import { P, btnDark, h2, link, muted, short, wrap } from './ui';
 
 /** Foto asli interior cabang — bukan foto stok. */
 export function Inside({ branches }: { branches: Branch[] }) {
   const lists = branches.map((b) => (b.gallery ?? []).map((g) => ({ img: g.image, branch: short(b.name) })).filter((x) => x.img?.src));
   const photos: { img: Img; branch: string }[] = [];
-  for (let k = 0; photos.length < 8 && lists.some((l) => l[k]); k++) for (const l of lists) if (l[k] && photos.length < 8) photos.push(l[k]);
+  for (let k = 0; photos.length < 9 && lists.some((l) => l[k]); k++) for (const l of lists) if (l[k] && photos.length < 9) photos.push(l[k]);
   if (photos.length < 3) return null;
   return (
     <section className="py-16 md:py-24">
@@ -21,7 +19,7 @@ export function Inside({ branches }: { branches: Branch[] }) {
           <h2 className={h2}>Di dalam Mooi</h2>
           <p className={`mt-3 ${muted}`}>Foto asli dari cabang kami.</p>
         </div>
-        <Link href="/galeri" className={link}>Lihat galeri</Link>
+        <Link href={P('/galeri')} className={link}>Lihat galeri</Link>
       </div>
       <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 no-scrollbar md:mx-auto md:grid md:max-w-[1200px] md:grid-cols-4 md:gap-4 md:overflow-visible md:px-10">
         {photos.map((p, k) => (
@@ -37,11 +35,12 @@ export function Inside({ branches }: { branches: Branch[] }) {
   );
 }
 
-export function Branches({ c }: { c: Content }) {
+export function Branches({ c, page = false }: { c: Content; page?: boolean }) {
   return (
     <section id="cabang" className="scroll-mt-20 pb-8 pt-16 md:pb-10 md:pt-24">
       <div className={wrap}>
-        <h2 className={h2}>Tiga cabang</h2>
+        {page ? <h1 className={h2}>Cabang Mooi</h1> : <h2 className={h2}>Tiga cabang</h2>}
+        {page && <p className={`mt-2 ${muted}`}>Alamat, jam buka, dan kontak tiap cabang.</p>}
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {c.branches.items.map((b) => {
             const wa = branchWa(b, c.settings.whatsapp);
@@ -66,7 +65,7 @@ export function Branches({ c }: { c: Content }) {
                   <p className={`mt-3 text-[15px] ${muted}`}>{b.address}</p>
                   <p className="mt-2 whitespace-pre-line text-[15px]">{b.hours}</p>
                   <div className="mt-auto flex flex-wrap gap-2 pt-5">
-                    <Link href={`/booking?cabang=${encodeURIComponent(b.name)}`} className={`${btnDark} !px-5 !py-2.5 text-[14px]`}>Booking</Link>
+                    <Link href={`${P('/booking')}?cabang=${encodeURIComponent(b.name)}`} className={`${btnDark} !px-5 !py-2.5 text-[14px]`}>Booking</Link>
                     {wa && <a href={waLink(wa, `${c.settings.waGreeting} (${b.name})`)} target="_blank" rel="noopener" className="rounded-full border border-ink/20 px-4 py-2.5 text-[14px] font-medium hover:border-ink">WhatsApp</a>}
                     {maps && <a href={maps} target="_blank" rel="noopener" className="rounded-full border border-ink/20 px-4 py-2.5 text-[14px] font-medium hover:border-ink">Petunjuk arah</a>}
                   </div>
@@ -118,37 +117,9 @@ export function Stylists({ c }: { c: Content }) {
             </div>
           </div>
         ))}
-        <Link href="/booking" className="mt-10 inline-flex rounded-full bg-ivory px-6 py-3.5 text-[15px] font-medium text-espresso hover:bg-white">
+        <Link href={P('/booking')} className="mt-10 inline-flex rounded-full bg-ivory px-6 py-3.5 text-[15px] font-medium text-espresso hover:bg-white">
           Booking dengan stylist pilihan
         </Link>
-      </div>
-    </section>
-  );
-}
-
-export function About({ c }: { c: Content }) {
-  const shelf = c.branches.items.flatMap((b) => b.gallery ?? []).find((g) => /produk|rak/i.test(g.image?.alt ?? ''))?.image;
-  const img = shelf ?? c.intro.image;
-  return (
-    <section className="py-16 md:py-24">
-      <div className={`${wrap} grid gap-10 md:grid-cols-2 md:items-center md:gap-16`}>
-        {img?.src && (
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-ivory-deep md:aspect-[4/5]">
-            <Image src={img.src} alt={img.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
-          </div>
-        )}
-        <div>
-          <h2 className={h2}>Sejak 17 Agustus 2019.</h2>
-          <p className={`mt-5 text-[17px] ${muted}`}>
-            Berawal dari fokus pada rambut dan beauty, Mooi kini hadir di tiga cabang — Kedoya, Alam Sutera, dan
-            Kelapa Gading. Kami bekerja dengan produk profesional seperti Kérastase, Milbon, dan Davines.
-          </p>
-          <blockquote className="mt-8 border-l-2 border-gold pl-5">
-            <p className="font-display text-[1.35rem] leading-snug">&ldquo;{c.testimonial.quote}&rdquo;</p>
-            {c.testimonial.author && <footer className={`mt-2 text-[14px] ${muted}`}>{c.testimonial.author}</footer>}
-          </blockquote>
-          <Link href="/tentang" className={`mt-8 inline-block ${link}`}>Cerita lengkap Mooi</Link>
-        </div>
       </div>
     </section>
   );
@@ -180,8 +151,8 @@ export function Footer({ c }: { c: Content }) {
         <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-espresso-line pt-6 text-[13px] text-ivory/50">
           <p>© {new Date().getFullYear()} Mooi Hair Studio &amp; Beauty Bar</p>
           <nav className="flex flex-wrap gap-5">
-            {[['Layanan', '/layanan'], ['Galeri', '/galeri'], ['Tentang', '/tentang'], ['Kontak', '/kontak']].map(([l, h]) => (
-              <Link key={h} href={h} className="hover:text-ivory">{l}</Link>
+            {[['Harga', '/layanan'], ['Cabang', '/cabang'], ['Galeri', '/galeri'], ['Tentang', '/tentang'], ['Booking', '/booking']].map(([l, h]) => (
+              <Link key={h} href={P(h)} className="hover:text-ivory">{l}</Link>
             ))}
           </nav>
         </div>

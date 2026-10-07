@@ -7,3 +7,9 @@ export const link = 'font-medium text-[#8A543B] underline decoration-[#8A543B]/3
 export const h2 = 'font-display text-[2rem] font-normal leading-[1.08] tracking-[-0.015em] md:text-[2.75rem]';
 export const muted = 'text-[#6B5A52]';
 export const wrap = 'mx-auto w-full max-w-[1200px] px-5 md:px-10';
+
+// Semua halaman desain baru ada di bawah /v2 sampai disetujui. Saat dipindah
+// ke alamat utama, cukup ubah BASE menjadi ''.
+const BASE = '/v2';
+export const P = (path: string) => (path === '/' ? BASE || '/' : BASE + path);
+export const short = (name: string) => name.replace(/^Mooi\s+/i, '');

@@ -1,36 +1,36 @@
 import Link from 'next/link';
 import type { Content } from '@/lib/cms/content';
-import BranchStatus from './BranchStatus';
-import { btnDark, btnLine, muted, wrap } from './ui';
+import BranchStrip from './BranchStatus';
+import { P, btnDark, btnLine, link, muted, wrap } from './ui';
 
+// Paragraf pertama "Tentang Mooi" dari CMS (Konten → Intro), supaya owner yang mengendalikan isinya.
 export default function Hero({ c }: { c: Content }) {
   const v = c.hero.video;
+  const para = (c.intro.body ?? '').split(/\n\s*\n/)[0]?.trim();
   return (
-    <section className={`${wrap} grid gap-10 pb-16 pt-8 md:grid-cols-[1.1fr_.9fr] md:items-center md:gap-14 md:pb-24 md:pt-14`}>
-      <div>
-        <p className={`text-[14px] ${muted}`}>Sejak 2019 · Jakarta &amp; Tangerang</p>
-        <h1 className="mt-4 font-display text-[2.5rem] font-normal leading-[1.04] tracking-[-0.02em] md:text-[3.6rem] lg:text-[4.1rem]">
-          Salon rambut &amp; beauty bar di Kedoya, Alam Sutera, dan Kelapa Gading.
-        </h1>
-        <p className={`mt-5 max-w-[34rem] text-[17px] ${muted}`}>
-          Haircut, coloring, smoothing, hair spa, sampai nail &amp; lash. Pilih cabang, layanan, stylist, dan jam
-          sendiri — tim kami konfirmasi lewat WhatsApp.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/booking" className={btnDark}>Booking sekarang</Link>
-          <a href="#harga" className={btnLine}>Lihat harga</a>
+    <section className={`${wrap} pb-12 pt-8 md:pb-16 md:pt-12`}>
+      <div className="grid gap-8 md:grid-cols-2 md:items-stretch md:gap-12">
+        <div className="flex flex-col justify-center md:py-6">
+          <p className={`text-[14px] ${muted}`}>Kedoya · Alam Sutera · Kelapa Gading</p>
+          <h1 className="mt-3 font-display text-[2.25rem] font-normal leading-[1.08] tracking-[-0.015em] md:text-[2.9rem]">
+            Mooi Hair Studio &amp; Beauty Bar
+          </h1>
+          {para && <p className={`mt-5 text-[16px] leading-[1.75] md:text-[17px] ${muted}`}>{para}</p>}
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Link href={P('/booking')} className={btnDark}>Booking sekarang</Link>
+            <Link href={P('/layanan')} className={btnLine}>Lihat harga</Link>
+          </div>
+          <Link href={P('/tentang')} className={`mt-6 self-start text-[15px] ${link}`}>Cerita lengkap Mooi</Link>
         </div>
-        <div className="mt-10">
-          <BranchStatus branches={c.branches.items} fallbackWa={c.settings.whatsapp} greeting={c.settings.waGreeting} />
-        </div>
-      </div>
-      <div className="relative mx-auto w-full max-w-[460px]">
-        <div className="aspect-[4/5] overflow-hidden rounded-[28px] bg-ivory-deep">
-          <video className="h-full w-full object-cover" poster={v.poster} autoPlay muted loop playsInline preload="metadata" aria-hidden>
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-ivory-deep md:aspect-auto md:min-h-[520px]">
+          <video className="absolute inset-0 h-full w-full object-cover" poster={v.poster} autoPlay muted loop playsInline preload="metadata" aria-hidden>
             {v.webm && <source src={v.webm} type="video/webm" />}
             {v.mp4 && <source src={v.mp4} type="video/mp4" />}
           </video>
         </div>
+      </div>
+      <div className="mt-8 md:mt-10">
+        <BranchStrip branches={c.branches.items} fallbackWa={c.settings.whatsapp} greeting={c.settings.waGreeting} />
       </div>
     </section>
   );
