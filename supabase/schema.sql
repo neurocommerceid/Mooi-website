@@ -108,3 +108,65 @@ language sql stable security definer set search_path = '' as $$
   from public.reservasi r
   where r.cabang = p_cabang and r.tanggal = p_tanggal and r.status = 'dikonfirmasi' and r.jam is not null;
 $$;
+
+-- =====================================================================
+-- Keamanan booking: kunci insert publik + batas spam
+-- =====================================================================
+-- Kunci publik ada di browser, jadi siapa pun bisa insert langsung ke REST API
+-- tanpa lewat /api/booking. Tanpa ini, orang bisa membuat booking berstatus
+-- "dikonfirmasi" dan memblokir slot semua stylist.
+drop policy if exists "anon dapat mengirim reservasi" on public.reservasi;
+create policy "anon dapat mengirim reservasi" on public.reservasi
+  for insert to anon
+  with check (status = 'baru' and ditugaskan is null);
+
+create or replace function public.reservasi_guard()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare
+  today date := (now() at time zone 'Asia/Jakarta')::date;
+begin
+  -- Fungsi ini security definer, jadi current_user selalu pemiliknya;
+  -- role pemanggil yang asli ada di setting 'role'.
+  if coalesce(current_setting('role', true), '') not in ('anon', 'authenticated') or public.is_admin() then
+    return new; -- admin & service role bebas
+  end if;
+  new.status := 'baru';
+  new.ditugaskan := null;
+  new.created_at := now();
+  if length(new.nama) > 100 or length(new.whatsapp) > 20 or length(new.cabang) > 100
+     or length(coalesce(new.catatan, '')) > 1000 or length(coalesce(new.layanan, '')) > 2000
+     or length(coalesce(new.stylist, '')) > 100
+     or pg_column_size(new.layanan_list) > 8000 then
+    raise exception 'invalid_booking' using errcode = 'P0001';
+  end if;
+  if new.tanggal is null or new.tanggal < today or new.tanggal > today + 60 then
+    raise exception 'invalid_booking' using errcode = 'P0001';
+  end if;
+  -- Maks 3 permintaan per nomor WhatsApp per 24 jam.
+  if (select count(*) from public.reservasi r
+      where r.whatsapp = new.whatsapp and r.created_at > now() - interval '24 hours') >= 3 then
+    raise exception 'rate_limited' using errcode = 'P0001';
+  end if;
+  -- Rem darurat: maks 30 permintaan baru per 10 menit untuk seluruh website.
+  if (select count(*) from public.reservasi r
+      where r.created_at > now() - interval '10 minutes') >= 30 then
+    raise exception 'rate_limited' using errcode = 'P0001';
+  end if;
+  return new;
+end $$;
+revoke all on function public.reservasi_guard() from public, anon, authenticated;
+
+drop trigger if exists reservasi_guard on public.reservasi;
+create trigger reservasi_guard before insert on public.reservasi
+  for each row execute function public.reservasi_guard();
+
+create index if not exists reservasi_whatsapp_created_idx on public.reservasi (whatsapp, created_at desc);
+create index if not exists reservasi_created_idx on public.reservasi (created_at desc);
+
+-- Performa RLS: auth.jwt() dievaluasi sekali per query, bukan per baris.
+drop policy if exists "admin melihat dirinya" on public.admins;
+create policy "admin melihat dirinya" on public.admins
+  for select to authenticated using (email = lower(coalesce((select auth.jwt()) ->> 'email', '')));
+
+-- Fungsi event trigger bawaan; tidak perlu bisa dipanggil lewat REST.
+revoke execute on function public.rls_auto_enable() from public, anon, authenticated;

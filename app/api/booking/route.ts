@@ -79,6 +79,10 @@ export async function POST(req: Request) {
     catatan: catatan || null,
   });
   if (error) {
+    // Batas spam dijaga trigger database (reservasi_guard).
+    if (error.message.includes('rate_limited')) {
+      return bad('Terlalu banyak permintaan booking. Silakan hubungi cabang via WhatsApp.', 429);
+    }
     console.error('booking insert failed:', error.message);
     return bad('Gagal menyimpan. Silakan booking via WhatsApp.', 500);
   }
