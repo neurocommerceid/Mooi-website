@@ -14,6 +14,9 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-jost)', 'sans-serif'],
         serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        // Desain v2
+        display: ['var(--font-fraunces)', 'Georgia', 'serif'],
+        body: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
       },
       letterSpacing: { luxe: '0.32em' },
     },
