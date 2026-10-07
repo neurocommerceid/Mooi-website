@@ -27,7 +27,7 @@ export default function Reviews({ c }: { c: Content }) {
               <div className="flex gap-0.5" aria-label={`${stars} dari 5 bintang`}>
                 {[1, 2, 3, 4, 5].map((n) => <Star key={n} on={n <= stars} />)}
               </div>
-              <blockquote className="mt-4 line-clamp-[8] text-[15px] leading-relaxed">&ldquo;{r.text.trim()}&rdquo;</blockquote>
+              <blockquote className="mt-4 line-clamp-[9] whitespace-pre-line text-[15px] leading-relaxed">&ldquo;{r.text.trim()}&rdquo;</blockquote>
               <figcaption className="mt-auto pt-5 text-[14px]">
                 <span className="font-medium">{r.name}</span>
                 <span className={muted}>{[r.branch && short(r.branch), r.date].filter(Boolean).map((x) => ` · ${x}`).join('')}</span>
