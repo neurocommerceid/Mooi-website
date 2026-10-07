@@ -119,9 +119,9 @@ export const defaults: Content = {
     items: ['Hair Cut & Styling', 'Coloring', 'Smoothing & Keratin', 'Hair Spa', 'Beauty Bar', 'Bridal & Event'],
   },
   intro: {
-    kicker: 'Filosofi Kami',
-    title: 'Mooi berarti *indah*. Kami percaya keindahan lahir dari perhatian pada detail.',
-    body: 'Setiap kunjungan diawali konsultasi — bentuk wajah, kondisi rambut, dan keseharian Anda — sebelum gunting atau kuas menyentuh rambut. Standar yang sama kami jaga di ketiga cabang.',
+    kicker: 'Tentang Mooi',
+    title: 'Profil Singkat Mooi',
+    body: "Mooi Hair Studio & Beauty Bar didirikan pada 17 Agustus 2019 dengan visi untuk menghadirkan pengalaman perawatan yang lebih personal, nyaman, dan berkualitas. Berawal dari fokus pada dunia rambut dan beauty, Mooi terus berkembang dengan menghadirkan berbagai layanan, mulai dari haircut, hair chemical, hair treatment, body treatment, lymphatic massage, Japanese head spa, hingga manicure & pedicure.\n\nKami percaya bahwa perawatan bukan hanya tentang penampilan, tetapi juga tentang bagaimana seseorang merasa nyaman dan percaya diri dengan dirinya sendiri. Karena itu, Mooi mengutamakan kualitas, ketelitian, pelayanan yang personal, serta perkembangan teknik dan tren dalam setiap layanan yang diberikan.\n\nDengan terus berkembang mengikuti kebutuhan pelanggan, Mooi berkomitmen untuk menciptakan pengalaman beauty yang menyeluruh, nyaman, dan tetap relevan dari waktu ke waktu.",
     stats: [
       { value: '03', label: 'Cabang' },
       { value: '06', label: 'Lini layanan' },

@@ -53,6 +53,23 @@ website diperbarui dalam hitungan detik.
 - Semua media disimpan di Supabase Storage (bucket `media`).
 - Bagian yang belum pernah disimpan memakai isi bawaan di `lib/cms/content.ts`.
 
+### Reset kata sandi admin
+
+Di `/admin/login`, pilih **Lupa password?**, masukkan email admin, lalu buka
+tautan email di browser yang sama. Halaman `/admin/reset-password` menerima
+sesi recovery Supabase dan menyediakan formulir kata sandi baru beserta konfirmasi.
+Ikon mata tersedia di kolom kata sandi login dan reset.
+
+Sebelum digunakan di production, atur **Supabase → Authentication → URL
+Configuration**: **Site URL** harus domain website Mooi aktif, bukan localhost.
+Tambahkan `https://DOMAIN-MOOI-AKTIF/admin/reset-password` ke **Redirect URLs**
+(ganti domain dengan alamat deployment aktif). Tambahkan alamat development
+hanya jika diperlukan. Form mengirim redirect ke origin yang sedang dibuka;
+origin itu harus diizinkan Supabase. Gunakan email reset baru dari form ini.
+
+Pengiriman email dan perubahan password sungguhan perlu diuji pada deployment
+dengan konfigurasi Supabase aktif.
+
 ### Menambah admin
 
 1. Supabase → Authentication → Users → **Add user** → isi email & kata sandi,
