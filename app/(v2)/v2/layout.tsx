@@ -1,9 +1,22 @@
 import type { Metadata } from 'next';
-import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google';
+import localFont from 'next/font/local';
+
+// Font disimpan di repo (bukan diunduh dari Google saat build) supaya build
+// tidak bergantung pada jaringan. Subset latin, variable font.
+const fraunces = localFont({
+  src: [
+    { path: '../../fonts/fraunces.woff2', weight: '100 900', style: 'normal' },
+  ],
+  variable: '--font-fraunces',
+  display: 'swap',
+});
+const jakarta = localFont({
+  src: [{ path: '../../fonts/plus-jakarta-sans.woff2', weight: '400 600', style: 'normal' }],
+  variable: '--font-jakarta',
+  display: 'swap',
+});
 
 // Pratinjau desain baru — tidak diindeks sampai disetujui.
-const fraunces = Fraunces({ subsets: ['latin'], axes: ['opsz', 'SOFT'], style: ['normal', 'italic'], variable: '--font-fraunces' });
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-jakarta' });
 
 export const metadata: Metadata = {
   title: 'Mooi Hair Studio & Beauty Bar — pratinjau desain',
