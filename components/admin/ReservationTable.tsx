@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/browser';
-import { durasi, rupiah } from '@/lib/booking';
+import { addDays, durasi, jakartaNow, rupiah } from '@/lib/booking';
 
 export type Row = {
   id: number; nama: string; whatsapp: string; cabang: string; layanan: string | null;
@@ -19,11 +19,38 @@ const tone: Record<string, string> = {
 // 08xx → 628xx untuk tautan wa.me
 const toWa = (n: string) => n.replace(/\D/g, '').replace(/^0/, '62');
 
+// Filter tanggal = tanggal kedatangan pelanggan (kolom tanggal), bukan tanggal masuk.
+type Range = { key: string; from: string; to: string };
+const PRESETS = [
+  { key: 'semua', label: 'Semua tanggal' },
+  { key: 'hari-ini', label: 'Hari ini' },
+  { key: 'besok', label: 'Besok' },
+  { key: '7-hari', label: '7 hari ke depan' },
+  { key: 'pilih', label: 'Pilih tanggal' },
+];
+function preset(key: string): Range {
+  const today = jakartaNow().date;
+  if (key === 'hari-ini') return { key, from: today, to: today };
+  if (key === 'besok') return { key, from: addDays(today, 1), to: addDays(today, 1) };
+  if (key === '7-hari') return { key, from: today, to: addDays(today, 6) };
+  if (key === 'pilih') return { key, from: today, to: today };
+  return { key: 'semua', from: '', to: '' };
+}
+
 export default function ReservationTable({ rows: initial, teams }: { rows: Row[]; teams: Record<string, string[]> }) {
   const [rows, setRows] = useState(initial);
   const [filter, setFilter] = useState('semua');
+  const [range, setRange] = useState<Range>(preset('semua'));
   const [err, setErr] = useState('');
-  const shown = useMemo(() => (filter === 'semua' ? rows : rows.filter((r) => r.status === filter)), [rows, filter]);
+  const inRange = useMemo(() => {
+    if (range.key === 'semua') return rows;
+    const { from, to } = range.from <= range.to ? range : { ...range, from: range.to, to: range.from };
+    // Saat difilter per tanggal, urutkan seperti agenda: tanggal lalu jam.
+    return rows
+      .filter((r) => r.tanggal && r.tanggal >= from && r.tanggal <= to)
+      .sort((a, b) => `${a.tanggal}${a.jam ?? ''}`.localeCompare(`${b.tanggal}${b.jam ?? ''}`));
+  }, [rows, range]);
+  const shown = useMemo(() => (filter === 'semua' ? inRange : inRange.filter((r) => r.status === filter)), [inRange, filter]);
 
   async function setStatus(id: number, status: string) {
     const prev = rows;
@@ -51,18 +78,38 @@ export default function ReservationTable({ rows: initial, teams }: { rows: Row[]
 
   return (
     <div className="mt-8">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 text-[12px] uppercase tracking-[0.18em] text-ink-faint">Tanggal datang</span>
+        {PRESETS.map((p) => (
+          <button key={p.key} onClick={() => setRange(preset(p.key))}
+            className={`rounded-full border px-4 py-1.5 text-[13px] ${range.key === p.key ? 'border-espresso bg-espresso text-ivory' : 'border-line bg-white text-ink-muted hover:text-ink'}`}>
+            {p.label}
+          </button>
+        ))}
+        {range.key === 'pilih' && (
+          <span className="flex flex-wrap items-center gap-2 text-[13px] text-ink-muted">
+            <input type="date" value={range.from} aria-label="Dari tanggal"
+              onChange={(e) => setRange({ ...range, from: e.target.value || range.from })}
+              className="rounded-lg border border-line bg-white px-3 py-1.5 text-ink" />
+            s/d
+            <input type="date" value={range.to} aria-label="Sampai tanggal"
+              onChange={(e) => setRange({ ...range, to: e.target.value || range.to })}
+              className="rounded-lg border border-line bg-white px-3 py-1.5 text-ink" />
+          </span>
+        )}
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
         {['semua', ...Object.keys(STATUS)].map((s) => (
           <button key={s} onClick={() => setFilter(s)}
             className={`rounded-full px-4 py-1.5 text-[13px] ${filter === s ? 'bg-espresso text-ivory' : 'bg-white text-ink-muted hover:text-ink'}`}>
-            {s === 'semua' ? 'Semua' : STATUS[s]} ({s === 'semua' ? rows.length : rows.filter((r) => r.status === s).length})
+            {s === 'semua' ? 'Semua' : STATUS[s]} ({s === 'semua' ? inRange.length : inRange.filter((r) => r.status === s).length})
           </button>
         ))}
       </div>
       {err && <p className="mt-4 text-sm text-red-700">{err}</p>}
 
       {shown.length === 0 ? (
-        <p className="mt-10 text-ink-muted">Belum ada reservasi.</p>
+        <p className="mt-10 text-ink-muted">{rows.length && (range.key !== 'semua' || filter !== 'semua') ? 'Tidak ada reservasi untuk filter ini.' : 'Belum ada reservasi.'}</p>
       ) : (
         <div className="mt-6 grid gap-3">
           {shown.map((r) => (
