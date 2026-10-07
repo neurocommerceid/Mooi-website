@@ -6,19 +6,33 @@ import type { Content } from '@/lib/cms/content';
 import { branchWa, waLink } from '@/lib/cms/content';
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import {
-  ANY, addDays, branchHours, fromMin, daysLabel, durasi, findServices, jakartaNow, menuFor, rupiah, slotsFor, stylistsAt, tanggalPanjang, totals, worksOn, type Taken,
+  ANY, addDays, branchHours, fromMin, findServices, jakartaNow, menuFor, rupiah, slotsFor, stylistsAt, totals, worksOn, type Taken,
 } from '@/lib/booking';
+import { bk, dateFmt, dateLong, daysLabelL, durasiL, translate, type Lang, type Term } from '@/lib/i18n';
 
 type Branch = Content['branches']['items'][number];
-type Props = { branches: Branch[]; booking: Content['booking']; whatsapp: string; initialBranch?: string; initialStylist?: string; homeHref?: string };
+type Props = {
+  branches: Branch[]; booking: Content['booking']; whatsapp: string; initialBranch?: string; initialStylist?: string; homeHref?: string;
+  /** Bahasa tampilan. Nama layanan yang dikirim ke server tetap nama asli dari menu. */
+  lang?: Lang; terms?: Term[];
+};
 type StepId = 'cabang' | 'layanan' | 'stylist' | 'jadwal' | 'data';
 
-const LABEL: Record<StepId, string> = { cabang: 'Cabang', layanan: 'Layanan', stylist: 'Stylist', jadwal: 'Jadwal', data: 'Data diri' };
 const STORE = 'mooi-booking-v1';
 
-const hari = (d: string, opt: Intl.DateTimeFormatOptions) => new Date(`${d}T00:00:00Z`).toLocaleDateString('id-ID', { ...opt, timeZone: 'UTC' });
+// Teks & format sesuai bahasa, dipakai juga oleh potongan UI di bawah.
+type T = (typeof bk)['id'];
+type Fmt = { t: T; lang: Lang; tr: (s: string) => string };
 
-export default function BookingFlow({ branches, booking, whatsapp, initialBranch, initialStylist, homeHref = '/' }: Props) {
+export default function BookingFlow({ branches, booking, whatsapp, initialBranch, initialStylist, homeHref = '/', lang = 'id', terms = [] }: Props) {
+  const t = bk[lang];
+  const tr = (s: string) => translate(s, terms, lang);
+  const fmt: Fmt = { t, lang, tr };
+  const LABEL = t.steps;
+  const hari = (d: string, opt: Intl.DateTimeFormatOptions) => dateFmt(d, lang, opt);
+  const durasi = (m: number) => durasiL(m, lang);
+  const tanggalPanjang = (d: string) => dateLong(d, lang);
+  const whoLabel = (w: string) => (w === ANY ? t.anyName : w);
   // ---------- state ----------
   const [cabang, setCabang] = useState(branches.some((b) => b.name === initialBranch) ? initialBranch! : '');
   const [picked, setPicked] = useState<string[]>([]);
@@ -178,11 +192,11 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
       const res = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nama, whatsapp: wa, cabang, stylist: who, tanggal: date, jam: time, layanan: picked, catatan, website: form?.value ?? '' }),
+        body: JSON.stringify({ nama, whatsapp: wa, cabang, stylist: who, tanggal: date, jam: time, layanan: picked, catatan, website: form?.value ?? '', lang }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setErr(data.error ?? 'Gagal mengirim. Coba lagi atau booking via WhatsApp.');
+        setErr(data.error ?? t.errSend);
         if (res.status === 409) {
           setTime('');
           go('jadwal');
@@ -195,18 +209,24 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
       } catch {}
       requestAnimationFrame(() => top.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     } catch {
-      setErr('Koneksi bermasalah. Coba lagi atau booking via WhatsApp.');
+      setErr(t.errNet);
     } finally {
       setSending(false);
     }
   }
 
-  const waText =
-    `Halo ${cabang}, saya ${nama} ingin booking:\n` +
-    items.map((i) => `• ${i.name}`).join('\n') +
-    `\nStylist: ${who}\nJadwal: ${date ? tanggalPanjang(date) : '-'}, ${time} WIB` +
-    (catatan ? `\nCatatan: ${catatan}` : '') +
-    `\n\nMohon konfirmasinya, terima kasih.`;
+  // Pesan ke WhatsApp cabang mengikuti bahasa pelanggan.
+  const waText = lang === 'en'
+    ? `Hello ${cabang}, I'm ${nama} and would like to book:\n` +
+      items.map((i) => `• ${i.name}`).join('\n') +
+      `\nStylist: ${whoLabel(who)}\nSchedule: ${date ? tanggalPanjang(date) : '-'}, ${time} WIB` +
+      (catatan ? `\nNotes: ${catatan}` : '') +
+      `\n\nPlease confirm, thank you.`
+    : `Halo ${cabang}, saya ${nama} ingin booking:\n` +
+      items.map((i) => `• ${i.name}`).join('\n') +
+      `\nStylist: ${who}\nJadwal: ${date ? tanggalPanjang(date) : '-'}, ${time} WIB` +
+      (catatan ? `\nCatatan: ${catatan}` : '') +
+      `\n\nMohon konfirmasinya, terima kasih.`;
 
   // ---------- render ----------
   if (done) {
@@ -217,18 +237,18 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
           <path d="M24 41l11 11 21-23" fill="none" stroke="#9E6449" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
             strokeDasharray="60" strokeDashoffset="60" style={{ animation: 'draw .6s .35s ease-out forwards' }} />
         </svg>
-        <h2 className="mt-8 font-serif text-4xl font-light text-ink md:text-5xl">Permintaan terkirim.</h2>
+        <h2 className="mt-8 font-serif text-4xl font-light text-ink md:text-5xl">{t.doneTitle}</h2>
         <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-ink-muted">{booking.successNote}</p>
         <div className="mt-10 rounded-3xl border border-line bg-white/70 p-6 text-left">
-          <Summary cabang={cabang} items={items} who={who} date={date} time={time} total={sum} />
+          <Summary fmt={fmt} cabang={cabang} items={items} who={whoLabel(who)} date={date} time={time} total={sum} />
         </div>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           {branchWa(branch, whatsapp) && (
             <a href={waLink(branchWa(branch, whatsapp), waText)} target="_blank" rel="noopener" className="btn">
-              Kirim detail ke WhatsApp {cabang.replace(/^Mooi\s+/, '')}
+              {t.sendWa(cabang.replace(/^Mooi\s+/, ''))}
             </a>
           )}
-          <Link href={homeHref} className="btn-line text-ink">Kembali ke beranda</Link>
+          <Link href={homeHref} className="btn-line text-ink">{t.home}</Link>
         </div>
       </div>
     );
@@ -259,12 +279,12 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
           ))}
         </ol>
         <p className="mt-3 text-[12px] uppercase tracking-[0.18em] text-ink-faint sm:hidden">
-          Langkah {idx + 1} dari {steps.length} · <span className="text-ink">{LABEL[step]}</span>
+          {t.stepOf(idx + 1, steps.length)} · <span className="text-ink">{LABEL[step]}</span>
         </p>
 
         <div key={step} className={`mt-10 ${dir === 1 ? 'step-in' : 'step-back'}`}>
           {step === 'cabang' && (
-            <Step title="Mau ke cabang mana?" sub="Semua cabang punya standar layanan yang sama.">
+            <Step title={t.branchTitle} sub={t.branchSub}>
               <div className="grid gap-2.5 sm:grid-cols-3 sm:gap-4">
                 {branches.map((b) => {
                   const on = b.name === cabang;
@@ -291,18 +311,18 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
           )}
 
           {step === 'layanan' && (
-            <Step title="Pilih layanan" sub={`${cabang} · boleh lebih dari satu`}>
-              <Services key={cabang} categories={categories} picked={picked} onToggle={(n) => setPicked((p) => (p.includes(n) ? p.filter((x) => x !== n) : [...p, n]))} />
+            <Step title={t.servicesTitle} sub={t.servicesSub(cabang)}>
+              <Services fmt={fmt} key={cabang} categories={categories} picked={picked} onToggle={(n) => setPicked((p) => (p.includes(n) ? p.filter((x) => x !== n) : [...p, n]))} />
             </Step>
           )}
 
           {step === 'stylist' && (
-            <Step title="Pilih stylist" sub={`Tersedia di ${cabang}`}>
+            <Step title={t.stylistTitle} sub={t.stylistSub(cabang)}>
               <div className="grid gap-3">
-                <StylistCard name={ANY} role="Kami pilihkan yang sedang tersedia" hint="Paling banyak pilihan jam" on={who === ANY}
+                <StylistCard fmt={fmt} name={t.anyName} any role={t.anyRole} hint={t.anyHint} on={who === ANY}
                   onClick={() => { setStylist(ANY); advanceSoon('jadwal'); }} />
                 {team.map((s) => (
-                  <StylistCard key={s.name} name={s.name} role={[s.role, s.years, daysLabel(s)].filter(Boolean).join(' · ')} hint={s.bio} photo={s.photo?.src}
+                  <StylistCard fmt={fmt} key={s.name} name={s.name} role={[s.role, s.years, daysLabelL(s, lang)].filter(Boolean).join(' · ')} hint={s.bio} photo={s.photo?.src}
                     on={stylist === s.name} onClick={() => { setStylist(s.name); advanceSoon('jadwal'); }} />
                 ))}
               </div>
@@ -310,7 +330,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
           )}
 
           {step === 'jadwal' && (
-            <Step title="Pilih jadwal" sub={`${who} · ${durasi(sum.duration)}`}>
+            <Step title={t.scheduleTitle} sub={`${whoLabel(who)} · ${durasi(sum.duration)}`}>
               <div className="no-scrollbar -mx-6 flex snap-x gap-2 overflow-x-auto px-6 pb-2 md:mx-0 md:px-0">
                 {days.map((d, i) => {
                   const n = countFor(d);
@@ -319,9 +339,9 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                     <button key={d} type="button" disabled={!n} aria-pressed={on}
                       onClick={() => { setDate(d); setTime(''); }}
                       className={`min-w-[68px] snap-start rounded-2xl border px-3 py-3 text-center transition duration-300 disabled:opacity-35 ${on ? 'border-espresso bg-espresso text-ivory shadow-lg' : 'border-line bg-white hover:border-gold'}`}>
-                      <span className="block text-[11px] uppercase tracking-wider opacity-70">{i === 0 ? 'Hari ini' : i === 1 ? 'Besok' : hari(d, { weekday: 'short' })}</span>
+                      <span className="block text-[11px] uppercase tracking-wider opacity-70">{i === 0 ? t.today : i === 1 ? t.tomorrow : hari(d, { weekday: 'short' })}</span>
                       <span className="mt-1 block font-serif text-2xl leading-none">{hari(d, { day: 'numeric' })}</span>
-                      <span className="mt-1 block text-[10px] opacity-70">{n ? `${n} slot` : 'penuh'}</span>
+                      <span className="mt-1 block text-[10px] opacity-70">{n ? t.slots(n) : t.full}</span>
                     </button>
                   );
                 })}
@@ -333,7 +353,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                     <p className="font-medium text-ink">{tanggalPanjang(date)}</p>
                     {branch && (() => { const h = branchHours(branch, date); return <p className="text-[12px] text-ink-faint">{fromMin(h.open)} – {fromMin(h.close)}</p>; })()}
                   </div>
-                  {[['Pagi', 0, 720], ['Siang', 720, 900], ['Sore & malam', 900, 1440]].map(([label, from, to]) => {
+                  {[[t.parts[0], 0, 720], [t.parts[1], 720, 900], [t.parts[2], 900, 1440]].map(([label, from, to]) => {
                     const group = slots.filter((s) => {
                       const m = Number(s.time.slice(0, 2)) * 60 + Number(s.time.slice(3));
                       return m >= (from as number) && m < (to as number);
@@ -354,32 +374,32 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
                       </div>
                     );
                   })}
-                  {!slots.some((s) => s.ok) && <p className="mt-6 text-sm text-ink-muted">Tidak ada jam tersisa di tanggal ini. Coba tanggal lain.</p>}
-                  <p className="mt-6 text-[12px] text-ink-faint">Jam yang dicoret sudah lewat, terlalu dekat, atau sudah terisi.</p>
+                  {!slots.some((s) => s.ok) && <p className="mt-6 text-sm text-ink-muted">{t.noSlots}</p>}
+                  <p className="mt-6 text-[12px] text-ink-faint">{t.struck}</p>
                 </div>
               ) : (
-                <p className="mt-8 text-sm text-ink-muted">Pilih tanggal untuk melihat jam yang tersedia.</p>
+                <p className="mt-8 text-sm text-ink-muted">{t.pickDate}</p>
               )}
             </Step>
           )}
 
           {step === 'data' && (
-            <Step title="Hampir selesai" sub="Untuk konfirmasi via WhatsApp.">
+            <Step title={t.dataTitle} sub={t.dataSub}>
               <div className="grid gap-5">
-                <Input label="Nama lengkap" value={nama} onChange={setNama} autoComplete="name" />
-                <Input label="Nomor WhatsApp" value={wa} onChange={setWa} type="tel" inputMode="tel" placeholder="08xx" autoComplete="tel"
-                  hint={wa && !canNext.data && nama.trim().length > 1 ? 'Periksa lagi nomornya (9–15 digit).' : ''} />
+                <Input label={t.name} value={nama} onChange={setNama} autoComplete="name" />
+                <Input label={t.phone} value={wa} onChange={setWa} type="tel" inputMode="tel" placeholder="08xx" autoComplete="tel"
+                  hint={wa && !canNext.data && nama.trim().length > 1 ? t.phoneHint : ''} />
                 <label className="block">
-                  <span className="text-[12px] uppercase tracking-[0.16em] text-ink-muted">Catatan untuk stylist <span className="normal-case tracking-normal text-ink-faint">(opsional)</span></span>
+                  <span className="text-[12px] uppercase tracking-[0.16em] text-ink-muted">{t.notes} <span className="normal-case tracking-normal text-ink-faint">{t.optional}</span></span>
                   <textarea rows={3} maxLength={1000} value={catatan} onChange={(e) => setCatatan(e.target.value)}
-                    placeholder="Mis. rambut baru di-bleach 2 bulan lalu"
+                    placeholder={t.notesPh}
                     className="mt-2 w-full rounded-2xl border border-line bg-white px-4 py-3 text-[15px] outline-none transition focus:border-gold" />
                 </label>
                 <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
               </div>
 
               <div className="mt-8 rounded-3xl border border-line bg-white/70 p-6 lg:hidden">
-                <Summary cabang={cabang} items={items} who={who} date={date} time={time} total={sum} onEdit={go} hasStylist={!!team.length} />
+                <Summary fmt={fmt} cabang={cabang} items={items} who={whoLabel(who)} date={date} time={time} total={sum} onEdit={go} hasStylist={!!team.length} />
               </div>
 
               {booking.policies.filter(Boolean).length > 0 && (
@@ -391,7 +411,7 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
               )}
               {err && <p className="mt-6 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800">{err}</p>}
               <button type="button" onClick={submit} disabled={!canNext.data || sending} className="btn mt-8 hidden w-full disabled:opacity-50 lg:inline-flex">
-                {sending ? 'Mengirim…' : 'Kirim permintaan booking'}
+                {sending ? t.sending : t.send}
               </button>
             </Step>
           )}
@@ -401,12 +421,12 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
       {/* Ringkasan (desktop) */}
       <aside className="hidden lg:block">
         <div className="sticky top-28 rounded-3xl border border-line bg-white/70 p-6 backdrop-blur">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-gold">Ringkasan</p>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t.summary}</p>
           <div className="mt-4">
-            <Summary cabang={cabang} items={items} who={who} date={date} time={time} total={sum} onEdit={go} hasStylist={!!team.length} />
+            <Summary fmt={fmt} cabang={cabang} items={items} who={whoLabel(who)} date={date} time={time} total={sum} onEdit={go} hasStylist={!!team.length} />
           </div>
           {step !== 'data' && (
-            <button type="button" onClick={next} disabled={!canNext[step]} className="btn mt-6 w-full disabled:opacity-40">Lanjut</button>
+            <button type="button" onClick={next} disabled={!canNext[step]} className="btn mt-6 w-full disabled:opacity-40">{t.nextBtn}</button>
           )}
         </div>
       </aside>
@@ -415,18 +435,18 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-ivory/95 px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3.5 backdrop-blur-md lg:hidden">
         <div className="flex items-center gap-4">
           <div className="min-w-0 flex-1">
-            <p className="truncate font-medium text-ink">{items.length ? `${sum.from ? 'mulai ' : ''}${rupiah(sum.price)}` : LABEL[step]}</p>
+            <p className="truncate font-medium text-ink">{items.length ? `${sum.from ? `${t.from} ` : ''}${rupiah(sum.price)}` : LABEL[step]}</p>
             <p className="truncate text-[12px] text-ink-muted">
-              {items.length ? `${items.length} layanan · ${durasi(sum.duration)}` : cabang || 'Pilih cabang'}
+              {items.length ? `${t.nServices(items.length)} · ${durasi(sum.duration)}` : cabang || t.pickBranch}
               {date && time ? ` · ${hari(date, { day: 'numeric', month: 'short' })}, ${time}` : ''}
             </p>
           </div>
           {step === 'data' ? (
             <button type="button" onClick={submit} disabled={!canNext.data || sending} className="btn !px-6 !py-3.5 disabled:opacity-40">
-              {sending ? 'Mengirim…' : 'Kirim'}
+              {sending ? t.sending : t.sendShort}
             </button>
           ) : (
-            <button type="button" onClick={next} disabled={!canNext[step]} className="btn !px-7 !py-3.5 disabled:opacity-40">Lanjut</button>
+            <button type="button" onClick={next} disabled={!canNext[step]} className="btn !px-7 !py-3.5 disabled:opacity-40">{t.nextBtn}</button>
           )}
         </div>
       </div>
@@ -446,19 +466,20 @@ function Step({ title, sub, children }: { title: string; sub?: string; children:
   );
 }
 
-function Services({ categories, picked, onToggle }: { categories: Content['booking']['categories']; picked: string[]; onToggle: (n: string) => void }) {
+function Services({ fmt, categories, picked, onToggle }: { fmt: Fmt; categories: Content['booking']['categories']; picked: string[]; onToggle: (n: string) => void }) {
+  const { t, lang, tr } = fmt;
   const cats = categories.filter((c) => c.items.length);
   const [active, setActive] = useState(cats[0]?.name ?? '');
   const cat = cats.find((c) => c.name === active) ?? cats[0];
   const countIn = (c: (typeof cats)[number]) => c.items.filter((i) => picked.includes(i.name)).length;
-  if (!cat) return <p className="text-ink-muted">Menu layanan belum diisi.</p>;
+  if (!cat) return <p className="text-ink-muted">{t.noMenu}</p>;
   return (
     <>
       <div className="no-scrollbar -mx-6 flex gap-2 overflow-x-auto px-6 md:mx-0 md:px-0">
         {cats.map((c) => (
           <button key={c.name} type="button" onClick={() => setActive(c.name)}
             className={`flex shrink-0 items-center gap-2 rounded-full border px-5 py-2.5 text-[13px] transition duration-300 ${c.name === cat.name ? 'border-espresso bg-espresso text-ivory' : 'border-line bg-white text-ink-muted hover:text-ink'}`}>
-            {c.name}
+            {tr(c.name)}
             {countIn(c) > 0 && <span className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] ${c.name === cat.name ? 'bg-gold text-white' : 'bg-gold/15 text-gold-deep'}`}>{countIn(c)}</span>}
           </button>
         ))}
@@ -471,11 +492,11 @@ function Services({ categories, picked, onToggle }: { categories: Content['booki
               className={`flex items-center gap-4 rounded-2xl border p-5 text-left transition duration-300 ${on ? 'border-gold bg-[#FBF4EA] shadow-[0_12px_30px_-20px_rgba(158,100,73,.6)]' : 'border-line bg-white hover:border-gold/60'}`}>
               <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[13px] transition duration-300 ${on ? 'scale-110 border-gold bg-gold text-white' : 'border-line text-transparent'}`}>✓</span>
               <span className="min-w-0 flex-1">
-                <span className="block font-medium text-ink">{i.name}</span>
-                <span className="mt-0.5 block text-[12px] text-ink-muted">{[durasi(i.duration), i.note].filter(Boolean).join(' · ')}</span>
+                <span className="block font-medium text-ink">{tr(i.name)}</span>
+                <span className="mt-0.5 block text-[12px] text-ink-muted">{[durasiL(i.duration, lang), tr(i.note)].filter(Boolean).join(' · ')}</span>
               </span>
               <span className="shrink-0 text-right text-[14px] font-medium text-ink">
-                {i.from && <span className="block text-[10px] font-normal uppercase tracking-wider text-ink-faint">mulai</span>}
+                {i.from && <span className="block text-[10px] font-normal uppercase tracking-wider text-ink-faint">{t.from}</span>}
                 {rupiah(i.price)}
               </span>
             </button>
@@ -486,8 +507,8 @@ function Services({ categories, picked, onToggle }: { categories: Content['booki
   );
 }
 
-function StylistCard({ name, role, hint, photo, on, onClick }: { name: string; role: string; hint?: string; photo?: string; on: boolean; onClick: () => void }) {
-  const initials = name === ANY ? '✦' : name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+function StylistCard({ fmt, name, any, role, hint, photo, on, onClick }: { fmt: Fmt; name: string; any?: boolean; role: string; hint?: string; photo?: string; on: boolean; onClick: () => void }) {
+  const initials = any ? '✦' : name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
   return (
     <button type="button" aria-pressed={on} onClick={onClick}
       className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition duration-300 hover:-translate-y-0.5 ${on ? 'border-gold bg-[#FBF4EA]' : 'border-line bg-white hover:border-gold/60'}`}>
@@ -499,7 +520,7 @@ function StylistCard({ name, role, hint, photo, on, onClick }: { name: string; r
         {role && <span className="block text-[13px] text-ink-muted">{role}</span>}
         {hint && <span className="mt-1 block text-[12px] italic text-ink-faint">{hint}</span>}
       </span>
-      <span className={`rounded-full px-4 py-2 text-[12px] transition ${on ? 'bg-espresso text-ivory' : 'border border-line text-ink-muted'}`}>{on ? 'Dipilih' : 'Pilih'}</span>
+      <span className={`rounded-full px-4 py-2 text-[12px] transition ${on ? 'bg-espresso text-ivory' : 'border border-line text-ink-muted'}`}>{on ? fmt.t.picked : fmt.t.pick}</span>
     </button>
   );
 }
@@ -515,33 +536,34 @@ function Input({ label, value, onChange, hint, ...rest }: { label: string; value
   );
 }
 
-function Summary({ cabang, items, who, date, time, total, onEdit, hasStylist }: {
-  cabang: string; items: { name: string; price: number; from: boolean }[]; who: string; date: string; time: string;
+function Summary({ fmt, cabang, items, who, date, time, total, onEdit, hasStylist }: {
+  fmt: Fmt; cabang: string; items: { name: string; price: number; from: boolean }[]; who: string; date: string; time: string;
   total: { duration: number; price: number; from: boolean }; onEdit?: (s: StepId) => void; hasStylist?: boolean;
 }) {
+  const { t, lang, tr } = fmt;
   const Row = ({ k, v, s }: { k: string; v: React.ReactNode; s: StepId }) => (
     <div className="flex items-start justify-between gap-4 border-b border-line/70 py-3 last:border-0">
       <div className="min-w-0">
         <p className="text-[11px] uppercase tracking-[0.16em] text-ink-faint">{k}</p>
         <div className="mt-0.5 text-[14px] text-ink">{v || <span className="text-ink-faint">—</span>}</div>
       </div>
-      {onEdit && v && <button type="button" onClick={() => onEdit(s)} className="shrink-0 text-[12px] text-gold-deep hover:underline">Ubah</button>}
+      {onEdit && v && <button type="button" onClick={() => onEdit(s)} className="shrink-0 text-[12px] text-gold-deep hover:underline">{t.edit}</button>}
     </div>
   );
   return (
     <div>
-      <Row k="Cabang" v={cabang} s="cabang" />
-      <Row k="Layanan" s="layanan" v={items.length ? (
+      <Row k={t.steps.cabang} v={cabang} s="cabang" />
+      <Row k={t.steps.layanan} s="layanan" v={items.length ? (
         <ul className="grid gap-1">{items.map((i) => (
-          <li key={i.name} className="flex justify-between gap-3"><span>{i.name}</span><span className="text-ink-muted">{rupiah(i.price)}</span></li>
+          <li key={i.name} className="flex justify-between gap-3"><span>{tr(i.name)}</span><span className="text-ink-muted">{rupiah(i.price)}</span></li>
         ))}</ul>
       ) : ''} />
-      {(hasStylist ?? true) && <Row k="Stylist" v={who} s="stylist" />}
-      <Row k="Jadwal" v={date && time ? `${tanggalPanjang(date)}, ${time} WIB` : ''} s="jadwal" />
+      {(hasStylist ?? true) && <Row k={t.steps.stylist} v={who} s="stylist" />}
+      <Row k={t.schedule} v={date && time ? `${dateLong(date, lang)}, ${time} WIB` : ''} s="jadwal" />
       {items.length > 0 && (
         <div className="mt-3 flex items-end justify-between">
-          <p className="text-[12px] text-ink-muted">Estimasi · {durasi(total.duration)}</p>
-          <p className="font-serif text-2xl text-ink">{total.from && <span className="mr-1 text-[12px] font-sans text-ink-faint">mulai</span>}{rupiah(total.price)}</p>
+          <p className="text-[12px] text-ink-muted">{t.estimate} · {durasiL(total.duration, lang)}</p>
+          <p className="font-serif text-2xl text-ink">{total.from && <span className="mr-1 text-[12px] font-sans text-ink-faint">{t.from}</span>}{rupiah(total.price)}</p>
         </div>
       )}
     </div>

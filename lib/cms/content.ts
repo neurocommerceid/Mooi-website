@@ -6,13 +6,28 @@ export type Img = { src: string; alt: string };
 export type Vid = { mp4: string; webm: string; poster: string };
 
 type Head = { title: string; sub: string };
+export type HomeText = {
+  hero: { eyebrow: string; title: string };
+  prices: Head; stylists: Head; reviews: Head; branches: Head; inside: Head;
+  pages: { layanan: Head; stylist: Head; cabang: Head; galeri: Head; tentang: { eyebrow: string; title: string }; booking: Head };
+};
 
 export type Content = {
   /** Teks desain baru: judul & subjudul beranda dan tiap halaman. */
-  home: {
-    hero: { eyebrow: string; title: string };
-    prices: Head; stylists: Head; reviews: Head; branches: Head; inside: Head;
-    pages: { layanan: Head; stylist: Head; cabang: Head; galeri: Head; tentang: { eyebrow: string; title: string }; booking: Head };
+  home: HomeText;
+  /** Versi bahasa Inggris. Kolom kosong = memakai teks bahasa Indonesia. */
+  en: {
+    home: HomeText;
+    aboutBody: string;
+    values: { title: string; desc: string }[];
+    bookingSub: string;
+    successNote: string;
+    policies: string[];
+    waGreeting: string;
+    footerText: string;
+    siteTitle: string;
+    siteDescription: string;
+    terms: { id: string; en: string }[];
   };
   settings: {
     whatsapp: string;
@@ -102,6 +117,7 @@ export type Stylist = { name: string; role: string; years: string; bio: string; 
 export type SectionKey = keyof Content;
 
 import { menuAlamSutera, menuKedoya, menuKelapaGading } from './menus';
+import { defaultTerms } from '../i18n';
 
 const img = (file: string, alt: string): Img => ({ src: `/media/${file}.jpg`, alt });
 
@@ -121,6 +137,45 @@ export const defaults: Content = {
       tentang: { eyebrow: 'Sejak 17 Agustus 2019', title: 'Tentang Mooi' },
       booking: { title: 'Booking', sub: '' },
     },
+  },
+  en: {
+    home: {
+      hero: { eyebrow: 'Hair studio & beauty bar · since 2019', title: 'Hair care that is personal, meticulous, and comfortable.' },
+      prices: { title: 'Prices', sub: "From each branch's official price list. Swipe to see more." },
+      stylists: { title: 'Our stylists', sub: 'Choose your favourite stylist when booking, or leave it to us.' },
+      reviews: { title: 'What clients say', sub: 'Original Google Maps reviews (in Indonesian).' },
+      branches: { title: 'Branches', sub: '' },
+      inside: { title: 'Inside Mooi', sub: 'Real photos from our branches.' },
+      pages: {
+        layanan: { title: 'Prices', sub: "From each branch's official price list. Swipe to see more." },
+        stylist: { title: 'Mooi stylists', sub: 'Meet the team, then book directly with the stylist you like.' },
+        cabang: { title: 'Mooi branches', sub: 'Addresses, opening hours, and contacts.' },
+        galeri: { title: 'Gallery', sub: 'Real photos from Mooi branches.' },
+        tentang: { eyebrow: 'Since 17 August 2019', title: 'About Mooi' },
+        booking: { title: 'Book', sub: 'Choose a branch, services, stylist, and time. Our team confirms on WhatsApp.' },
+      },
+    },
+    aboutBody:
+      'Mooi Hair Studio & Beauty Bar was founded on 17 August 2019 with a vision to offer a more personal, comfortable, and high-quality care experience. Starting with a focus on hair and beauty, Mooi has kept growing with a range of services — from haircuts, hair chemical services, and hair treatments to body treatments, lymphatic massage, Japanese head spa, and manicure & pedicure.\n\n' +
+      'We believe care is not only about appearance, but also about how comfortable and confident you feel in yourself. That is why Mooi puts quality, attention to detail, personal service, and the latest techniques and trends first in every service we provide.\n\n' +
+      "As we keep growing with our clients' needs, Mooi is committed to creating a complete, comfortable beauty experience that stays relevant over time.",
+    values: [
+      { title: 'Consultation first', desc: 'We understand your needs and hair condition before starting any treatment.' },
+      { title: 'Selected products', desc: '' },
+      { title: 'One standard', desc: 'The same training and procedures at every branch, for consistent results.' },
+    ],
+    bookingSub: 'Choose a branch, services, stylist, and time. Our team confirms on WhatsApp.',
+    successNote: 'Our team will confirm your appointment on WhatsApp during opening hours.',
+    policies: [
+      'Booking requests are confirmed by the Mooi team on WhatsApp.',
+      'Pay at the salon — cash, debit, or QRIS.',
+      'Need to reschedule? Let us know on WhatsApp.',
+    ],
+    waGreeting: "Hello Mooi, I'd like to make a reservation.",
+    footerText: 'Hair studio & beauty bar with three branches in Jakarta & Tangerang.',
+    siteTitle: 'Mooi Hair Studio & Beauty Bar | Kedoya · Alam Sutera · Kelapa Gading',
+    siteDescription: 'Hair studio and beauty bar with three branches in Jakarta & Tangerang: haircut, coloring, smoothing, hair spa, nails, and lash by professional stylists.',
+    terms: defaultTerms,
   },
   settings: {
     whatsapp: '',

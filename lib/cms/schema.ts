@@ -22,11 +22,7 @@ const head2 = (key: string, label: string, help?: string): Field => ({
   key, label, type: 'group', help, fields: [t('title', 'Judul'), ta('sub', 'Subjudul', 'Kosongkan untuk menyembunyikan.')],
 });
 
-export const schema: Record<SectionKey, Section> = {
-  home: {
-    title: 'Teks Desain Baru',
-    desc: 'Judul hero, judul tiap bagian di beranda, dan judul tiap halaman.',
-    fields: [
+const homeFields: Field[] = [
       { key: 'hero', label: 'Hero (paling atas beranda)', type: 'group', fields: [
         t('eyebrow', 'Baris kecil di atas judul'),
         ta('title', 'Judul', 'Singkat — idealnya di bawah 60 karakter agar rapi di ponsel.'),
@@ -44,6 +40,33 @@ export const schema: Record<SectionKey, Section> = {
         { key: 'tentang', label: 'Halaman Tentang', type: 'group', fields: [t('eyebrow', 'Baris kecil'), t('title', 'Judul')] },
         head2('booking', 'Halaman Booking', 'Subjudul kosong = memakai subjudul dari bagian Booking.'),
       ] },
+];
+
+export const schema: Record<SectionKey, Section> = {
+  home: {
+    title: 'Teks Desain Baru',
+    desc: 'Judul hero, judul tiap bagian di beranda, dan judul tiap halaman.',
+    fields: homeFields,
+  },
+  en: {
+    title: 'Bahasa Inggris (EN)',
+    desc: 'Semua teks versi bahasa Inggris. Kolom yang dikosongkan memakai teks bahasa Indonesia.',
+    fields: [
+      { key: 'home', label: 'Teks desain baru (EN)', type: 'group', fields: homeFields },
+      ta('aboutBody', 'Profil Mooi — halaman About (EN)', 'Pisahkan paragraf dengan satu baris kosong.'),
+      { key: 'values', label: 'Nilai-nilai (EN)', type: 'list', item: 'Nilai', help: 'Urutan sama dengan Nilai-nilai bahasa Indonesia.', fields: [t('title', 'Judul'), ta('desc', 'Keterangan')] },
+      ta('bookingSub', 'Subjudul halaman Book'),
+      ta('successNote', 'Pesan setelah booking terkirim'),
+      { key: 'policies', label: 'Ketentuan booking (EN)', type: 'strings' },
+      t('waGreeting', 'Pesan pembuka WhatsApp', 'Kata "Mooi" diganti nama cabang yang dipilih.'),
+      ta('footerText', 'Teks footer'),
+      t('siteTitle', 'Judul website (Google)'),
+      ta('siteDescription', 'Deskripsi website (Google)'),
+      {
+        key: 'terms', label: 'Istilah menu harga', type: 'list', item: 'Istilah',
+        help: 'Kata/frasa Indonesia di nama kategori, nama layanan, dan keterangan menu → bahasa Inggris. Diterapkan otomatis; angka & harga tidak pernah diubah.',
+        fields: [t('id', 'Indonesia'), t('en', 'Inggris')],
+      },
     ],
   },
   settings: {

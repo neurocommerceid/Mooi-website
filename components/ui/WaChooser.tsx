@@ -16,9 +16,11 @@ const Icon = ({ className = '' }: { className?: string }) => (
  */
 export default function WaChooser({
   contacts, greeting, label, className = '', variant = 'button', placement = 'top', wrapClassName = 'relative inline-flex',
+  heading = 'Chat dengan cabang', pickLabel = 'Chat WhatsApp — pilih cabang',
 }: {
   contacts: Contact[]; greeting: string; label: React.ReactNode; className?: string;
   variant?: 'button' | 'fab'; placement?: 'top' | 'bottom' | 'top-end'; wrapClassName?: string;
+  heading?: string; pickLabel?: string;
 }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
@@ -60,7 +62,7 @@ export default function WaChooser({
           {trigger}
         </a>
       ) : (
-        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="menu" aria-label="Chat WhatsApp — pilih cabang" className={className}>
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="menu" aria-label={pickLabel} className={className}>
           {trigger}
         </button>
       )}
@@ -70,7 +72,7 @@ export default function WaChooser({
           className={`animate-pop absolute z-50 w-[280px] overflow-hidden rounded-2xl border border-line bg-ivory text-left text-ink shadow-[0_24px_60px_-20px_rgba(0,0,0,.45)] ${
             variant === 'fab' || placement === 'top-end' ? 'bottom-[calc(100%+12px)] right-0' : placement === 'top' ? 'bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2' : 'left-1/2 top-[calc(100%+10px)] -translate-x-1/2'
           }`}>
-          <p className="px-5 pb-2 pt-4 text-[11px] uppercase tracking-[0.2em] text-gold-deep">Chat dengan cabang</p>
+          <p className="px-5 pb-2 pt-4 text-[11px] uppercase tracking-[0.2em] text-gold-deep">{heading}</p>
           {contacts.map((c) => (
             <a key={c.name} role="menuitem" href={waLink(c.wa, msg(c))} target="_blank" rel="noopener" onClick={() => setOpen(false)}
               className="flex items-center gap-3 border-t border-line/70 px-5 py-3.5 transition hover:bg-ivory-soft">

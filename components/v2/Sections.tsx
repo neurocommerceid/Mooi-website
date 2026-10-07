@@ -2,12 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Branch, Content, Img } from '@/lib/cms/content';
 import { branchWa, safeUrl, waLink } from '@/lib/cms/content';
-import { daysLabel, stylistsAt } from '@/lib/booking';
+import { stylistsAt } from '@/lib/booking';
+import { daysLabelL, ui, type Lang } from '@/lib/i18n';
 import BranchStrip, { StatusDot } from './BranchStatus';
 import { P, btnDark, h2, link, muted, short, wrap } from './ui';
 
 /** Foto asli interior cabang — bukan foto stok. */
-export function Inside({ branches, title, sub }: { branches: Branch[]; title: string; sub: string }) {
+export function Inside({ branches, title, sub, lang }: { branches: Branch[]; title: string; sub: string; lang: Lang }) {
   const lists = branches.map((b) => (b.gallery ?? []).map((g) => ({ img: g.image, branch: short(b.name) })).filter((x) => x.img?.src));
   const photos: { img: Img; branch: string }[] = [];
   for (let k = 0; photos.length < 9 && lists.some((l) => l[k]); k++) for (const l of lists) if (l[k] && photos.length < 9) photos.push(l[k]);
@@ -19,7 +20,7 @@ export function Inside({ branches, title, sub }: { branches: Branch[]; title: st
           <h2 className={h2}>{title}</h2>
           {sub && <p className={`mt-3 ${muted}`}>{sub}</p>}
         </div>
-        <Link href={P('/galeri')} className={link}>Lihat galeri</Link>
+        <Link href={P('/galeri', lang)} className={link}>{ui[lang].viewGallery}</Link>
       </div>
       <div className="mt-5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-2 no-scrollbar md:mx-auto md:mt-8 md:grid md:max-w-[1200px] md:grid-cols-4 md:gap-4 md:overflow-visible md:px-10">
         {photos.map((p, k) => (
@@ -35,7 +36,8 @@ export function Inside({ branches, title, sub }: { branches: Branch[]; title: st
   );
 }
 
-export function Branches({ c, page = false }: { c: Content; page?: boolean }) {
+export function Branches({ c, page = false, lang }: { c: Content; page?: boolean; lang: Lang }) {
+  const t = ui[lang];
   return (
     <section id="cabang" className="scroll-mt-20 pb-8 pt-10 md:pb-10 md:pt-24">
       <div className={wrap}>
@@ -61,13 +63,13 @@ export function Branches({ c, page = false }: { c: Content; page?: boolean }) {
                 </div>
                 <div className="flex flex-1 flex-col p-3.5 md:p-5">
                   <h3 className="font-display text-[1.15rem] leading-tight md:text-[1.5rem]">{short(b.name)}</h3>
-                  <div className="mt-1"><StatusDot b={b} /></div>
+                  <div className="mt-1"><StatusDot b={b} lang={lang} /></div>
                   <p className={`mt-1.5 line-clamp-2 text-[12.5px] leading-snug md:mt-3 md:line-clamp-none md:text-[15px] ${muted}`}>{b.address}</p>
                   <p className="mt-1 whitespace-pre-line text-[12.5px] md:mt-2 md:text-[15px]">{b.hours}</p>
                   <div className="mt-auto flex flex-wrap gap-1.5 pt-3 md:gap-2 md:pt-5">
-                    <Link href={`${P('/booking')}?cabang=${encodeURIComponent(b.name)}`} className={`${btnDark} !px-3.5 !py-1.5 !text-[13px] md:!px-5 md:!py-2.5 md:!text-[14px]`}>Booking</Link>
+                    <Link href={`${P('/booking', lang)}?cabang=${encodeURIComponent(b.name)}`} className={`${btnDark} !px-3.5 !py-1.5 !text-[13px] md:!px-5 md:!py-2.5 md:!text-[14px]`}>{t.nav.book}</Link>
                     {wa && <a href={waLink(wa, `${c.settings.waGreeting} (${b.name})`)} target="_blank" rel="noopener" className="rounded-full border border-cocoa/20 px-3 py-1.5 text-[13px] font-medium hover:border-cocoa md:px-4 md:py-2.5 md:text-[14px]">WhatsApp</a>}
-                    {maps && <a href={maps} target="_blank" rel="noopener" className="rounded-full border border-cocoa/20 px-3 py-1.5 text-[13px] font-medium hover:border-cocoa md:px-4 md:py-2.5 md:text-[14px]">Petunjuk arah</a>}
+                    {maps && <a href={maps} target="_blank" rel="noopener" className="rounded-full border border-cocoa/20 px-3 py-1.5 text-[13px] font-medium hover:border-cocoa md:px-4 md:py-2.5 md:text-[14px]">{t.directions}</a>}
                   </div>
                   {ig && <a href={ig} target="_blank" rel="noopener" className={`mt-2.5 text-[13px] md:mt-4 md:text-[14px] ${link}`}>Instagram {short(b.name)}</a>}
                 </div>
@@ -103,7 +105,7 @@ const stylistGroups = (c: Content) =>
     .filter((g) => g.team.length);
 
 /** Ringkasan stylist di beranda. */
-export function Stylists({ c }: { c: Content }) {
+export function Stylists({ c, lang }: { c: Content; lang: Lang }) {
   const groups = stylistGroups(c);
   if (!groups.length) return null;
   return (
@@ -114,19 +116,19 @@ export function Stylists({ c }: { c: Content }) {
             <h2 className={h2}>{c.home.stylists.title}</h2>
             {c.home.stylists.sub && <p className={`mt-2 max-w-[34rem] ${muted}`}>{c.home.stylists.sub}</p>}
           </div>
-          <Link href={P('/stylist')} className={link}>Lihat semua stylist</Link>
+          <Link href={P('/stylist', lang)} className={link}>{ui[lang].allStylists}</Link>
         </div>
         {groups.map((g) => (
           <div key={g.branch} className="mt-5 md:mt-8">
             <p className="text-[13px] font-medium text-bronze-mid md:text-[14px]">{short(g.branch)}</p>
             <div className="mt-2.5 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
               {g.team.map((s) => (
-                <Link key={s.name} href={`${P('/stylist')}#${encodeURIComponent(s.name)}`}
+                <Link key={s.name} href={`${P('/stylist', lang)}#${encodeURIComponent(s.name)}`}
                   className="flex flex-col items-center gap-2 rounded-2xl border border-pearl-line bg-white/70 p-3 text-center transition-shadow sm:flex-row sm:gap-4 sm:p-4 sm:text-left hover:shadow-[0_14px_30px_-20px_rgba(92,56,32,.5)]">
                   <Avatar s={s} size="sm" />
                   <div className="min-w-0">
                     <p className="text-[14px] font-medium md:text-[16px]">{s.name}</p>
-                    <p className={`text-[12px] leading-snug md:text-[14px] ${muted}`}>{[s.role, daysLabel(s)].filter(Boolean).join(' · ')}</p>
+                    <p className={`text-[12px] leading-snug md:text-[14px] ${muted}`}>{[s.role, daysLabelL(s, lang)].filter(Boolean).join(' · ')}</p>
                   </div>
                 </Link>
               ))}
@@ -139,19 +141,20 @@ export function Stylists({ c }: { c: Content }) {
 }
 
 /** Halaman Stylist: profil lengkap + booking langsung dengan stylist tsb. */
-export function StylistPage({ c }: { c: Content }) {
+export function StylistPage({ c, lang }: { c: Content; lang: Lang }) {
+  const t = ui[lang];
   const groups = stylistGroups(c);
   return (
     <section className={`${wrap} py-8 md:py-16`}>
       <h1 className={h2}>{c.home.pages.stylist.title}</h1>
       {c.home.pages.stylist.sub && <p className={`mt-2 max-w-[36rem] ${muted}`}>{c.home.pages.stylist.sub}</p>}
-      {groups.length === 0 && <p className={`mt-8 ${muted}`}>Profil stylist segera ditampilkan.</p>}
+      {groups.length === 0 && <p className={`mt-8 ${muted}`}>{t.stylistsSoon}</p>}
       {groups.map((g) => (
         <div key={g.branch} className="mt-6 md:mt-10">
           <h2 className="font-display text-[1.25rem] text-bronze-mid md:text-[1.6rem]">{short(g.branch)}</h2>
           <div className="mt-3 grid gap-2.5 md:mt-4 md:grid-cols-2 md:gap-4">
             {g.team.map((s) => {
-              const days = daysLabel(s);
+              const days = daysLabelL(s, lang);
               return (
                 <article key={s.name} id={s.name} className="scroll-mt-24 flex gap-3.5 rounded-2xl border border-pearl-line bg-white/70 p-3.5 md:gap-5 md:rounded-[22px] md:p-6">
                   <Avatar s={s} size="lg" />
@@ -160,9 +163,9 @@ export function StylistPage({ c }: { c: Content }) {
                     <p className={`text-[14px] ${muted}`}>{[s.role, s.years].filter(Boolean).join(' · ')}</p>
                     {days && <p className="mt-1 text-[14px] text-bronze-mid">{days}</p>}
                     {s.bio && <p className={`mt-3 text-[15px] ${muted}`}>{s.bio}</p>}
-                    <Link href={`${P('/booking')}?cabang=${encodeURIComponent(g.branch)}&stylist=${encodeURIComponent(s.name)}`}
+                    <Link href={`${P('/booking', lang)}?cabang=${encodeURIComponent(g.branch)}&stylist=${encodeURIComponent(s.name)}`}
                       className={`${btnDark} mt-3 self-start !px-3.5 !py-1.5 !text-[13px] md:mt-5 md:!px-5 md:!py-2.5 md:!text-[14px]`}>
-                      Booking dengan {s.name.split(/\s+/)[0]}
+                      {t.bookWith(s.name.split(/\s+/)[0])}
                     </Link>
                   </div>
                 </article>
@@ -175,7 +178,8 @@ export function StylistPage({ c }: { c: Content }) {
   );
 }
 
-export function Footer({ c }: { c: Content }) {
+export function Footer({ c, lang }: { c: Content; lang: Lang }) {
+  const n = ui[lang].nav;
   return (
     <footer className="bg-cocoa-dark pb-28 pt-10 text-pearl/80 md:pb-14 md:pt-14">
       <div className={wrap}>
@@ -201,8 +205,8 @@ export function Footer({ c }: { c: Content }) {
         <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-cocoa-line pt-6 text-[13px] text-pearl/50">
           <p>© {new Date().getFullYear()} Mooi Hair Studio &amp; Beauty Bar</p>
           <nav className="flex flex-wrap gap-5">
-            {[['Harga', '/layanan'], ['Cabang', '/cabang'], ['Galeri', '/galeri'], ['Tentang', '/tentang'], ['Booking', '/booking']].map(([l, h]) => (
-              <Link key={h} href={P(h)} className="hover:text-pearl">{l}</Link>
+            {[[n.prices, '/layanan'], [n.stylists, '/stylist'], [n.branches, '/cabang'], [n.gallery, '/galeri'], [n.about, '/tentang'], [n.book, '/booking']].map(([l, h]) => (
+              <Link key={h} href={P(h, lang)} className="hover:text-pearl">{l}</Link>
             ))}
           </nav>
         </div>
@@ -211,7 +215,7 @@ export function Footer({ c }: { c: Content }) {
   );
 }
 
-export function BranchSummary({ c }: { c: Content }) {
+export function BranchSummary({ c, lang }: { c: Content; lang: Lang }) {
   return (
     <section className="pt-10 md:pt-20">
       <div className={wrap}>
@@ -220,9 +224,9 @@ export function BranchSummary({ c }: { c: Content }) {
             <h2 className={h2}>{c.home.branches.title}</h2>
             {c.home.branches.sub && <p className={`mt-2 ${muted}`}>{c.home.branches.sub}</p>}
           </div>
-          <Link href={P('/cabang')} className={link}>Alamat &amp; jam lengkap</Link>
+          <Link href={P('/cabang', lang)} className={link}>{ui[lang].fullAddresses}</Link>
         </div>
-        <div className="mt-4 md:mt-6"><BranchStrip branches={c.branches.items} fallbackWa={c.settings.whatsapp} greeting={c.settings.waGreeting} /></div>
+        <div className="mt-4 md:mt-6"><BranchStrip branches={c.branches.items} fallbackWa={c.settings.whatsapp} greeting={c.settings.waGreeting} lang={lang} /></div>
       </div>
     </section>
   );

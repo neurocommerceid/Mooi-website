@@ -1,5 +1,6 @@
 import type { Content } from '@/lib/cms/content';
 import { safeUrl } from '@/lib/cms/content';
+import { ui, type Lang } from '@/lib/i18n';
 import { h2, muted, short, wrap } from './ui';
 
 const Star = ({ on }: { on: boolean }) => (
@@ -9,7 +10,8 @@ const Star = ({ on }: { on: boolean }) => (
 );
 
 /** Ulasan asli pelanggan dari admin. Tidak tampil bila belum ada ulasan. */
-export default function Reviews({ c }: { c: Content }) {
+export default function Reviews({ c, lang }: { c: Content; lang: Lang }) {
+  const t = ui[lang];
   const reviews = (c.testimonial.reviews ?? []).filter((r) => r.name?.trim() && r.text?.trim());
   if (!reviews.length) return null;
   const maps = c.branches.items.map((b) => ({ name: short(b.name), url: safeUrl(b.maps) })).filter((m) => m.url);
@@ -24,7 +26,7 @@ export default function Reviews({ c }: { c: Content }) {
           const stars = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 5)));
           return (
             <figure key={`${r.name}-${i}`} className="price-card flex w-[68vw] max-w-[340px] shrink-0 snap-start flex-col rounded-2xl border border-pearl-line bg-white/70 p-4 sm:w-[300px] md:w-[340px] md:rounded-[22px] md:p-6">
-              <div className="flex gap-0.5" aria-label={`${stars} dari 5 bintang`}>
+              <div className="flex gap-0.5" aria-label={t.starsOf(stars)}>
                 {[1, 2, 3, 4, 5].map((n) => <Star key={n} on={n <= stars} />)}
               </div>
               <blockquote className="mt-2.5 line-clamp-[6] whitespace-pre-line text-[13.5px] leading-relaxed md:mt-4 md:line-clamp-[9] md:text-[15px]">&ldquo;{r.text.trim()}&rdquo;</blockquote>
@@ -38,7 +40,7 @@ export default function Reviews({ c }: { c: Content }) {
       </div>
       {maps.length > 0 && (
         <p className={`${wrap} mt-4 text-[14px] ${muted}`}>
-          Baca semua ulasan di Google Maps:{' '}
+          {t.readAllReviews}{' '}
           {maps.map((m, i) => (
             <span key={m.name}>
               {i > 0 && ' · '}

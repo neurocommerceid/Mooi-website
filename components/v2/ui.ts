@@ -8,8 +8,19 @@ export const h2 = 'metal-text font-display text-[1.65rem] font-normal leading-[1
 export const muted = 'text-[#7A6352]';
 export const wrap = 'mx-auto w-full max-w-[1200px] px-4 md:px-10';
 
+import type { Lang } from '@/lib/i18n';
+
 // Semua halaman desain baru ada di bawah /v2 sampai disetujui. Saat dipindah
-// ke alamat utama, cukup ubah BASE menjadi ''.
+// ke alamat utama, cukup ubah BASE menjadi ''. Bahasa Inggris di bawah /en.
 const BASE = '/v2';
-export const P = (path: string) => (path === '/' ? BASE || '/' : BASE + path);
+export const P = (path: string, lang: Lang = 'id') => {
+  const root = BASE + (lang === 'en' ? '/en' : '');
+  return path === '/' ? root || '/' : root + path;
+};
+/** Alamat halaman yang sama dalam bahasa lain. */
+export const switchLang = (pathname: string, to: Lang) => {
+  const rest = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname;
+  const bare = rest === '/en' ? '' : rest.startsWith('/en/') ? rest.slice(3) : rest;
+  return BASE + (to === 'en' ? '/en' : '') + bare || '/';
+};
 export const short = (name: string) => name.replace(/^Mooi\s+/i, '');

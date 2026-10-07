@@ -3,17 +3,19 @@ import { useEffect, useState } from 'react';
 import type { Branch } from '@/lib/cms/content';
 import { branchWa, safeUrl, waLink } from '@/lib/cms/content';
 import { addDays, branchHours, fromMin, jakartaNow } from '@/lib/booking';
+import { ui, type Lang } from '@/lib/i18n';
 import { short } from './ui';
 
 const jam = (m: number) => fromMin(m).replace(':', '.');
 
 /** Status buka/tutup saat ini (WIB). Dihitung di browser agar tidak ikut ter-cache. */
-export function openStatus(b: Branch, now = Date.now()) {
+export function openStatus(b: Branch, now = Date.now(), lang: Lang = 'id') {
+  const t = ui[lang].status;
   const { date, minutes } = jakartaNow(now);
   const { open, close } = branchHours(b, date);
-  if (minutes < open) return { on: false, text: `Tutup · buka ${jam(open)}` };
-  if (minutes < close) return { on: true, text: close - minutes <= 60 ? `Segera tutup · ${jam(close)}` : `Buka · sampai ${jam(close)}` };
-  return { on: false, text: `Tutup · buka besok ${jam(branchHours(b, addDays(date, 1)).open)}` };
+  if (minutes < open) return { on: false, text: t.opensAt(jam(open)) };
+  if (minutes < close) return { on: true, text: close - minutes <= 60 ? t.closingSoon(jam(close)) : t.openUntil(jam(close)) };
+  return { on: false, text: t.opensTomorrow(jam(branchHours(b, addDays(date, 1)).open)) };
 }
 
 export function useNow(intervalMs = 60_000) {
@@ -26,10 +28,10 @@ export function useNow(intervalMs = 60_000) {
   return now;
 }
 
-export function StatusDot({ b }: { b: Branch }) {
+export function StatusDot({ b, lang }: { b: Branch; lang: Lang }) {
   const now = useNow();
-  if (now === null) return <span className="text-[14px] text-[#7A6352]">{b.hours.split('\n')[0]}</span>;
-  const s = openStatus(b, now);
+  if (now === null) return <span className="text-[13px] text-[#7A6352] md:text-[14px]">{b.hours.split('\n')[0]}</span>;
+  const s = openStatus(b, now, lang);
   return (
     <span className="inline-flex items-center gap-2 text-[13px] md:text-[14px]">
       <span className={`h-2 w-2 rounded-full ${s.on ? 'bg-emerald-600' : 'bg-[#C9B8A8]'}`} aria-hidden />
@@ -39,7 +41,8 @@ export function StatusDot({ b }: { b: Branch }) {
 }
 
 /** Ringkasan cabang di beranda: status buka, WhatsApp, petunjuk arah. Booking ada di bar/nav. */
-export default function BranchStrip({ branches, fallbackWa, greeting }: { branches: Branch[]; fallbackWa: string; greeting: string }) {
+export default function BranchStrip({ branches, fallbackWa, greeting, lang }: { branches: Branch[]; fallbackWa: string; greeting: string; lang: Lang }) {
+  const t = ui[lang];
   return (
     <div className="grid gap-2 md:grid-cols-3 md:gap-4">
       {branches.map((b) => {
@@ -50,7 +53,7 @@ export default function BranchStrip({ branches, fallbackWa, greeting }: { branch
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="font-display text-[1.08rem] leading-tight md:text-[1.3rem]">{short(b.name)}</p>
-                <StatusDot b={b} />
+                <StatusDot b={b} lang={lang} />
               </div>
               {wa && (
                 <a href={waLink(wa, `${greeting} (${b.name})`)} target="_blank" rel="noopener" aria-label={`WhatsApp ${b.name}`}
@@ -63,11 +66,11 @@ export default function BranchStrip({ branches, fallbackWa, greeting }: { branch
             {maps && (
               <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[13px] font-medium text-[#7B5435] md:mt-3 md:text-[14px]">
                 <a href={maps} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 hover:underline">
-                  Petunjuk arah
+                  {t.directions}
                   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
                 </a>
                 <a href={maps} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 hover:underline">
-                  Ulasan Google
+                  {t.googleReviews}
                   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path fill="currentColor" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" /></svg>
                 </a>
               </div>

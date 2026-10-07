@@ -2,11 +2,13 @@
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import type { Img } from '@/lib/cms/content';
+import { ui, type Lang } from '@/lib/i18n';
 import { short } from './ui';
 
 const ratio = ['aspect-[4/5]', 'aspect-square', 'aspect-[3/4]', 'aspect-[4/5]', 'aspect-[3/4]', 'aspect-square', 'aspect-[4/5]', 'aspect-[3/4]'];
 
-export default function Gallery({ branches, initial }: { branches: { name: string; photos: Img[] }[]; initial?: string }) {
+export default function Gallery({ branches, initial, lang }: { branches: { name: string; photos: Img[] }[]; initial?: string; lang: Lang }) {
+  const t = ui[lang];
   const list = branches.filter((b) => b.photos.length);
   const [active, setActive] = useState(list.find((b) => b.name === initial)?.name ?? list[0]?.name ?? '');
   const [zoom, setZoom] = useState<number | null>(null);
@@ -25,7 +27,7 @@ export default function Gallery({ branches, initial }: { branches: { name: strin
     return () => { document.removeEventListener('keydown', key); document.body.style.overflow = ''; };
   }, [zoom, step]);
 
-  if (!list.length) return <p className="text-[#7A6352]">Foto segera ditambahkan.</p>;
+  if (!list.length) return <p className="text-[#7A6352]">{t.photosSoon}</p>;
   const z = zoom === null ? null : photos[zoom];
 
   return (
@@ -44,7 +46,7 @@ export default function Gallery({ branches, initial }: { branches: { name: strin
         {photos.map((p, i) => (
           <button key={p.src} onClick={() => setZoom(i)} style={{ animationDelay: `${i * 70}ms` }}
             className={`price-card group relative mb-2 block w-full overflow-hidden rounded-xl md:rounded-2xl bg-pearl-deep md:mb-4 ${ratio[i % ratio.length]}`}
-            aria-label={`Perbesar: ${p.alt}`}>
+            aria-label={`${t.zoom}: ${p.alt}`}>
             <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 33vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
           </button>
         ))}
@@ -53,12 +55,12 @@ export default function Gallery({ branches, initial }: { branches: { name: strin
         <div role="dialog" aria-modal="true" aria-label={z.alt} className="fixed inset-0 z-50 flex flex-col bg-cocoa-dark/95 text-pearl" onClick={() => setZoom(null)}>
           <div className="flex items-center justify-between px-5 py-4 text-[14px]">
             <span>{(zoom ?? 0) + 1} / {photos.length}</span>
-            <button onClick={() => setZoom(null)} className="rounded-full border border-pearl/30 px-4 py-2">Tutup</button>
+            <button onClick={() => setZoom(null)} className="rounded-full border border-pearl/30 px-4 py-2">{t.close}</button>
           </div>
           <div className="relative flex-1" onClick={(e) => e.stopPropagation()}>
             <Image src={z.src} alt={z.alt} fill sizes="100vw" className="object-contain" />
             {photos.length > 1 && [-1, 1].map((d) => (
-              <button key={d} onClick={() => step(d)} aria-label={d < 0 ? 'Foto sebelumnya' : 'Foto berikutnya'}
+              <button key={d} onClick={() => step(d)} aria-label={d < 0 ? t.prevPhoto : t.nextPhoto}
                 className={`absolute top-1/2 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-pearl/15 backdrop-blur hover:bg-pearl/25 ${d < 0 ? 'left-3' : 'right-3'}`}>
                 <svg viewBox="0 0 24 24" className={`h-5 w-5 ${d < 0 ? 'rotate-180' : ''}`} aria-hidden><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
               </button>

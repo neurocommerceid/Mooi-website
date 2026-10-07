@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Content } from '@/lib/cms/content';
+import { ui, type Lang } from '@/lib/i18n';
 import { P, btnDark, link } from './ui';
 
 /**
@@ -8,8 +9,9 @@ import { P, btnDark, link } from './ui';
  *   sudah memegang Booking & WhatsApp).
  * - Desktop: dua kolom sama tinggi, satu tombol utama.
  */
-export default function Hero({ c }: { c: Content }) {
+export default function Hero({ c, lang }: { c: Content; lang: Lang }) {
   const v = c.hero.video;
+  const t = ui[lang];
   return (
     <section className="md:mx-auto md:w-full md:max-w-[1200px] md:px-10 md:py-14">
       <div className="relative h-[calc(100svh-64px-84px)] max-h-[680px] min-h-[420px] overflow-hidden bg-cocoa-dark md:grid md:h-auto md:max-h-none md:min-h-0 md:grid-cols-2 md:items-stretch md:gap-12 md:overflow-visible md:bg-transparent">
@@ -27,12 +29,12 @@ export default function Hero({ c }: { c: Content }) {
             {c.home.hero.title}
           </h1>
           <div className="mt-4 flex items-center gap-6 md:mt-8">
-            <Link href={P('/booking')} className={`${btnDark} hidden md:inline-flex`}>Booking sekarang</Link>
+            <Link href={P('/booking', lang)} className={`${btnDark} hidden md:inline-flex`}>{t.bookNow}</Link>
             <a href="#harga" className={`inline-flex items-center gap-2 text-[15px] font-medium text-pearl underline decoration-ivory/40 underline-offset-4 md:hidden`}>
-              Lihat harga
+              {t.seePrices}
               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
             </a>
-            <a href="#harga" className={`hidden text-[15px] md:inline ${link}`}>Lihat harga</a>
+            <a href="#harga" className={`hidden text-[15px] md:inline ${link}`}>{t.seePrices}</a>
           </div>
         </div>
       </div>

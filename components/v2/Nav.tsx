@@ -3,18 +3,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { P, btnDark, wrap } from './ui';
+import { ui, type Lang } from '@/lib/i18n';
+import { P, btnDark, switchLang, wrap } from './ui';
 
-const links = [
-  { href: P('/layanan'), label: 'Harga' },
-  { href: P('/stylist'), label: 'Stylist' },
-  { href: P('/cabang'), label: 'Cabang' },
-  { href: P('/galeri'), label: 'Galeri' },
-  { href: P('/tentang'), label: 'Tentang' },
-];
+function LangSwitch({ lang, path, className = '' }: { lang: Lang; path: string; className?: string }) {
+  return (
+    <div className={`flex items-center rounded-full border border-pearl-line bg-white/60 p-0.5 text-[12px] font-semibold ${className}`} aria-label={ui[lang].nav.lang}>
+      {(['id', 'en'] as Lang[]).map((l) => (
+        <Link key={l} href={switchLang(path, l)} hrefLang={l} aria-current={l === lang ? 'true' : undefined}
+          className={`rounded-full px-2.5 py-1 uppercase transition-colors ${l === lang ? 'bg-bronze text-pearl' : 'text-cocoa/60 hover:text-cocoa'}`}>
+          {l}
+        </Link>
+      ))}
+    </div>
+  );
+}
 
-export default function Nav() {
-  const path = usePathname();
+export default function Nav({ lang }: { lang: Lang }) {
+  const t = ui[lang].nav;
+  const path = usePathname() ?? P('/', lang);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -25,15 +32,23 @@ export default function Nav() {
   }, []);
   useEffect(() => setOpen(false), [path]);
 
+  const links = [
+    { href: P('/layanan', lang), label: t.prices },
+    { href: P('/stylist', lang), label: t.stylists },
+    { href: P('/cabang', lang), label: t.branches },
+    { href: P('/galeri', lang), label: t.gallery },
+    { href: P('/tentang', lang), label: t.about },
+  ];
+
   return (
     <header className={`sticky top-0 z-40 transition-colors ${scrolled || open ? 'border-b border-pearl-line bg-pearl/95 backdrop-blur' : 'border-b border-transparent bg-pearl'}`}>
       <div className={`${wrap} flex h-16 items-center justify-between md:h-[72px]`}>
-        <Link href={P('/')} aria-label="Mooi — Beranda" className="shrink-0">
+        <Link href={P('/', lang)} aria-label={`Mooi — ${t.home}`} className="shrink-0">
           <Image src="/logo.png" alt="Mooi Hair Studio & Beauty Bar" width={1061} height={618} priority className="h-10 w-auto md:h-11" />
         </Link>
-        <nav className="hidden items-center gap-8 text-[15px] md:flex">
+        <nav className="hidden items-center gap-7 text-[15px] md:flex">
           {links.map((l) => {
-            const on = path?.startsWith(l.href);
+            const on = path.startsWith(l.href);
             return (
               <Link key={l.href} href={l.href} aria-current={on ? 'page' : undefined}
                 className={`relative py-1 transition-colors ${on ? 'text-cocoa' : 'text-cocoa/70 hover:text-cocoa'}`}>
@@ -44,8 +59,9 @@ export default function Nav() {
           })}
         </nav>
         <div className="flex items-center gap-2">
-          <Link href={P('/booking')} className={`${btnDark} !hidden !px-5 !py-2.5 text-[14px] md:!inline-flex`}>Booking</Link>
-          <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? 'Tutup menu' : 'Buka menu'}
+          <LangSwitch lang={lang} path={path} />
+          <Link href={P('/booking', lang)} className={`${btnDark} !hidden !px-5 !py-2.5 text-[14px] md:!inline-flex`}>{t.book}</Link>
+          <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? t.closeMenu : t.openMenu}
             className="grid h-10 w-10 place-items-center rounded-full text-cocoa md:hidden">
             <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
               {open
@@ -58,8 +74,8 @@ export default function Nav() {
       {open && (
         <nav className="border-t border-pearl-line bg-pearl md:hidden">
           <div className={`${wrap} grid py-2`}>
-            {[{ href: P('/'), label: 'Beranda' }, ...links].map((l) => (
-              <Link key={l.href} href={l.href} className="border-b border-pearl-line/70 py-3.5 text-[17px] last:border-0">{l.label}</Link>
+            {[{ href: P('/', lang), label: t.home }, ...links].map((l) => (
+              <Link key={l.href} href={l.href} className="border-b border-pearl-line/70 py-3 text-[16px] last:border-0">{l.label}</Link>
             ))}
           </div>
         </nav>
