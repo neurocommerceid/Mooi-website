@@ -42,8 +42,8 @@ export default function ForgotPassword() {
     } finally { setBusy(false); }
   }
   return (
-    <main className="flex min-h-screen items-center justify-center bg-espresso px-6">
-      <div className="w-full max-w-sm rounded-2xl bg-ivory p-8 shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-pearl via-pearl-soft to-pearl-deep px-6">
+      <div className="w-full max-w-sm rounded-2xl border border-pearl-line bg-white/80 p-8 shadow-[0_30px_70px_-35px_rgba(74,43,22,.45)]">
         <h1 className="font-serif text-3xl">Lupa password</h1>
         {sent ? <p role="status" className="mt-4 text-sm leading-relaxed">Jika email terdaftar, tautan reset akan dikirim. Periksa inbox dan spam. Buka tautan di browser yang sama dengan halaman ini.</p> : (
           <form onSubmit={submit} className="mt-6 grid gap-4">
@@ -54,7 +54,7 @@ export default function ForgotPassword() {
             <button className="btn w-full disabled:opacity-60" disabled={busy}>{busy ? 'Mengirim…' : 'Kirim tautan reset'}</button>
           </form>
         )}
-        <Link href="/admin/login" className="mt-6 block text-sm text-gold underline">Kembali ke login</Link>
+        <Link href="/admin/login" className="mt-6 block text-sm text-bronze-mid underline">Kembali ke login</Link>
       </div>
     </main>
   );

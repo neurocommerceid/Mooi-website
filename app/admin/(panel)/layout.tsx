@@ -28,14 +28,14 @@ export default async function Panel({ children }: { children: React.ReactNode })
 
   return (
     <div className="lg:grid lg:min-h-screen lg:grid-cols-[260px_1fr]">
-      <aside className="bg-espresso px-4 py-6 text-ivory lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+      <aside className="bg-cocoa-dark px-4 py-6 text-pearl lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
         <Link href="/admin" className="block px-3">
           <Image src="/logo.png" alt="Mooi" width={1061} height={618} className="h-10 w-auto" />
         </Link>
         <nav className="mt-8 space-y-1">
           <Link href="/admin" className={link}>Ringkasan</Link>
           <Link href="/admin/reservasi" className={link}>Reservasi</Link>
-          <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-gold">Konten</p>
+          <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-champagne">Konten</p>
           {sectionKeys.filter((k) => !schema[k].legacy).map((k) => (
             <Link key={k} href={`/admin/konten/${k}`} className={link}>{schema[k].title}</Link>
           ))}
@@ -44,7 +44,7 @@ export default async function Panel({ children }: { children: React.ReactNode })
             <Link key={k} href={`/admin/konten/${k}`} className={`${link} opacity-60`}>{schema[k].title}</Link>
           ))}
         </nav>
-        <div className="mt-8 space-y-1 border-t border-espresso-line pt-4">
+        <div className="mt-8 space-y-1 border-t border-cocoa-line pt-4">
           <a href="/" target="_blank" className={link}>Lihat website ↗</a>
           <a href="/v2" target="_blank" className={link}>Lihat desain baru ↗</a>
           <LogoutButton className={`${link} w-full text-left`} />

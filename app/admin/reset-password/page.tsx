@@ -46,8 +46,8 @@ export default function ResetPassword() {
     finally { setBusy(false); }
   }
   return (
-    <main className="flex min-h-screen items-center justify-center bg-espresso px-6">
-      <div className="w-full max-w-sm rounded-2xl bg-ivory p-8 shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-pearl via-pearl-soft to-pearl-deep px-6">
+      <div className="w-full max-w-sm rounded-2xl border border-pearl-line bg-white/80 p-8 shadow-[0_30px_70px_-35px_rgba(74,43,22,.45)]">
         <h1 className="font-serif text-3xl">Kata sandi baru</h1>
         {checking && <p role="status" className="mt-4 text-sm">Memeriksa tautan…</p>}
         {done && <p role="status" className="mt-4 text-sm">Kata sandi berhasil diganti. Silakan login dengan kata sandi baru.</p>}
@@ -57,8 +57,8 @@ export default function ResetPassword() {
           <label className="grid gap-2 text-sm">Ulangi kata sandi<PasswordInput name="confirm" autoComplete="new-password" required minLength={8} /></label>
           <button className="btn w-full disabled:opacity-60" disabled={busy}>{busy ? 'Menyimpan…' : 'Simpan kata sandi'}</button>
         </form>}
-        {!checking && !ready && !done && <Link href="/admin/forgot-password" className="mt-6 block text-sm text-gold underline">Minta tautan baru</Link>}
-        <Link href="/admin/login" className="mt-6 block text-sm text-gold underline">Kembali ke login</Link>
+        {!checking && !ready && !done && <Link href="/admin/forgot-password" className="mt-6 block text-sm text-bronze-mid underline">Minta tautan baru</Link>}
+        <Link href="/admin/login" className="mt-6 block text-sm text-bronze-mid underline">Kembali ke login</Link>
       </div>
     </main>
   );

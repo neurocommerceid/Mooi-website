@@ -27,12 +27,12 @@ export default async function Dashboard() {
     <div className="max-w-5xl">
       <h1 className="font-serif text-4xl">Ringkasan</h1>
 
-      <Link href="/admin/reservasi" className="mt-8 flex items-center justify-between rounded-2xl bg-espresso p-6 text-ivory transition hover:bg-espresso-soft">
+      <Link href="/admin/reservasi" className="btn-bronze mt-8 flex items-center justify-between rounded-2xl p-6">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-gold">Reservasi baru</p>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-light">Reservasi baru</p>
           <p className="mt-1 font-serif text-5xl">{baru ?? 0}</p>
         </div>
-        <span className="text-sm text-ivory/70">Lihat semua →</span>
+        <span className="text-sm text-pearl/80">Lihat semua →</span>
       </Link>
 
       <h2 className="mt-12 font-serif text-2xl">Konten website</h2>

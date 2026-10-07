@@ -141,29 +141,36 @@ body {
 .price-card:hover .sparkles, .price-card.is-active .sparkles { opacity: 1; }
 .twinkle { animation: twinkle 2.4s ease-in-out infinite; }
 
-/* Komponen lama di dalam /v2 (mis. alur booking) memakai gaya & palet baru. */
-.v2 .btn {
+/* Komponen lama di area desain baru — website /v2 (.v2) dan panel admin (.skin) —
+   memakai gaya & palet baru tanpa mengubah komponennya. */
+:is(.v2, .skin) .btn {
   background-image: linear-gradient(135deg, #4A2B16 0%, #6E4628 55%, #8E6A4C 100%); color: #FBF8F4;
   text-transform: none; letter-spacing: 0; font-size: 15px; padding: .875rem 1.5rem;
 }
-.v2 .btn:hover { filter: brightness(1.08); box-shadow: 0 14px 30px -14px rgba(74,43,22,.75); }
-.v2 .text-ink { color: #3B2B20; }
-.v2 .text-ink-muted { color: #7A6352; }
-.v2 .text-ink-faint { color: #9C8878; }
-.v2 .border-line { border-color: #E6D8C9; }
-.v2 .bg-line { background-color: #E6D8C9; }
-.v2 .bg-ivory { background-color: #FBF8F4; }
-.v2 .bg-ivory-soft { background-color: #F4EEE7; }
-.v2 .bg-ivory-deep { background-color: #EBE2DC; }
-.v2 .bg-espresso { background-color: #5C3820; }
-.v2 .border-espresso { border-color: #5C3820; }
-.v2 .text-gold, .v2 .text-gold-deep { color: #7B5435; }
-.v2 .bg-gold { background-color: #967355; }
-.v2 .border-gold { border-color: #B8956F; }
-.v2 .ring-gold\/30 { --tw-ring-color: rgba(150,115,85,.3); }
-.v2 .btn-line { text-transform: none; letter-spacing: 0; font-size: 15px; padding: .875rem 1.5rem; border-color: rgba(42,32,28,.25); }
-.v2 .kicker { letter-spacing: .02em; text-transform: none; font-size: 14px; color: #8A543B; }
-.v2 .kicker::before { display: none; }
+:is(.v2, .skin) .btn:hover { filter: brightness(1.08); box-shadow: 0 14px 30px -14px rgba(74,43,22,.75); }
+:is(.v2, .skin) .btn-line { text-transform: none; letter-spacing: 0; font-size: 15px; padding: .875rem 1.5rem; border-color: rgba(59,43,32,.25); }
+:is(.v2, .skin) .kicker { letter-spacing: .02em; text-transform: none; font-size: 14px; color: #7B5435; }
+:is(.v2, .skin) .kicker::before { display: none; }
+:is(.v2, .skin) .text-ink, :is(.v2, .skin) .hover\:text-ink:hover { color: #3B2B20; }
+:is(.v2, .skin) .text-ink-muted { color: #7A6352; }
+:is(.v2, .skin) .text-ink-faint { color: #9C8878; }
+:is(.v2, .skin) .border-line { border-color: #E6D8C9; }
+:is(.v2, .skin) .bg-line { background-color: #E6D8C9; }
+:is(.v2, .skin) .bg-ivory { background-color: #FBF8F4; }
+:is(.v2, .skin) .bg-ivory\/95 { background-color: rgba(251,248,244,.95); }
+:is(.v2, .skin) .bg-ivory-soft, :is(.v2, .skin) .hover\:bg-ivory-soft:hover { background-color: #F4EEE7; }
+:is(.v2, .skin) .bg-ivory-deep { background-color: #EBE2DC; }
+:is(.v2, .skin) .text-ivory { color: #FBF8F4; }
+:is(.v2, .skin) .bg-espresso { background-color: #5C3820; }
+:is(.v2, .skin) .border-espresso { border-color: #5C3820; }
+:is(.v2, .skin) .text-gold { color: #967355; }
+:is(.v2, .skin) .text-gold-deep { color: #7B5435; }
+:is(.v2, .skin) .bg-gold { background-color: #967355; }
+:is(.v2, .skin) .bg-gold\/15 { background-color: rgba(150,115,85,.15); }
+:is(.v2, .skin) .border-gold, :is(.v2, .skin) .hover\:border-gold:hover, :is(.v2, .skin) .focus\:border-gold:focus { border-color: #B8956F; }
+:is(.v2, .skin) .border-gold\/60 { border-color: rgba(184,149,111,.6); }
+:is(.v2, .skin) .focus-visible\:outline-gold:focus-visible { outline-color: #967355; }
+:is(.v2, .skin) .ring-gold\/30 { --tw-ring-color: rgba(150,115,85,.3); }
 
 /* ---------- Desain v2: palet bronze & champagne ---------- */
 .btn-bronze {
