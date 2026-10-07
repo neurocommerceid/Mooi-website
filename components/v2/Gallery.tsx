@@ -40,10 +40,10 @@ export default function Gallery({ branches, initial }: { branches: { name: strin
           ))}
         </div>
       )}
-      <div key={active} className="mt-6 columns-2 gap-3 md:columns-3 md:gap-4">
+      <div key={active} className="mt-4 columns-2 gap-2 md:mt-6 md:columns-3 md:gap-4">
         {photos.map((p, i) => (
           <button key={p.src} onClick={() => setZoom(i)} style={{ animationDelay: `${i * 70}ms` }}
-            className={`price-card group relative mb-3 block w-full overflow-hidden rounded-2xl bg-pearl-deep md:mb-4 ${ratio[i % ratio.length]}`}
+            className={`price-card group relative mb-2 block w-full overflow-hidden rounded-xl md:rounded-2xl bg-pearl-deep md:mb-4 ${ratio[i % ratio.length]}`}
             aria-label={`Perbesar: ${p.alt}`}>
             <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 33vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
           </button>

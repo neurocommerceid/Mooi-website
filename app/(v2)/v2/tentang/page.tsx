@@ -17,23 +17,23 @@ export default async function Page() {
   const values = (c.about.values ?? []).filter((v) => v.title && v.desc && !/\[.*\]/.test(v.desc)).slice(0, 3);
   return (
     <>
-      <section className={`${wrap} grid gap-10 py-12 md:grid-cols-2 md:items-start md:gap-16 md:py-16`}>
+      <section className={`${wrap} grid gap-6 py-8 md:grid-cols-2 md:items-start md:gap-16 md:py-16`}>
         <div>
           {c.home.pages.tentang.eyebrow && <p className={`text-[14px] ${muted}`}>{c.home.pages.tentang.eyebrow}</p>}
           <h1 className={`mt-2 ${h2}`}>{c.home.pages.tentang.title}</h1>
-          <div className={`mt-6 space-y-5 text-[17px] leading-[1.8] ${muted}`}>
+          <div className={`mt-4 space-y-4 text-[15px] leading-[1.75] md:mt-6 md:space-y-5 md:text-[17px] md:leading-[1.8] ${muted}`}>
             {paras.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <Link href={P('/booking')} className={`mt-8 ${btnDark}`}>Booking sekarang</Link>
         </div>
         {pic && (
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-pearl-deep md:sticky md:top-24">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-pearl-deep md:sticky md:top-24 md:aspect-[4/5] md:rounded-[28px]">
             <Image src={pic.src} alt={pic.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           </div>
         )}
       </section>
       {values.length > 0 && (
-        <section className="bg-white/55 py-14 md:py-20">
+        <section className="bg-white/55 py-10 md:py-20">
           <div className={`${wrap} grid gap-8 ${cols[values.length]}`}>
             {values.map((v) => (
               <div key={v.title} className="border-t border-cocoa/80 pt-5">

@@ -14,21 +14,21 @@ export default function Reviews({ c }: { c: Content }) {
   if (!reviews.length) return null;
   const maps = c.branches.items.map((b) => ({ name: short(b.name), url: safeUrl(b.maps) })).filter((m) => m.url);
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-10 md:py-24">
       <div className={wrap}>
         <h2 className={h2}>{c.home.reviews.title}</h2>
         {c.home.reviews.sub && <p className={`mt-2 ${muted}`}>{c.home.reviews.sub}</p>}
       </div>
-      <div className="mt-8 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-3 no-scrollbar md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
+      <div className="mt-5 flex snap-x snap-mandatory scroll-px-4 gap-2.5 overflow-x-auto px-4 pb-3 no-scrollbar md:mt-8 md:gap-4 md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
         {reviews.map((r, i) => {
           const stars = Math.max(0, Math.min(5, Math.round(Number(r.rating) || 5)));
           return (
-            <figure key={`${r.name}-${i}`} className="price-card flex w-[80vw] max-w-[340px] shrink-0 snap-start flex-col rounded-[22px] border border-pearl-line bg-white/70 p-6 sm:w-[340px]">
+            <figure key={`${r.name}-${i}`} className="price-card flex w-[68vw] max-w-[340px] shrink-0 snap-start flex-col rounded-2xl border border-pearl-line bg-white/70 p-4 sm:w-[300px] md:w-[340px] md:rounded-[22px] md:p-6">
               <div className="flex gap-0.5" aria-label={`${stars} dari 5 bintang`}>
                 {[1, 2, 3, 4, 5].map((n) => <Star key={n} on={n <= stars} />)}
               </div>
-              <blockquote className="mt-4 line-clamp-[9] whitespace-pre-line text-[15px] leading-relaxed">&ldquo;{r.text.trim()}&rdquo;</blockquote>
-              <figcaption className="mt-auto pt-5 text-[14px]">
+              <blockquote className="mt-2.5 line-clamp-[6] whitespace-pre-line text-[13.5px] leading-relaxed md:mt-4 md:line-clamp-[9] md:text-[15px]">&ldquo;{r.text.trim()}&rdquo;</blockquote>
+              <figcaption className="mt-auto pt-3 text-[12.5px] md:pt-5 md:text-[14px]">
                 <span className="font-medium">{r.name}</span>
                 <span className={muted}>{[r.branch && short(r.branch), r.date].filter(Boolean).map((x) => ` · ${x}`).join('')}</span>
               </figcaption>

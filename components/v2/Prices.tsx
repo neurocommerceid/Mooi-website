@@ -66,7 +66,7 @@ export default function Prices({ menus, full = false, title, sub }: { menus: Men
   const bookHref = `${P('/booking')}?cabang=${encodeURIComponent(cur.branch)}`;
 
   return (
-    <section id="harga" className="scroll-mt-20 py-14 md:py-20">
+    <section id="harga" className="scroll-mt-20 py-10 md:py-20">
       <div className={wrap}>
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
@@ -76,7 +76,7 @@ export default function Prices({ menus, full = false, title, sub }: { menus: Men
           <div role="tablist" aria-label="Pilih cabang" className="flex w-full gap-1 overflow-x-auto rounded-full bg-pearl-soft p-1 no-scrollbar sm:w-auto">
             {menus.map((m, idx) => (
               <button key={m.branch} role="tab" aria-selected={idx === bi} onClick={() => pick(idx)}
-                className={`flex-1 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors sm:flex-none ${idx === bi ? 'bg-bronze text-pearl' : 'text-cocoa/70 hover:text-cocoa'}`}>
+                className={`flex-1 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-medium transition-colors sm:flex-none md:px-4 md:py-2.5 md:text-[14px] ${idx === bi ? 'bg-bronze text-pearl' : 'text-cocoa/70 hover:text-cocoa'}`}>
                 {short(m.branch)}
               </button>
             ))}
@@ -84,11 +84,11 @@ export default function Prices({ menus, full = false, title, sub }: { menus: Men
         </div>
 
         {cats.length > 0 && (
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3 md:mt-6">
             <div className="flex flex-1 gap-2 overflow-x-auto no-scrollbar">
               {cats.map((c, ci) => (
                 <button key={c.name} onClick={() => jump(firstOf[ci])}
-                  className={`whitespace-nowrap rounded-full border px-4 py-2 text-[14px] transition-colors ${activeCat === c.name ? 'border-bronze-mid bg-champagne/20 text-cocoa' : 'border-pearl-line text-cocoa/65 hover:text-cocoa'}`}>
+                  className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-[13px] transition-colors md:px-4 md:py-2 md:text-[14px] ${activeCat === c.name ? 'border-bronze-mid bg-champagne/20 text-cocoa' : 'border-pearl-line text-cocoa/65 hover:text-cocoa'}`}>
                   {c.name}
                 </button>
               ))}
@@ -110,18 +110,18 @@ export default function Prices({ menus, full = false, title, sub }: { menus: Men
       ) : (
         <>
           <div ref={track} onScroll={onScroll} key={cur.branch}
-            className="mt-6 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 no-scrollbar md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
+            className="mt-4 flex snap-x snap-mandatory scroll-px-4 gap-2.5 overflow-x-auto px-4 pb-4 no-scrollbar md:mt-6 md:gap-4 md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
             {cards.map(({ cat, it }, k) => (
               <article key={`${cat}-${it.name}`} style={{ animationDelay: `${Math.min(k, 6) * 60}ms` }}
-                className={`price-card group flex min-h-[250px] w-[74vw] max-w-[280px] shrink-0 snap-start flex-col rounded-[22px] border bg-white/70 p-6 sm:w-[280px] ${k === active ? 'is-active border-champagne' : 'border-pearl-line'}`}>
-                <p className="text-[13px] text-[#7B5435]">{cat}</p>
-                <h3 className="mt-2 font-display text-[1.4rem] leading-tight">{it.name}</h3>
-                {it.note && <p className={`mt-2 line-clamp-3 text-[13px] leading-snug ${muted}`}>{it.note}</p>}
-                <div className="mt-auto pt-6">
+                className={`price-card group flex min-h-[160px] w-[43vw] max-w-[280px] shrink-0 snap-start flex-col rounded-2xl border bg-white/70 p-3.5 sm:w-[220px] md:min-h-[250px] md:w-[280px] md:rounded-[22px] md:p-6 ${k === active ? 'is-active border-champagne' : 'border-pearl-line'}`}>
+                <p className="truncate text-[11px] text-[#7B5435] md:text-[13px]">{cat}</p>
+                <h3 className="mt-1 font-display text-[1.02rem] leading-tight md:mt-2 md:text-[1.4rem]">{it.name}</h3>
+                {it.note && <p className={`mt-1 line-clamp-2 text-[11.5px] leading-snug md:mt-2 md:line-clamp-3 md:text-[13px] ${muted}`}>{it.note}</p>}
+                <div className="mt-auto pt-3 md:pt-6">
                   <div className="relative inline-block">
-                    {it.from && <span className={`block text-[13px] ${muted}`}>mulai</span>}
-                    <span className="font-display text-[1.9rem] leading-none tabular-nums">{rupiah(it.price)}</span>
-                    <span className="sparkles pointer-events-none absolute -right-7 -top-4 h-11 w-9 text-bronze-mid" aria-hidden>
+                    {it.from && <span className={`block text-[11px] md:text-[13px] ${muted}`}>mulai</span>}
+                    <span className="font-display text-[1.15rem] leading-none tabular-nums md:text-[1.9rem]">{rupiah(it.price)}</span>
+                    <span className="sparkles pointer-events-none absolute -right-6 -top-4 h-11 w-9 origin-bottom-left scale-75 text-bronze-mid md:-right-7 md:scale-100" aria-hidden>
                       <Sparkle className="twinkle absolute right-0 top-0 h-4 w-4" />
                       <Sparkle className="twinkle absolute right-5 top-4 h-2.5 w-2.5 [animation-delay:.6s]" />
                       <Sparkle className="twinkle absolute right-1 top-7 h-3 w-3 [animation-delay:1.2s]" />

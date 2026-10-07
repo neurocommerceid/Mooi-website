@@ -22,7 +22,7 @@ export const revalidate = 3600;
 export default async function V2Layout({ children }: { children: React.ReactNode }) {
   const c = await getContent();
   return (
-    <div style={fontRemap} className={`v2 ${fraunces.variable} ${jakarta.variable} min-h-screen bg-pearl font-body text-[16px] font-normal leading-relaxed text-cocoa antialiased`}>
+    <div style={fontRemap} className={`v2 ${fraunces.variable} ${jakarta.variable} min-h-screen bg-pearl font-body text-[15px] font-normal leading-relaxed md:text-[16px] text-cocoa antialiased`}>
       <Nav />
       <main>{children}</main>
       <Footer c={c} />

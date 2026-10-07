@@ -265,21 +265,21 @@ export default function BookingFlow({ branches, booking, whatsapp, initialBranch
         <div key={step} className={`mt-10 ${dir === 1 ? 'step-in' : 'step-back'}`}>
           {step === 'cabang' && (
             <Step title="Mau ke cabang mana?" sub="Semua cabang punya standar layanan yang sama.">
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-2.5 sm:grid-cols-3 sm:gap-4">
                 {branches.map((b) => {
                   const on = b.name === cabang;
                   return (
                     <button key={b.name} type="button" aria-pressed={on}
                       onClick={() => { setCabang(b.name); setTime(''); advanceSoon('layanan'); }}
-                      className={`group overflow-hidden rounded-3xl border bg-white text-left transition duration-500 hover:-translate-y-1 hover:shadow-[0_20px_50px_-25px_rgba(60,40,30,.45)] ${on ? 'border-gold ring-2 ring-gold/30' : 'border-line'}`}>
-                      <div className="relative aspect-[4/3] overflow-hidden bg-ivory-deep">
+                      className={`group grid grid-cols-[96px_1fr] overflow-hidden rounded-2xl border bg-white text-left transition duration-500 sm:block sm:rounded-3xl hover:-translate-y-1 hover:shadow-[0_20px_50px_-25px_rgba(60,40,30,.45)] ${on ? 'border-gold ring-2 ring-gold/30' : 'border-line'}`}>
+                      <div className="relative min-h-[96px] overflow-hidden bg-ivory-deep sm:aspect-[4/3] sm:min-h-0">
                         {b.image?.src
-                          ? <img src={b.image.src} alt="" className="h-full w-full object-cover transition duration-1000 group-hover:scale-105" />
-                          : <span className="absolute inset-0 grid place-items-center bg-espresso"><img src="/logo.png" alt="" className="h-16 w-auto opacity-90" /></span>}
-                        <span className={`absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full text-[13px] transition ${on ? 'bg-gold text-white' : 'bg-white/80 text-transparent'}`}>✓</span>
+                          ? <img src={b.image.src} alt="" className="absolute inset-0 h-full w-full object-cover transition duration-1000 group-hover:scale-105" />
+                          : <span className="absolute inset-0 grid place-items-center bg-espresso"><img src="/logo.png" alt="" className="h-9 w-auto opacity-90 sm:h-16" /></span>}
+                        <span className={`absolute right-2 top-2 flex h-6 w-6 sm:right-3 sm:top-3 sm:h-7 sm:w-7 items-center justify-center rounded-full text-[13px] transition ${on ? 'bg-gold text-white' : 'bg-white/80 text-transparent'}`}>✓</span>
                       </div>
-                      <div className="p-5">
-                        <p className="font-serif text-2xl text-ink">{b.name.replace(/^Mooi\s+/, '')}</p>
+                      <div className="p-3.5 sm:p-5">
+                        <p className="font-serif text-xl text-ink sm:text-2xl">{b.name.replace(/^Mooi\s+/, '')}</p>
                         <p className="mt-1 line-clamp-2 text-[13px] text-ink-muted">{b.address}</p>
                         <p className="mt-2 whitespace-pre-line text-[12px] text-gold-deep">{b.hours}</p>
                       </div>

@@ -31,7 +31,7 @@ export function StatusDot({ b }: { b: Branch }) {
   if (now === null) return <span className="text-[14px] text-[#7A6352]">{b.hours.split('\n')[0]}</span>;
   const s = openStatus(b, now);
   return (
-    <span className="inline-flex items-center gap-2 text-[14px]">
+    <span className="inline-flex items-center gap-2 text-[13px] md:text-[14px]">
       <span className={`h-2 w-2 rounded-full ${s.on ? 'bg-emerald-600' : 'bg-[#C9B8A8]'}`} aria-hidden />
       <span className={s.on ? 'text-emerald-800' : 'text-[#7A6352]'}>{s.text}</span>
     </span>
@@ -41,27 +41,27 @@ export function StatusDot({ b }: { b: Branch }) {
 /** Ringkasan cabang di beranda: status buka, WhatsApp, petunjuk arah. Booking ada di bar/nav. */
 export default function BranchStrip({ branches, fallbackWa, greeting }: { branches: Branch[]; fallbackWa: string; greeting: string }) {
   return (
-    <div className="grid gap-3 md:grid-cols-3 md:gap-4">
+    <div className="grid gap-2 md:grid-cols-3 md:gap-4">
       {branches.map((b) => {
         const wa = branchWa(b, fallbackWa);
         const maps = safeUrl(b.maps);
         return (
-          <div key={b.name} className="rounded-2xl border border-pearl-line bg-white/60 p-5">
+          <div key={b.name} className="rounded-2xl border border-pearl-line bg-white/60 p-3.5 md:p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="font-display text-[1.3rem] leading-tight">{short(b.name)}</p>
+                <p className="font-display text-[1.08rem] leading-tight md:text-[1.3rem]">{short(b.name)}</p>
                 <StatusDot b={b} />
               </div>
               {wa && (
                 <a href={waLink(wa, `${greeting} (${b.name})`)} target="_blank" rel="noopener" aria-label={`WhatsApp ${b.name}`}
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-cocoa/15 text-[#1f9d55] transition-colors hover:border-cocoa">
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-cocoa/15 text-[#1f9d55] md:h-10 md:w-10 transition-colors hover:border-cocoa">
                   <WaIcon />
                 </a>
               )}
             </div>
-            <p className="mt-3 line-clamp-2 text-[14px] text-[#7A6352]">{b.address}</p>
+            <p className="mt-1.5 line-clamp-1 text-[12.5px] text-[#7A6352] md:mt-3 md:line-clamp-2 md:text-[14px]">{b.address}</p>
             {maps && (
-              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[14px] font-medium text-[#7B5435]">
+              <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[13px] font-medium text-[#7B5435] md:mt-3 md:text-[14px]">
                 <a href={maps} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 hover:underline">
                   Petunjuk arah
                   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
