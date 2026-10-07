@@ -163,8 +163,21 @@ export const schema: Record<SectionKey, Section> = {
   },
   testimonial: {
     title: 'Testimoni',
-    desc: 'Kutipan pelanggan. Gunakan ulasan asli — kosongkan kutipan untuk menyembunyikan bagian ini.',
-    fields: [t('kicker', 'Label kecil'), ta('quote', 'Kutipan'), t('author', 'Nama / keterangan pelanggan')],
+    desc: 'Ulasan pelanggan. Hanya ulasan asli (mis. dari Google Maps), disalin apa adanya — jangan diubah atau dikarang.',
+    fields: [
+      {
+        key: 'reviews', label: 'Ulasan (tampil di desain baru)', type: 'list', item: 'Ulasan',
+        help: 'Bagian "Kata pelanggan" baru muncul bila ada minimal satu ulasan.',
+        fields: [
+          t('name', 'Nama pengulas', 'Tulis seperti di Google, mis. "Rina A."'),
+          t('branch', 'Cabang', 'Mooi Kedoya / Mooi Alam Sutera / Mooi Kelapa Gading'),
+          num('rating', 'Bintang (1–5)'),
+          ta('text', 'Isi ulasan', 'Salin persis. Boleh dipotong dengan "…" bila terlalu panjang, tanpa mengubah kata.'),
+          t('date', 'Waktu', 'Mis. "2 bulan lalu" atau "Sep 2026"'),
+        ],
+      },
+      t('kicker', 'Label kecil (desain lama)'), ta('quote', 'Kutipan (desain lama)'), t('author', 'Nama / keterangan (desain lama)'),
+    ],
   },
   cta: {
     title: 'Ajakan Reservasi',

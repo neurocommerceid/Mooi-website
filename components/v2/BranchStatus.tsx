@@ -61,10 +61,16 @@ export default function BranchStrip({ branches, fallbackWa, greeting }: { branch
             </div>
             <p className="mt-3 line-clamp-2 text-[14px] text-[#7A6352]">{b.address}</p>
             {maps && (
-              <a href={maps} target="_blank" rel="noopener" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-medium text-[#7B5435] hover:underline">
-                Petunjuk arah
-                <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-              </a>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[14px] font-medium text-[#7B5435]">
+                <a href={maps} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 hover:underline">
+                  Petunjuk arah
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+                </a>
+                <a href={maps} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 hover:underline">
+                  Ulasan Google
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path fill="currentColor" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" /></svg>
+                </a>
+              </div>
             )}
           </div>
         );

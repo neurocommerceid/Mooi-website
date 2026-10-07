@@ -65,7 +65,7 @@ export type Content = {
     daysAhead: number;
     successNote: string;
   };
-  testimonial: { kicker: string; quote: string; author: string };
+  testimonial: { kicker: string; quote: string; author: string; reviews: Review[] };
   cta: { kicker: string; title: string; sub: string; primary: string; secondary: string; image: Img };
   about: { values: { title: string; desc: string }[] };
   pages: {
@@ -78,6 +78,8 @@ export type Content = {
 };
 
 export type PageHead = { kicker: string; title: string; sub: string };
+/** Ulasan asli pelanggan (mis. dari Google Maps), disalin apa adanya. */
+export type Review = { name: string; branch: string; rating: number; text: string; date: string };
 export type BookingService = { name: string; note: string; duration: number; price: number; from: boolean };
 export type Category = { name: string; items: BookingService[] };
 export type Branch = {
@@ -162,9 +164,9 @@ export const defaults: Content = {
     title: 'Tiga cabang, *satu standar*.',
     sub: 'Kunjungi cabang terdekat, atau reservasi lebih dulu via WhatsApp.',
     items: [
-      { name: 'Mooi Kedoya', address: 'Jl. Panjang No.21A, RT.12/RW.5, Kedoya Utara, Kec. Kebon Jeruk, Jakarta Barat 11520', hours: 'Setiap hari · 08.00 – 20.00', open: '08:00', close: '20:00', special: [], whatsapp: '6282318062929', maps: 'https://www.google.com/maps/search/?api=1&query=Mooi%20Hair%20Studio%20Kedoya%20Jl.%20Panjang%20No.21A%2C%20RT.12/RW.5%2C%20Kedoya%20Utara%2C%20Kec.%20Kebon%20Jeruk%2C%20Jakarta%20Barat%2011520', instagram: 'https://instagram.com/mooihairstudio_kedoya', image: { src: '/media/branches/kedoya-1.jpg', alt: 'Interior Mooi Kedoya' }, gallery: [{ image: { src: '/media/branches/kedoya-1.jpg', alt: 'Area styling Mooi Kedoya dengan plafon lengkung' } }, { image: { src: '/media/branches/kedoya-2.jpg', alt: 'Nail bar Mooi Kedoya' } }, { image: { src: '/media/branches/kedoya-3.jpg', alt: 'Lounge pedicure Mooi Kedoya' } }, { image: { src: '/media/branches/kedoya-4.jpg', alt: 'Area keramas Mooi Kedoya' } }, { image: { src: '/media/branches/kedoya-5.jpg', alt: 'Ruang treatment Mooi Kedoya' } }] },
-      { name: 'Mooi Alam Sutera', address: 'Jl. Jalur Sutera Boulevard Kav. 29D, Pakualam, Kec. Serpong Utara, Tangerang Selatan, Banten 15143', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', special: [], whatsapp: '6282121209858', maps: 'https://www.google.com/maps/search/?api=1&query=Mooi%20Salon%20Alam%20Sutera%20Jl.%20Jalur%20Sutera%20Boulevard%20Kav.%2029D%2C%20Pakualam%2C%20Kec.%20Serpong%20Utara%2C%20Tangerang%20Selatan%2C%20Banten%2015143', instagram: 'https://instagram.com/mooihairstudio_alsut', image: { src: '/media/branches/alam-sutera-1.jpg', alt: 'Interior Mooi Alam Sutera' }, gallery: [{ image: { src: '/media/branches/alam-sutera-1.jpg', alt: 'Area styling Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-2.jpg', alt: 'Kursi styling dan cermin lengkung Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-3.jpg', alt: 'Lounge pedicure Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-4.jpg', alt: 'Nail bar Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-5.jpg', alt: 'Rak produk Milbon dan Davines di Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-6.jpg', alt: 'Ruang spa Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-7.jpg', alt: 'Resepsionis Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-8.jpg', alt: 'Area keramas Mooi Alam Sutera' } }] },
-      { name: 'Mooi Kelapa Gading', address: 'Jl. Boulevard Raya No.15 Blok QJ.1, Kelapa Gading Barat, Kec. Kelapa Gading, Jakarta Utara 14240', hours: 'Senin–Sabtu · 08.00 – 20.00\nMinggu · 09.00 – 18.00', open: '08:00', close: '20:00', special: [{ days: ['Minggu'], open: '09:00', close: '18:00' }], whatsapp: '6281291103882', maps: 'https://www.google.com/maps/search/?api=1&query=Mooi%20Salon%20Kelapa%20Gading%20Jl.%20Boulevard%20Raya%20No.15%20Blok%20QJ.1%2C%20Kelapa%20Gading%20Barat%2C%20Kec.%20Kelapa%20Gading%2C%20Jakarta%20Utara%2014240', instagram: 'https://instagram.com/mooihairstudio_klpgdg', image: img('br-3', 'Masker rambut'), gallery: [] },
+      { name: 'Mooi Kedoya', address: 'Jl. Panjang No.21A, RT.12/RW.5, Kedoya Utara, Kec. Kebon Jeruk, Jakarta Barat 11520', hours: 'Setiap hari · 08.00 – 20.00', open: '08:00', close: '20:00', special: [], whatsapp: '6282318062929', maps: 'https://maps.app.goo.gl/ZBnvDdeY6anLXhD7A', instagram: 'https://instagram.com/mooihairstudio_kedoya', image: { src: '/media/branches/kedoya-1.jpg', alt: 'Interior Mooi Kedoya' }, gallery: [{ image: { src: '/media/branches/kedoya-1.jpg', alt: 'Area styling Mooi Kedoya dengan plafon lengkung' } }, { image: { src: '/media/branches/kedoya-2.jpg', alt: 'Nail bar Mooi Kedoya' } }, { image: { src: '/media/branches/kedoya-3.jpg', alt: 'Lounge pedicure Mooi Kedoya' } }, { image: { src: '/media/branches/kedoya-4.jpg', alt: 'Area keramas Mooi Kedoya' } }, { image: { src: '/media/branches/kedoya-5.jpg', alt: 'Ruang treatment Mooi Kedoya' } }] },
+      { name: 'Mooi Alam Sutera', address: 'Jl. Jalur Sutera Boulevard Kav. 29D, Pakualam, Kec. Serpong Utara, Tangerang Selatan, Banten 15143', hours: 'Setiap hari · 09.00 – 20.00', open: '09:00', close: '20:00', special: [], whatsapp: '6282121209858', maps: 'https://maps.app.goo.gl/DYNCKcbMrVNz65bf8', instagram: 'https://instagram.com/mooihairstudio_alsut', image: { src: '/media/branches/alam-sutera-1.jpg', alt: 'Interior Mooi Alam Sutera' }, gallery: [{ image: { src: '/media/branches/alam-sutera-1.jpg', alt: 'Area styling Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-2.jpg', alt: 'Kursi styling dan cermin lengkung Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-3.jpg', alt: 'Lounge pedicure Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-4.jpg', alt: 'Nail bar Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-5.jpg', alt: 'Rak produk Milbon dan Davines di Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-6.jpg', alt: 'Ruang spa Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-7.jpg', alt: 'Resepsionis Mooi Alam Sutera' } }, { image: { src: '/media/branches/alam-sutera-8.jpg', alt: 'Area keramas Mooi Alam Sutera' } }] },
+      { name: 'Mooi Kelapa Gading', address: 'Jl. Boulevard Raya No.15 Blok QJ.1, Kelapa Gading Barat, Kec. Kelapa Gading, Jakarta Utara 14240', hours: 'Senin–Sabtu · 08.00 – 20.00\nMinggu · 09.00 – 18.00', open: '08:00', close: '20:00', special: [{ days: ['Minggu'], open: '09:00', close: '18:00' }], whatsapp: '6281291103882', maps: 'https://maps.app.goo.gl/asNneavUwuaNMyPs7', instagram: 'https://instagram.com/mooihairstudio_klpgdg', image: img('br-3', 'Masker rambut'), gallery: [] },
     ],
   },
   booking: {
@@ -194,8 +196,10 @@ export const defaults: Content = {
   },
   testimonial: {
     kicker: 'Kata Pelanggan',
-    quote: 'Hasilnya selalu rapi dan stylist-nya ngerti banget maunya kita. Sudah langganan dari cabang pertama buka.',
-    author: 'Pelanggan Mooi · Kelapa Gading',
+    // Kosong: jangan tampilkan kutipan karangan. Isi dengan ulasan asli lewat admin.
+    quote: '',
+    author: '',
+    reviews: [],
   },
   cta: {
     kicker: 'Reservasi',
