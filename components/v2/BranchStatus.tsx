@@ -1,10 +1,9 @@
 'use client';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { Branch } from '@/lib/cms/content';
-import { branchWa, waLink } from '@/lib/cms/content';
+import { branchWa, safeUrl, waLink } from '@/lib/cms/content';
 import { addDays, branchHours, fromMin, jakartaNow } from '@/lib/booking';
-import { P, short } from './ui';
+import { short } from './ui';
 
 const jam = (m: number) => fromMin(m).replace(':', '.');
 
@@ -39,30 +38,34 @@ export function StatusDot({ b }: { b: Branch }) {
   );
 }
 
-/** Strip tiga cabang di bawah hero: status buka, jam, booking & WhatsApp. */
+/** Ringkasan cabang di beranda: status buka, WhatsApp, petunjuk arah. Booking ada di bar/nav. */
 export default function BranchStrip({ branches, fallbackWa, greeting }: { branches: Branch[]; fallbackWa: string; greeting: string }) {
   return (
     <div className="grid gap-3 md:grid-cols-3 md:gap-4">
       {branches.map((b) => {
         const wa = branchWa(b, fallbackWa);
+        const maps = safeUrl(b.maps);
         return (
-          <div key={b.name} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-white/60 px-5 py-4">
-            <div className="min-w-0">
-              <p className="font-display text-[1.25rem] leading-tight">{short(b.name)}</p>
-              <StatusDot b={b} />
-            </div>
-            <div className="flex shrink-0 items-center gap-1.5">
+          <div key={b.name} className="rounded-2xl border border-line bg-white/60 p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-display text-[1.3rem] leading-tight">{short(b.name)}</p>
+                <StatusDot b={b} />
+              </div>
               {wa && (
                 <a href={waLink(wa, `${greeting} (${b.name})`)} target="_blank" rel="noopener" aria-label={`WhatsApp ${b.name}`}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-ink/15 text-ink/80 transition-colors hover:border-ink hover:text-ink">
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-ink/15 text-[#1f9d55] transition-colors hover:border-ink">
                   <WaIcon />
                 </a>
               )}
-              <Link href={`${P('/booking')}?cabang=${encodeURIComponent(b.name)}`}
-                className="rounded-full bg-espresso px-4 py-2.5 text-[14px] font-medium text-ivory transition-colors hover:bg-[#3A2C27]">
-                Booking
-              </Link>
             </div>
+            <p className="mt-3 line-clamp-2 text-[14px] text-[#6B5A52]">{b.address}</p>
+            {maps && (
+              <a href={maps} target="_blank" rel="noopener" className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-medium text-[#8A543B] hover:underline">
+                Petunjuk arah
+                <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+              </a>
+            )}
           </div>
         );
       })}

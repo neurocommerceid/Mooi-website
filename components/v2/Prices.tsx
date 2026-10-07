@@ -115,7 +115,7 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
             className="mt-6 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 no-scrollbar md:scroll-px-10 md:px-10 xl:scroll-px-[calc((100vw-1200px)/2+40px)] xl:px-[calc((100vw-1200px)/2+40px)]">
             {cards.map(({ cat, it }, k) => (
               <article key={`${cat}-${it.name}`} style={{ animationDelay: `${Math.min(k, 6) * 60}ms` }}
-                className={`price-card group flex w-[78vw] max-w-[300px] shrink-0 snap-start flex-col rounded-[22px] border bg-white/70 p-6 sm:w-[300px] ${k === active ? 'is-active border-gold/60' : 'border-line'}`}>
+                className={`price-card group flex min-h-[250px] w-[74vw] max-w-[280px] shrink-0 snap-start flex-col rounded-[22px] border bg-white/70 p-6 sm:w-[280px] ${k === active ? 'is-active border-gold/60' : 'border-line'}`}>
                 <p className="text-[13px] text-[#8A543B]">{cat}</p>
                 <h3 className="mt-2 font-display text-[1.4rem] leading-tight">{it.name}</h3>
                 {it.note && <p className={`mt-2 line-clamp-3 text-[13px] leading-snug ${muted}`}>{it.note}</p>}
@@ -129,10 +129,6 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
                       <Sparkle className="twinkle absolute right-1 top-7 h-3 w-3 [animation-delay:1.2s]" />
                     </span>
                   </div>
-                  <Link href={bookHref} className="mt-5 flex items-center justify-between border-t border-line pt-4 text-[14px] font-medium">
-                    Booking layanan ini
-                    <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-                  </Link>
                 </div>
               </article>
             ))}
@@ -166,7 +162,7 @@ export default function Prices({ menus, full = false }: { menus: Menu[]; full?: 
               </div>
             ))}
           </div>
-          <Link href={bookHref} className="mt-10 inline-flex rounded-full bg-espresso px-6 py-3.5 text-[15px] font-medium text-ivory hover:bg-[#3A2C27]">
+          <Link href={bookHref} className="mt-10 hidden rounded-full md:inline-flex bg-espresso px-6 py-3.5 text-[15px] font-medium text-ivory hover:bg-[#3A2C27]">
             Booking di {short(cur.branch)}
           </Link>
         </div>

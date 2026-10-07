@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Branch, Content, Img } from '@/lib/cms/content';
 import { branchWa, safeUrl, waLink } from '@/lib/cms/content';
 import { daysLabel, stylistsAt } from '@/lib/booking';
-import { StatusDot } from './BranchStatus';
+import BranchStrip, { StatusDot } from './BranchStatus';
 import { P, btnDark, h2, link, muted, short, wrap } from './ui';
 
 /** Foto asli interior cabang — bukan foto stok. */
@@ -117,9 +117,7 @@ export function Stylists({ c }: { c: Content }) {
             </div>
           </div>
         ))}
-        <Link href={P('/booking')} className="mt-10 inline-flex rounded-full bg-ivory px-6 py-3.5 text-[15px] font-medium text-espresso hover:bg-white">
-          Booking dengan stylist pilihan
-        </Link>
+        <p className="mt-8 text-[15px] text-ivory/70">Stylist dipilih di langkah booking.</p>
       </div>
     </section>
   );
@@ -158,5 +156,19 @@ export function Footer({ c }: { c: Content }) {
         </div>
       </div>
     </footer>
+  );
+}
+
+export function BranchSummary({ c }: { c: Content }) {
+  return (
+    <section className="pt-14 md:pt-20">
+      <div className={wrap}>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className={h2}>Cabang</h2>
+          <Link href={P('/cabang')} className={link}>Alamat &amp; jam lengkap</Link>
+        </div>
+        <div className="mt-6"><BranchStrip branches={c.branches.items} fallbackWa={c.settings.whatsapp} greeting={c.settings.waGreeting} /></div>
+      </div>
+    </section>
   );
 }

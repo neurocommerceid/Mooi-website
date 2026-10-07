@@ -15,10 +15,10 @@ const Icon = ({ className = '' }: { className?: string }) => (
  * cabang tersebut. Bila hanya ada satu cabang bernomor, langsung dibuka.
  */
 export default function WaChooser({
-  contacts, greeting, label, className = '', variant = 'button', placement = 'top',
+  contacts, greeting, label, className = '', variant = 'button', placement = 'top', wrapClassName = 'relative inline-flex',
 }: {
-  contacts: Contact[]; greeting: string; label: string; className?: string;
-  variant?: 'button' | 'fab'; placement?: 'top' | 'bottom';
+  contacts: Contact[]; greeting: string; label: React.ReactNode; className?: string;
+  variant?: 'button' | 'fab'; placement?: 'top' | 'bottom' | 'top-end'; wrapClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
@@ -54,7 +54,7 @@ export default function WaChooser({
     );
 
   return (
-    <div ref={box} className={variant === 'fab' ? 'fixed bottom-5 right-5 z-50 lg:bottom-8 lg:right-8' : 'relative inline-flex'}>
+    <div ref={box} className={variant === 'fab' ? 'fixed bottom-5 right-5 z-50 lg:bottom-8 lg:right-8' : wrapClassName}>
       {single ? (
         <a href={waLink(single.wa, msg(single))} target="_blank" rel="noopener" aria-label={`WhatsApp ${single.name}`} className={className}>
           {trigger}
@@ -68,7 +68,7 @@ export default function WaChooser({
       {open && (
         <div role="menu"
           className={`animate-pop absolute z-50 w-[280px] overflow-hidden rounded-2xl border border-line bg-ivory text-left text-ink shadow-[0_24px_60px_-20px_rgba(0,0,0,.45)] ${
-            variant === 'fab' ? 'bottom-[calc(100%+12px)] right-0' : placement === 'top' ? 'bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2' : 'left-1/2 top-[calc(100%+10px)] -translate-x-1/2'
+            variant === 'fab' || placement === 'top-end' ? 'bottom-[calc(100%+12px)] right-0' : placement === 'top' ? 'bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2' : 'left-1/2 top-[calc(100%+10px)] -translate-x-1/2'
           }`}>
           <p className="px-5 pb-2 pt-4 text-[11px] uppercase tracking-[0.2em] text-gold-deep">Chat dengan cabang</p>
           {contacts.map((c) => (

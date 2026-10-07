@@ -43,7 +43,7 @@ export default function Nav() {
           })}
         </nav>
         <div className="flex items-center gap-2">
-          <Link href={P('/booking')} className={`${btnDark} !px-5 !py-2.5 text-[14px]`}>Booking</Link>
+          <Link href={P('/booking')} className={`${btnDark} !hidden !px-5 !py-2.5 text-[14px] md:!inline-flex`}>Booking</Link>
           <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? 'Tutup menu' : 'Buka menu'}
             className="grid h-10 w-10 place-items-center rounded-full text-ink md:hidden">
             <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
