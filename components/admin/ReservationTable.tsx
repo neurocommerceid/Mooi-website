@@ -1,7 +1,7 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase/browser';
-import { addDays, durasi, jakartaNow, rupiah } from '@/lib/booking';
+import { addDays, durasi, jakartaNow, rupiah, sameBranch } from '@/lib/booking';
 
 export type Row = {
   id: number; nama: string; whatsapp: string; cabang: string; layanan: string | null;
@@ -41,15 +41,35 @@ export default function ReservationTable({ rows: initial, teams }: { rows: Row[]
   const [rows, setRows] = useState(initial);
   const [filter, setFilter] = useState('semua');
   const [range, setRange] = useState<Range>(preset('semua'));
+  const [cabang, setCabang] = useState('');
   const [err, setErr] = useState('');
+  const branches = Object.keys(teams);
+
+  // Ingat pilihan cabang di browser ini — admin cabang tidak perlu memilih ulang.
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('mooi-admin-cabang');
+      if (saved && branches.includes(saved)) setCabang(saved);
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  function pickBranch(name: string) {
+    setCabang(name);
+    try {
+      if (name) localStorage.setItem('mooi-admin-cabang', name);
+      else localStorage.removeItem('mooi-admin-cabang');
+    } catch {}
+  }
+
+  const inBranch = useMemo(() => (cabang ? rows.filter((r) => sameBranch(r.cabang, cabang)) : rows), [rows, cabang]);
   const inRange = useMemo(() => {
-    if (range.key === 'semua') return rows;
+    if (range.key === 'semua') return inBranch;
     const { from, to } = range.from <= range.to ? range : { ...range, from: range.to, to: range.from };
     // Saat difilter per tanggal, urutkan seperti agenda: tanggal lalu jam.
-    return rows
+    return inBranch
       .filter((r) => r.tanggal && r.tanggal >= from && r.tanggal <= to)
       .sort((a, b) => `${a.tanggal}${a.jam ?? ''}`.localeCompare(`${b.tanggal}${b.jam ?? ''}`));
-  }, [rows, range]);
+  }, [inBranch, range]);
   const shown = useMemo(() => (filter === 'semua' ? inRange : inRange.filter((r) => r.status === filter)), [inRange, filter]);
 
   async function setStatus(id: number, status: string) {
@@ -78,8 +98,19 @@ export default function ReservationTable({ rows: initial, teams }: { rows: Row[]
 
   return (
     <div className="mt-8">
+      {branches.length > 1 && (
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span className="mr-1 w-full text-[12px] sm:w-[7.5rem] uppercase tracking-[0.18em] text-ink-faint">Cabang</span>
+          {['', ...branches].map((b) => (
+            <button key={b || 'semua'} onClick={() => pickBranch(b)}
+              className={`rounded-full border px-4 py-1.5 text-[13px] ${cabang === b ? 'border-espresso bg-espresso text-ivory' : 'border-line bg-white text-ink-muted hover:text-ink'}`}>
+              {b ? b.replace(/^Mooi\s+/i, '') : 'Semua cabang'} ({b ? rows.filter((r) => sameBranch(r.cabang, b)).length : rows.length})
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-[12px] uppercase tracking-[0.18em] text-ink-faint">Tanggal datang</span>
+        <span className="mr-1 w-full text-[12px] sm:w-[7.5rem] uppercase tracking-[0.18em] text-ink-faint">Tanggal datang</span>
         {PRESETS.map((p) => (
           <button key={p.key} onClick={() => setRange(preset(p.key))}
             className={`rounded-full border px-4 py-1.5 text-[13px] ${range.key === p.key ? 'border-espresso bg-espresso text-ivory' : 'border-line bg-white text-ink-muted hover:text-ink'}`}>
@@ -109,7 +140,7 @@ export default function ReservationTable({ rows: initial, teams }: { rows: Row[]
       {err && <p className="mt-4 text-sm text-red-700">{err}</p>}
 
       {shown.length === 0 ? (
-        <p className="mt-10 text-ink-muted">{rows.length && (range.key !== 'semua' || filter !== 'semua') ? 'Tidak ada reservasi untuk filter ini.' : 'Belum ada reservasi.'}</p>
+        <p className="mt-10 text-ink-muted">{rows.length && (cabang || range.key !== 'semua' || filter !== 'semua') ? 'Tidak ada reservasi untuk filter ini.' : 'Belum ada reservasi.'}</p>
       ) : (
         <div className="mt-6 grid gap-3">
           {shown.map((r) => (
