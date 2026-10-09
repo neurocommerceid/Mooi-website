@@ -6,7 +6,7 @@ export type Perm = 'konten' | 'cabang' | 'harga' | 'stylist' | 'booking' | 'rese
 export type AdminProfile = { email: string; name: string | null; role: 'super' | 'staff'; permissions: Perm[]; branches: string[] };
 
 export const PERMS: { key: Perm; label: string; desc: string; warn?: string }[] = [
-  { key: 'konten', label: 'Teks & foto website', desc: 'Teks beranda & halaman, video hero, profil, ulasan, artikel, bahasa Inggris, pengaturan umum.' },
+  { key: 'konten', label: 'Teks & foto website', desc: 'Teks beranda & halaman, video hero, profil, ulasan, bahasa Inggris, pengaturan umum.' },
   { key: 'cabang', label: 'Data cabang', desc: 'Alamat, jam buka, WhatsApp, Maps, Instagram, foto & galeri cabang.' },
   { key: 'harga', label: 'Menu & harga', desc: 'Daftar layanan dan harga per cabang.', warn: 'Harga harus sesuai price list resmi — berikan hanya ke orang yang dipercaya.' },
   { key: 'stylist', label: 'Stylist', desc: 'Nama, foto, keahlian, cabang, dan hari kerja stylist.' },
@@ -18,20 +18,23 @@ export const permLabel = (p: string) => PERMS.find((x) => x.key === p)?.label ??
 
 /** Bagian konten → hak akses (sama dengan public.content_perm di database). */
 const SECTION_PERM: Partial<Record<SectionKey, Perm | 'booking*'>> = {
-  home: 'konten', en: 'konten', hero: 'konten', intro: 'konten', about: 'konten', testimonial: 'konten', settings: 'konten', artikel: 'konten',
+  home: 'konten', en: 'konten', hero: 'konten', intro: 'konten', about: 'konten', testimonial: 'konten', settings: 'konten',
   branches: 'cabang',
   booking: 'booking*',
 };
 
 export const isSuper = (a: AdminProfile | null) => a?.role === 'super';
+/** Akun developer (Neuro Commerce). Sama dengan email di public.can_write_content untuk 'artikel'. */
+const DEVELOPERS = ['neurocommerceid@gmail.com'];
+export const isDeveloper = (a: AdminProfile | null) => isSuper(a) && DEVELOPERS.includes(a!.email.toLowerCase());
 // Menu "Kelola Admin" disembunyikan sampai fitur diumumkan ke owner — sementara hanya akun developer yang melihatnya.
 // Buka untuk semua super admin dengan env SHOW_KELOLA_ADMIN=1 di Vercel (lalu redeploy). Hak akses di database tetap berlaku.
-const ADMIN_MANAGEMENT_EARLY = ['neurocommerceid@gmail.com'];
-export const canManageAdmins = (a: AdminProfile | null) =>
-  isSuper(a) && (process.env.SHOW_KELOLA_ADMIN === '1' || ADMIN_MANAGEMENT_EARLY.includes(a!.email.toLowerCase()));
+export const canManageAdmins = (a: AdminProfile | null) => isDeveloper(a) || (isSuper(a) && process.env.SHOW_KELOLA_ADMIN === '1');
 export const can = (a: AdminProfile | null, p: Perm) => !!a && (a.role === 'super' || a.permissions.includes(p));
 
 export function canEditSection(a: AdminProfile | null, key: SectionKey) {
+  // Artikel dikelola Neuro Commerce (artikel tambahan = add-on) — dijaga juga di database.
+  if (key === 'artikel') return isDeveloper(a);
   if (isSuper(a)) return true;
   const need = SECTION_PERM[key];
   if (!need) return false;
