@@ -9,7 +9,7 @@ type Head = { title: string; sub: string };
 export type HomeText = {
   hero: { eyebrow: string; title: string };
   prices: Head; stylists: Head; reviews: Head; branches: Head; inside: Head;
-  pages: { layanan: Head; stylist: Head; cabang: Head; galeri: Head; tentang: { eyebrow: string; title: string }; booking: Head };
+  pages: { layanan: Head; stylist: Head; cabang: Head; galeri: Head; tentang: { eyebrow: string; title: string }; booking: Head; artikel: Head };
 };
 
 export type Content = {
@@ -91,6 +91,8 @@ export type Content = {
   testimonial: { kicker: string; quote: string; author: string; reviews: Review[] };
   cta: { kicker: string; title: string; sub: string; primary: string; secondary: string; image: Img };
   about: { values: { title: string; desc: string }[] };
+  /** Artikel edukasi. Kolom EN kosong = memakai teks bahasa Indonesia. */
+  artikel: { items: Article[] };
   pages: {
     tentang: PageHead;
     layanan: PageHead;
@@ -100,6 +102,11 @@ export type Content = {
   };
 };
 
+export type Article = {
+  published: boolean; slug: string; date: string; cover: Img;
+  title: string; excerpt: string; body: string;
+  titleEn: string; excerptEn: string; bodyEn: string;
+};
 export type PageHead = { kicker: string; title: string; sub: string };
 /** Ulasan asli pelanggan (mis. dari Google Maps), disalin apa adanya. */
 export type Review = { name: string; branch: string; rating: number; text: string; date: string };
@@ -118,6 +125,7 @@ export type SectionKey = keyof Content;
 
 import { menuAlamSutera, menuKedoya, menuKelapaGading } from './menus';
 import { defaultTerms } from '../i18n';
+import { firstArticle } from './articles';
 
 const img = (file: string, alt: string): Img => ({ src: `/media/${file}.jpg`, alt });
 
@@ -136,6 +144,7 @@ export const defaults: Content = {
       galeri: { title: 'Galeri', sub: 'Foto asli dari cabang Mooi.' },
       tentang: { eyebrow: 'Sejak 17 Agustus 2019', title: 'Tentang Mooi' },
       booking: { title: 'Booking', sub: '' },
+      artikel: { title: 'Artikel', sub: 'Tips perawatan rambut dan kecantikan dari tim Mooi.' },
     },
   },
   en: {
@@ -153,6 +162,7 @@ export const defaults: Content = {
         galeri: { title: 'Gallery', sub: 'Real photos from Mooi branches.' },
         tentang: { eyebrow: 'Since 17 August 2019', title: 'About Mooi' },
         booking: { title: 'Book', sub: 'Choose a branch, services, stylist, and time. Our team confirms on WhatsApp.' },
+        artikel: { title: 'Articles', sub: 'Hair and beauty care tips from the Mooi team.' },
       },
     },
     aboutBody:
@@ -280,6 +290,7 @@ export const defaults: Content = {
     author: '',
     reviews: [],
   },
+  artikel: { items: [firstArticle] },
   cta: {
     kicker: 'Reservasi',
     title: 'Saatnya merawat *diri sendiri*.',

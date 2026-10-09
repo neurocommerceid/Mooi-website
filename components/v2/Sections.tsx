@@ -205,7 +205,7 @@ export function Footer({ c, lang }: { c: Content; lang: Lang }) {
         <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-cocoa-line pt-6 text-[13px] text-pearl/50">
           <p>© {new Date().getFullYear()} Mooi Hair Studio &amp; Beauty Bar</p>
           <nav className="flex flex-wrap gap-5">
-            {[[n.prices, '/layanan'], [n.stylists, '/stylist'], [n.branches, '/cabang'], [n.gallery, '/galeri'], [n.about, '/tentang'], [n.book, '/booking']].map(([l, h]) => (
+            {[[n.prices, '/layanan'], [n.stylists, '/stylist'], [n.branches, '/cabang'], [n.gallery, '/galeri'], [n.about, '/tentang'], [n.articles, '/artikel'], [n.book, '/booking']].map(([l, h]) => (
               <Link key={h} href={P(h, lang)} className="hover:text-pearl">{l}</Link>
             ))}
           </nav>

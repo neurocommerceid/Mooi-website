@@ -6,7 +6,7 @@ export type Perm = 'konten' | 'cabang' | 'harga' | 'stylist' | 'booking' | 'rese
 export type AdminProfile = { email: string; name: string | null; role: 'super' | 'staff'; permissions: Perm[]; branches: string[] };
 
 export const PERMS: { key: Perm; label: string; desc: string; warn?: string }[] = [
-  { key: 'konten', label: 'Teks & foto website', desc: 'Teks beranda & halaman, video hero, profil, ulasan, bahasa Inggris, pengaturan umum.' },
+  { key: 'konten', label: 'Teks & foto website', desc: 'Teks beranda & halaman, video hero, profil, ulasan, artikel, bahasa Inggris, pengaturan umum.' },
   { key: 'cabang', label: 'Data cabang', desc: 'Alamat, jam buka, WhatsApp, Maps, Instagram, foto & galeri cabang.' },
   { key: 'harga', label: 'Menu & harga', desc: 'Daftar layanan dan harga per cabang.', warn: 'Harga harus sesuai price list resmi — berikan hanya ke orang yang dipercaya.' },
   { key: 'stylist', label: 'Stylist', desc: 'Nama, foto, keahlian, cabang, dan hari kerja stylist.' },
@@ -18,7 +18,7 @@ export const permLabel = (p: string) => PERMS.find((x) => x.key === p)?.label ??
 
 /** Bagian konten → hak akses (sama dengan public.content_perm di database). */
 const SECTION_PERM: Partial<Record<SectionKey, Perm | 'booking*'>> = {
-  home: 'konten', en: 'konten', hero: 'konten', intro: 'konten', about: 'konten', testimonial: 'konten', settings: 'konten',
+  home: 'konten', en: 'konten', hero: 'konten', intro: 'konten', about: 'konten', testimonial: 'konten', settings: 'konten', artikel: 'konten',
   branches: 'cabang',
   booking: 'booking*',
 };

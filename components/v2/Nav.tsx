@@ -38,6 +38,7 @@ export default function Nav({ lang }: { lang: Lang }) {
     { href: P('/cabang', lang), label: t.branches },
     { href: P('/galeri', lang), label: t.gallery },
     { href: P('/tentang', lang), label: t.about },
+    { href: P('/artikel', lang), label: t.articles },
   ];
 
   return (
@@ -46,7 +47,7 @@ export default function Nav({ lang }: { lang: Lang }) {
         <Link href={P('/', lang)} aria-label={`Mooi — ${t.home}`} className="shrink-0">
           <Image src="/logo.png" alt="Mooi Hair Studio & Beauty Bar" width={1061} height={618} priority className="h-10 w-auto md:h-11" />
         </Link>
-        <nav className="hidden items-center gap-7 text-[15px] md:flex">
+        <nav className="hidden items-center gap-5 text-[14px] md:flex lg:gap-7 lg:text-[15px]">
           {links.map((l) => {
             const on = path.startsWith(l.href);
             return (

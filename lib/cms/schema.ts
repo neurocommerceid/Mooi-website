@@ -1,7 +1,7 @@
 import type { SectionKey } from './content';
 
 export type Field =
-  | { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'video' | 'strings' | 'number' | 'boolean' | 'branches' | 'days'; help?: string }
+  | { key: string; label: string; type: 'text' | 'textarea' | 'longtext' | 'image' | 'video' | 'strings' | 'number' | 'boolean' | 'branches' | 'days'; help?: string }
   | { key: string; label: string; type: 'list'; help?: string; item: string; fields: Field[] }
   | { key: string; label: string; type: 'group'; help?: string; fields: Field[] };
 
@@ -39,6 +39,7 @@ const homeFields: Field[] = [
         head2('galeri', 'Halaman Galeri'),
         { key: 'tentang', label: 'Halaman Tentang', type: 'group', fields: [t('eyebrow', 'Baris kecil'), t('title', 'Judul')] },
         head2('booking', 'Halaman Booking', 'Subjudul kosong = memakai subjudul dari bagian Booking.'),
+        head2('artikel', 'Halaman Artikel'),
       ] },
 ];
 
@@ -199,6 +200,28 @@ export const schema: Record<SectionKey, Section> = {
       num('leadMinutes', 'Minimal booking sebelum jam (menit)', 'Mis. 120 = tidak bisa booking untuk 2 jam ke depan.'),
       num('daysAhead', 'Bisa booking berapa hari ke depan', 'Mis. 14.'),
       ta('successNote', 'Pesan setelah booking terkirim'),
+    ],
+  },
+  artikel: {
+    title: 'Artikel',
+    desc: 'Artikel edukasi perawatan rambut & kecantikan. Tampil di menu Artikel.',
+    fields: [
+      {
+        key: 'items', label: 'Artikel', type: 'list', item: 'Artikel',
+        help: 'Artikel terbaru (tanggal paling baru) tampil paling atas.',
+        fields: [
+          { key: 'published', label: 'Tampilkan di website', type: 'boolean', help: 'Hilangkan centang untuk menyimpan sebagai draf.' },
+          t('title', 'Judul'),
+          t('slug', 'Alamat (slug)', 'Huruf kecil dan tanda hubung, mis. "tips-rambut-sehat". Kosongkan = dibuat dari judul. Jangan diubah setelah tayang agar link lama tidak rusak.'),
+          t('date', 'Tanggal terbit', 'Format TTTT-BB-HH, mis. 2026-10-09.'),
+          im('cover', 'Foto sampul'),
+          ta('excerpt', 'Ringkasan', 'Satu–dua kalimat. Tampil di daftar artikel dan hasil Google.'),
+          { key: 'body', label: 'Isi artikel', type: 'longtext', help: 'Pisahkan paragraf dengan satu baris kosong. Awali baris dengan "## " untuk subjudul, "- " untuk daftar, dan apit kata dengan **dua bintang** agar tebal.' },
+          t('titleEn', 'Judul (EN)', 'Opsional. Kosong = halaman bahasa Inggris memakai teks Indonesia.'),
+          ta('excerptEn', 'Ringkasan (EN)'),
+          { key: 'bodyEn', label: 'Isi artikel (EN)', type: 'longtext' },
+        ],
+      },
     ],
   },
   testimonial: {

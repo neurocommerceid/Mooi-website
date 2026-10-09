@@ -98,6 +98,13 @@ function FieldInput({ f, value, onChange }: { f: Field; value: unknown; onChange
           <textarea rows={3} className={`${input} mt-2`} value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} />
         </label>
       );
+    case 'longtext':
+      return (
+        <label className="block">
+          <Label f={f} />
+          <textarea rows={18} className={`${input} mt-2 font-mono text-[13px] leading-relaxed`} value={(value as string) ?? ''} onChange={(e) => onChange(e.target.value)} />
+        </label>
+      );
     case 'image': {
       const v = (value as { src: string; alt: string }) ?? { src: '', alt: '' };
       return (

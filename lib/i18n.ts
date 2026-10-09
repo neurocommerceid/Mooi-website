@@ -102,7 +102,7 @@ export { DAY_ID_SHORT };
 /** Teks antarmuka desain baru. */
 export const ui = {
   id: {
-    nav: { home: 'Beranda', prices: 'Harga', stylists: 'Stylist', branches: 'Cabang', gallery: 'Galeri', about: 'Tentang', book: 'Booking', openMenu: 'Buka menu', closeMenu: 'Tutup menu', lang: 'Bahasa' },
+    nav: { home: 'Beranda', prices: 'Harga', stylists: 'Stylist', branches: 'Cabang', gallery: 'Galeri', about: 'Tentang', articles: 'Artikel', book: 'Booking', openMenu: 'Buka menu', closeMenu: 'Tutup menu', lang: 'Bahasa' },
     bookNow: 'Booking sekarang',
     seePrices: 'Lihat harga',
     whatsapp: 'WhatsApp',
@@ -135,9 +135,18 @@ export const ui = {
     nextPhoto: 'Foto berikutnya',
     chatWith: 'Chat dengan cabang',
     chatPick: 'Chat WhatsApp — pilih cabang',
+    articles: {
+      none: 'Artikel segera hadir.',
+      read: 'Baca artikel',
+      back: 'Semua artikel',
+      minutes: (n: number) => `${n} menit baca`,
+      ctaTitle: 'Konsultasikan rambut Anda',
+      ctaSub: 'Stylist kami membantu memilih perawatan yang sesuai dengan kondisi rambut Anda.',
+      onlyId: '',
+    },
   },
   en: {
-    nav: { home: 'Home', prices: 'Prices', stylists: 'Stylists', branches: 'Branches', gallery: 'Gallery', about: 'About', book: 'Book', openMenu: 'Open menu', closeMenu: 'Close menu', lang: 'Language' },
+    nav: { home: 'Home', prices: 'Prices', stylists: 'Stylists', branches: 'Branches', gallery: 'Gallery', about: 'About', articles: 'Articles', book: 'Book', openMenu: 'Open menu', closeMenu: 'Close menu', lang: 'Language' },
     bookNow: 'Book now',
     seePrices: 'See prices',
     whatsapp: 'WhatsApp',
@@ -170,6 +179,15 @@ export const ui = {
     nextPhoto: 'Next photo',
     chatWith: 'Chat with a branch',
     chatPick: 'WhatsApp chat — choose a branch',
+    articles: {
+      none: 'Articles coming soon.',
+      read: 'Read article',
+      back: 'All articles',
+      minutes: (n: number) => `${n} min read`,
+      ctaTitle: 'Talk to us about your hair',
+      ctaSub: 'Our stylists help you choose the right treatment for your hair.',
+      onlyId: 'This article is available in Indonesian only.',
+    },
   },
 };
 export type UI = (typeof ui)['id'];
