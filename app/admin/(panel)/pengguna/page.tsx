@@ -1,11 +1,13 @@
 import { adminProfile, supabaseServer } from '@/lib/supabase/server';
-import { isSuper, type AdminProfile } from '@/lib/access';
+import { notFound } from 'next/navigation';
+import { ADMIN_MANAGEMENT_ENABLED, isSuper, type AdminProfile } from '@/lib/access';
 import { getContent } from '@/lib/cms/get';
 import AdminUsers from '@/components/admin/AdminUsers';
 
 export const metadata = { title: 'Kelola Admin' };
 
 export default async function Pengguna() {
+  if (!ADMIN_MANAGEMENT_ENABLED) notFound();
   const me = await adminProfile();
   if (!isSuper(me)) {
     return <p className="text-ink-muted">Halaman ini hanya untuk super admin.</p>;

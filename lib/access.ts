@@ -23,6 +23,10 @@ const SECTION_PERM: Partial<Record<SectionKey, Perm | 'booking*'>> = {
   booking: 'booking*',
 };
 
+// Menu "Kelola Admin" disembunyikan sampai fitur diumumkan ke owner.
+// Aktifkan dengan env SHOW_KELOLA_ADMIN=1 di Vercel (lalu redeploy). Hak akses di database tetap berlaku.
+export const ADMIN_MANAGEMENT_ENABLED = process.env.SHOW_KELOLA_ADMIN === '1';
+
 export const isSuper = (a: AdminProfile | null) => a?.role === 'super';
 export const can = (a: AdminProfile | null, p: Perm) => !!a && (a.role === 'super' || a.permissions.includes(p));
 
