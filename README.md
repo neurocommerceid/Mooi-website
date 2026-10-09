@@ -19,6 +19,7 @@ Buka http://localhost:3000
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL project Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon/publishable key Supabase |
+| `NEXT_PUBLIC_SITE_URL` | Domain resmi, mis. `https://www.domain-mooi.com` (sitemap, robots, Open Graph) |
 
 ## Supabase
 
@@ -118,3 +119,10 @@ Semua bisa diisi lewat `/admin`:
 - [ ] Menu booking: harga & durasi asli, daftar stylist, jam buka tiap cabang
 - [ ] Kebijakan booking yang benar-benar berlaku (DP, reschedule, pembatalan)
 - [x] Nomor WhatsApp per cabang (Admin → Cabang)
+
+## Halaman & bahasa
+
+- Bahasa Indonesia di alamat utama (`/`, `/layanan`, `/stylist`, `/cabang`, `/galeri`, `/tentang`, `/booking`),
+  bahasa Inggris di `/en/...`. Teks Inggris diatur di Admin → **Bahasa Inggris (EN)**.
+- Alamat lama diarahkan permanen: `/v2/*` → `/*`, `/lokasi` dan `/kontak` → `/cabang`.
+- Alamat `*.vercel.app` tidak diindeks Google; domain resmi diindeks.

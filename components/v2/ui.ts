@@ -10,9 +10,8 @@ export const wrap = 'mx-auto w-full max-w-[1200px] px-4 md:px-10';
 
 import type { Lang } from '@/lib/i18n';
 
-// Semua halaman desain baru ada di bawah /v2 sampai disetujui. Saat dipindah
-// ke alamat utama, cukup ubah BASE menjadi ''. Bahasa Inggris di bawah /en.
-const BASE = '/v2';
+// Bahasa Indonesia di alamat utama, bahasa Inggris di bawah /en.
+const BASE = '';
 export const P = (path: string, lang: Lang = 'id') => {
   const root = BASE + (lang === 'en' ? '/en' : '');
   return path === '/' ? root || '/' : root + path;
@@ -20,7 +19,8 @@ export const P = (path: string, lang: Lang = 'id') => {
 /** Alamat halaman yang sama dalam bahasa lain. */
 export const switchLang = (pathname: string, to: Lang) => {
   const rest = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname;
-  const bare = rest === '/en' ? '' : rest.startsWith('/en/') ? rest.slice(3) : rest;
+  let bare = rest === '/en' ? '' : rest.startsWith('/en/') ? rest.slice(3) : rest;
+  if (bare === '/') bare = '';
   return BASE + (to === 'en' ? '/en' : '') + bare || '/';
 };
 export const short = (name: string) => name.replace(/^Mooi\s+/i, '');

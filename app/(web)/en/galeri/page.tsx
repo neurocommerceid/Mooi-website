@@ -1,4 +1,4 @@
-import { GalleryPage } from '@/components/v2/Pages';
+import { GalleryPage } from '@/components/v2/GalleryPage';
 
 export const metadata = { title: 'Gallery' };
 

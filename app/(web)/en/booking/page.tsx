@@ -1,4 +1,4 @@
-import { BookPage } from '@/components/v2/Pages';
+import { BookPage } from '@/components/v2/BookPage';
 
 export const metadata = { title: 'Book' };
 

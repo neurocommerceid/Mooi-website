@@ -2,11 +2,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import BookingFlow from '@/components/booking/BookingFlow';
 import Hero from './Hero';
 import Prices from './Prices';
 import Reviews from './Reviews';
-import Gallery from './Gallery';
 import Nav from './Nav';
 import MobileBar from './MobileBar';
 import { BranchSummary, Branches, Footer, Inside, StylistPage, Stylists } from './Sections';
@@ -16,19 +14,20 @@ import { branchContacts } from '@/lib/cms/content';
 import { menuFor } from '@/lib/booking';
 import type { Lang } from '@/lib/i18n';
 import { P, btnDark, h2, muted, wrap } from './ui';
+import { SITE_URL } from '@/lib/site';
 
-const load = async (lang: Lang) => localize(await getContent(), lang);
+export const load = async (lang: Lang) => localize(await getContent(), lang);
 const menusOf = (c: Awaited<ReturnType<typeof load>>) => c.branches.items.map((b) => ({ branch: b.name, categories: menuFor(c.booking, b.name) }));
 
-/** Judul & deskripsi dari Pengaturan Umum / bagian EN. Pratinjau: tidak diindeks sampai disetujui. */
+/** Judul & deskripsi dari Pengaturan Umum / bagian EN. Alamat *.vercel.app tetap noindex (next.config). */
 export async function siteMetadata(lang: Lang): Promise<Metadata> {
   const { settings } = await load(lang);
   return {
+    metadataBase: new URL(SITE_URL),
     title: { default: settings.siteTitle, template: '%s | Mooi Hair Studio & Beauty Bar' },
     description: settings.siteDescription,
     openGraph: { title: settings.siteTitle, description: settings.siteDescription, type: 'website', locale: lang === 'en' ? 'en_US' : 'id_ID' },
     alternates: { languages: { id: P('/', 'id'), en: P('/', 'en') } },
-    robots: { index: false, follow: false },
   };
 }
 
@@ -71,17 +70,6 @@ export async function StylistsPage({ lang }: { lang: Lang }) {
   return <StylistPage c={await load(lang)} lang={lang} />;
 }
 
-export async function GalleryPage({ lang, cabang }: { lang: Lang; cabang?: string }) {
-  const c = await load(lang);
-  const branches = c.branches.items.map((b) => ({ name: b.name, photos: (b.gallery ?? []).map((g) => g.image).filter((i) => i?.src) }));
-  return (
-    <section className={`${wrap} py-8 md:py-16`}>
-      <h1 className={h2}>{c.home.pages.galeri.title}</h1>
-      {c.home.pages.galeri.sub && <p className={`mt-2 ${muted}`}>{c.home.pages.galeri.sub}</p>}
-      <div className="mt-5 md:mt-8"><Gallery branches={branches} initial={cabang} lang={lang} /></div>
-    </section>
-  );
-}
 
 const cols = ['', 'md:grid-cols-1', 'md:grid-cols-2', 'md:grid-cols-3'];
 
@@ -126,19 +114,3 @@ export async function AboutPage({ lang }: { lang: Lang }) {
   );
 }
 
-export async function BookPage({ lang, cabang, stylist }: { lang: Lang; cabang?: string; stylist?: string }) {
-  const c = await load(lang);
-  // Cabang tanpa foto asli (galeri kosong) tidak memakai foto sampul stok.
-  const branches = c.branches.items.map((b) => (b.gallery?.length ? b : { ...b, image: { src: '', alt: '' } }));
-  const sub = c.home.pages.booking.sub || c.booking.sub;
-  return (
-    <section className={`${wrap} pb-16 pt-8 md:pt-14`}>
-      <h1 className={h2}>{c.home.pages.booking.title}</h1>
-      {sub && <p className={`mt-2 max-w-xl ${muted}`}>{sub}</p>}
-      <div className="mt-5 md:mt-8">
-        <BookingFlow branches={branches} booking={c.booking} whatsapp={c.settings.whatsapp} initialBranch={cabang} initialStylist={stylist}
-          homeHref={P('/', lang)} lang={lang} terms={c.en.terms} />
-      </div>
-    </section>
-  );
-}

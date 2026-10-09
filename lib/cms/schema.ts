@@ -44,7 +44,7 @@ const homeFields: Field[] = [
 
 export const schema: Record<SectionKey, Section> = {
   home: {
-    title: 'Teks Desain Baru',
+    title: 'Teks Website',
     desc: 'Judul hero, judul tiap bagian di beranda, dan judul tiap halaman.',
     fields: homeFields,
   },
@@ -52,7 +52,7 @@ export const schema: Record<SectionKey, Section> = {
     title: 'Bahasa Inggris (EN)',
     desc: 'Semua teks versi bahasa Inggris. Kolom yang dikosongkan memakai teks bahasa Indonesia.',
     fields: [
-      { key: 'home', label: 'Teks desain baru (EN)', type: 'group', fields: homeFields },
+      { key: 'home', label: 'Teks website (EN)', type: 'group', fields: homeFields },
       ta('aboutBody', 'Profil Mooi — halaman About (EN)', 'Pisahkan paragraf dengan satu baris kosong.'),
       { key: 'values', label: 'Nilai-nilai (EN)', type: 'list', item: 'Nilai', help: 'Urutan sama dengan Nilai-nilai bahasa Indonesia.', fields: [t('title', 'Judul'), ta('desc', 'Keterangan')] },
       ta('bookingSub', 'Subjudul halaman Book'),
@@ -82,17 +82,9 @@ export const schema: Record<SectionKey, Section> = {
   },
   hero: {
     title: 'Hero — video',
-    desc: 'Video hero (dipakai kedua desain). Teks hero desain baru ada di "Teks Desain Baru".',
+    desc: 'Video paling atas beranda. Judul hero diatur di "Teks Website".',
     fields: [
-      t('kicker', 'Label kecil'),
-      t('line1', 'Judul — baris 1', ACCENT),
-      t('line2', 'Judul — baris 2', ACCENT),
-      t('line3', 'Judul — baris 3', ACCENT),
-      ta('sub', 'Paragraf'),
-      t('ctaPrimary', 'Tombol utama (ke halaman Booking)'),
-      t('ctaSecondary', 'Tombol kedua (ke Layanan)'),
-      { key: 'video', label: 'Video', type: 'video', help: 'Video vertikal (portrait) 8–15 detik, tanpa suara. Layar penuh di ponsel, jendela kubah di desktop.' },
-      im('photo', 'Foto latar (desktop)', 'Tampil di belakang video pada layar lebar, dan menggantikan video bila video kosong.'),
+      { key: 'video', label: 'Video', type: 'video', help: 'Video vertikal (portrait) 8–15 detik, tanpa suara. Layar penuh di ponsel, kolom kanan di desktop.' },
     ],
   },
   marquee: {
@@ -103,15 +95,9 @@ export const schema: Record<SectionKey, Section> = {
   },
   intro: {
     title: 'Profil Mooi',
-    desc: 'Paragraf tampil di halaman Tentang (desain baru). Label, judul, angka, dan foto hanya untuk desain lama.',
+    desc: 'Paragraf profil di halaman Tentang.',
     fields: [
-      t('kicker', 'Label kecil'),
-      ta('title', 'Judul', ACCENT),
-      ta('body', 'Paragraf'),
-      { key: 'stats', label: 'Angka', type: 'list', item: 'Angka', fields: [t('value', 'Angka'), t('label', 'Keterangan')] },
-      t('link', 'Teks tautan ke halaman Tentang', 'Kosongkan untuk menyembunyikan.'),
-      im('image', 'Foto utama (bentuk kubah)'),
-      im('imageDetail', 'Foto kecil (lingkaran)'),
+      ta('body', 'Paragraf', 'Pisahkan paragraf dengan satu baris kosong.'),
     ],
   },
   services: {
@@ -220,7 +206,7 @@ export const schema: Record<SectionKey, Section> = {
     desc: 'Ulasan pelanggan. Hanya ulasan asli (mis. dari Google Maps), disalin apa adanya — jangan diubah atau dikarang.',
     fields: [
       {
-        key: 'reviews', label: 'Ulasan (tampil di desain baru)', type: 'list', item: 'Ulasan',
+        key: 'reviews', label: 'Ulasan', type: 'list', item: 'Ulasan',
         help: 'Bagian "Kata pelanggan" baru muncul bila ada minimal satu ulasan.',
         fields: [
           t('name', 'Nama pengulas', 'Tulis seperti di Google, mis. "Rina A."'),
@@ -230,7 +216,6 @@ export const schema: Record<SectionKey, Section> = {
           t('date', 'Waktu', 'Mis. "2 bulan lalu" atau "Sep 2026"'),
         ],
       },
-      t('kicker', 'Label kecil (desain lama)'), ta('quote', 'Kutipan (desain lama)'), t('author', 'Nama / keterangan (desain lama)'),
     ],
   },
   cta: {
