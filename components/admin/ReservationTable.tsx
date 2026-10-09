@@ -37,7 +37,7 @@ function preset(key: string): Range {
   return { key: 'semua', from: '', to: '' };
 }
 
-export default function ReservationTable({ rows: initial, teams }: { rows: Row[]; teams: Record<string, string[]> }) {
+export default function ReservationTable({ rows: initial, teams, canDelete = true }: { rows: Row[]; teams: Record<string, string[]>; canDelete?: boolean }) {
   const [rows, setRows] = useState(initial);
   const [filter, setFilter] = useState('semua');
   const [range, setRange] = useState<Range>(preset('semua'));
@@ -189,7 +189,7 @@ export default function ReservationTable({ rows: initial, teams }: { rows: Row[]
                   className={`rounded-full border-0 px-3 py-1.5 text-[13px] ${tone[r.status] ?? ''}`}>
                   {Object.entries(STATUS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
-                <button onClick={() => remove(r.id)} className="px-2 text-[13px] text-ink-faint hover:text-red-700">Hapus</button>
+                {canDelete && <button onClick={() => remove(r.id)} className="px-2 text-[13px] text-ink-faint hover:text-red-700">Hapus</button>}
               </div>
             </article>
           ))}

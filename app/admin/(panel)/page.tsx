@@ -1,16 +1,18 @@
 import Link from 'next/link';
-import { supabaseServer } from '@/lib/supabase/server';
+import { adminProfile, supabaseServer } from '@/lib/supabase/server';
+import { canEditSection, canReservasi, isSuper, permLabel } from '@/lib/access';
 import { schema } from '@/lib/cms/schema';
 import { sectionKeys } from '@/lib/cms/content';
 
 export default async function Dashboard() {
   const sb = supabaseServer();
+  const admin = await adminProfile();
   const [{ count: baru }, { data: rows }] = await Promise.all([
     sb.from('reservasi').select('id', { count: 'exact', head: true }).eq('status', 'baru'),
     sb.from('site_content').select('key, updated_at, updated_by'),
   ]);
   const meta = Object.fromEntries((rows ?? []).map((r) => [r.key, r]));
-  const current = sectionKeys.filter((k) => !schema[k].legacy);
+  const current = sectionKeys.filter((k) => !schema[k].legacy && canEditSection(admin, k));
   const card = (k: (typeof sectionKeys)[number]) => (
     <Link key={k} href={`/admin/konten/${k}`} className="rounded-xl border border-line bg-white p-5 transition hover:border-gold">
       <p className="font-medium">{schema[k].title}</p>
@@ -26,18 +28,34 @@ export default async function Dashboard() {
     <div className="max-w-5xl">
       <h1 className="font-serif text-4xl">Ringkasan</h1>
 
-      <Link href="/admin/reservasi" className="btn-bronze mt-8 flex items-center justify-between rounded-2xl p-6">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-light">Reservasi baru</p>
-          <p className="mt-1 font-serif text-5xl">{baru ?? 0}</p>
-        </div>
-        <span className="text-sm text-pearl/80">Lihat semua →</span>
-      </Link>
+      {admin && !isSuper(admin) && (
+        <p className="mt-3 text-sm text-ink-muted">
+          Akses Anda: {admin.permissions.map(permLabel).join(', ') || '—'}
+          {admin.branches.length > 0 && ` · Cabang: ${admin.branches.join(', ')}`}
+        </p>
+      )}
 
-      <h2 className="mt-12 font-serif text-2xl">Konten website</h2>
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {current.map((k) => card(k))}
-      </div>
+      {canReservasi(admin) && (
+        <Link href="/admin/reservasi" className="btn-bronze mt-8 flex items-center justify-between rounded-2xl p-6">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-light">Reservasi baru</p>
+            <p className="mt-1 font-serif text-5xl">{baru ?? 0}</p>
+          </div>
+          <span className="text-sm text-pearl/80">Lihat semua →</span>
+        </Link>
+      )}
+
+      {current.length > 0 && (
+        <>
+          <h2 className="mt-12 font-serif text-2xl">Konten website</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {current.map((k) => card(k))}
+          </div>
+        </>
+      )}
+      {!canReservasi(admin) && current.length === 0 && (
+        <p className="mt-8 text-ink-muted">Akun Anda belum diberi hak akses. Hubungi super admin.</p>
+      )}
     </div>
   );
 }

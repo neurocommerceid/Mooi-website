@@ -8,7 +8,7 @@ import { BranchOptions, FieldList } from './Fields';
 
 type Obj = Record<string, unknown>;
 
-export default function Editor({ sectionKey, fields, initial, branchNames = [] }: { sectionKey: SectionKey; fields: Field[]; initial: Obj; branchNames?: string[] }) {
+export default function Editor({ sectionKey, fields, initial, branchNames = [], allowReset = true }: { sectionKey: SectionKey; fields: Field[]; initial: Obj; branchNames?: string[]; allowReset?: boolean }) {
   const router = useRouter();
   const [value, setValue] = useState<Obj>(initial);
   const [saved, setSaved] = useState(JSON.stringify(initial));
@@ -60,13 +60,15 @@ export default function Editor({ sectionKey, fields, initial, branchNames = [] }
               Batalkan perubahan
             </button>
           )}
-          <button
-            onClick={() => confirm('Kembalikan semua isi bagian ini ke bawaan? Perubahan baru disimpan setelah Anda menekan Simpan.') &&
-              setValue(defaults[sectionKey] as unknown as Obj)}
-            className="ml-auto text-[13px] text-ink-faint hover:text-ink"
-          >
-            Kembalikan ke bawaan
-          </button>
+          {allowReset && (
+            <button
+              onClick={() => confirm('Kembalikan semua isi bagian ini ke bawaan? Perubahan baru disimpan setelah Anda menekan Simpan.') &&
+                setValue(defaults[sectionKey] as unknown as Obj)}
+              className="ml-auto text-[13px] text-ink-faint hover:text-ink"
+            >
+              Kembalikan ke bawaan
+            </button>
+          )}
           {msg && <p className={`w-full text-[13px] ${state === 'error' ? 'text-red-700' : 'text-gold-deep'}`}>{msg}</p>}
           {!msg && dirty && <p className="w-full text-[13px] text-ink-faint">Ada perubahan yang belum disimpan.</p>}
         </div>
