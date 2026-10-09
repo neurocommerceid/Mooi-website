@@ -19,7 +19,7 @@ Buka http://localhost:3000
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL project Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon/publishable key Supabase |
-| `NEXT_PUBLIC_SITE_URL` | Domain resmi, mis. `https://www.domain-mooi.com` (sitemap, robots, Open Graph) |
+| `NEXT_PUBLIC_SITE_URL` | Opsional. Domain resmi; bawaan `https://www.mooihairstudio.com` |
 
 ## Supabase
 
