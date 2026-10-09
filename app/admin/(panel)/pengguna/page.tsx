@@ -1,17 +1,14 @@
 import { adminProfile, supabaseServer } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
-import { ADMIN_MANAGEMENT_ENABLED, isSuper, type AdminProfile } from '@/lib/access';
+import { canManageAdmins, type AdminProfile } from '@/lib/access';
 import { getContent } from '@/lib/cms/get';
 import AdminUsers from '@/components/admin/AdminUsers';
 
 export const metadata = { title: 'Kelola Admin' };
 
 export default async function Pengguna() {
-  if (!ADMIN_MANAGEMENT_ENABLED) notFound();
   const me = await adminProfile();
-  if (!isSuper(me)) {
-    return <p className="text-ink-muted">Halaman ini hanya untuk super admin.</p>;
-  }
+  if (!canManageAdmins(me)) notFound();
   const sb = supabaseServer();
   const [{ data }, content] = await Promise.all([
     sb.from('admins').select('email, name, role, permissions, branches, created_at, created_by').order('created_at'),

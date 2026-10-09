@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { adminProfile, supabaseServer } from '@/lib/supabase/server';
-import { ADMIN_MANAGEMENT_ENABLED, canEditSection, canReservasi, isSuper } from '@/lib/access';
+import { canEditSection, canManageAdmins, canReservasi, isSuper } from '@/lib/access';
 import { schema } from '@/lib/cms/schema';
 import { sectionKeys } from '@/lib/cms/content';
 import LogoutButton from '@/components/admin/LogoutButton';
@@ -41,7 +41,7 @@ export default async function Panel({ children }: { children: React.ReactNode })
           {sections.map((k) => (
             <Link key={k} href={`/admin/konten/${k}`} className={link}>{schema[k].title}</Link>
           ))}
-          {ADMIN_MANAGEMENT_ENABLED && isSuper(admin) && (
+          {canManageAdmins(admin) && (
             <>
               <p className="px-3 pb-1 pt-5 text-[10px] uppercase tracking-[0.2em] text-champagne">Super admin</p>
               <Link href="/admin/pengguna" className={link}>Kelola Admin</Link>
