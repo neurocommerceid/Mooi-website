@@ -81,7 +81,12 @@ export function hoursText(b: Branch, lang: Lang) {
 export function daysLabelL(s: Stylist, lang: Lang) {
   const days = (s.days ?? []).map(dayIndex).filter((i) => i >= 0).sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));
   if (!days.length || days.length >= 7) return '';
-  return lang === 'en' ? `${days.map((i) => DAY_EN[i]).join(' & ')} only` : `Hanya ${days.map((i) => DAYS[i]).join(' & ')}`;
+  const names = lang === 'en' ? DAY_EN : DAYS;
+  const list = (ix: number[]) => ix.map((i) => names[i]).join(', ').replace(/, ([^,]*)$/, ' & $1');
+  // Tampilkan daftar yang lebih pendek: "Libur Kamis" lebih jelas daripada enam nama hari.
+  const off = [1, 2, 3, 4, 5, 6, 0].filter((i) => !days.includes(i));
+  if (off.length < days.length) return lang === 'en' ? `Off ${list(off)}` : `Libur ${list(off)}`;
+  return lang === 'en' ? `${list(days)} only` : `Hanya ${list(days)}`;
 }
 
 export function durasiL(min: number, lang: Lang) {

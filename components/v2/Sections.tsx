@@ -83,6 +83,8 @@ export function Branches({ c, page = false, lang }: { c: Content; page?: boolean
 }
 
 type StylistRow = ReturnType<typeof stylistsAt>[number];
+// Satu stylist bisa bertugas di dua cabang, jadi anchor memuat nama cabang.
+const anchor = (branch: string, name: string) => `${short(branch)}-${name}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 function Avatar({ s, size }: { s: StylistRow; size: 'sm' | 'lg' }) {
   const box = size === 'lg' ? 'h-16 w-16 text-[1.4rem] md:h-24 md:w-24 md:text-[2rem]' : 'h-12 w-12 text-[1.1rem] sm:h-16 sm:w-16 sm:text-[1.4rem]';
@@ -123,7 +125,7 @@ export function Stylists({ c, lang }: { c: Content; lang: Lang }) {
             <p className="text-[13px] font-medium text-bronze-mid md:text-[14px]">{short(g.branch)}</p>
             <div className="mt-2.5 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
               {g.team.map((s) => (
-                <Link key={s.name} href={`${P('/stylist', lang)}#${encodeURIComponent(s.name)}`}
+                <Link key={s.name} href={`${P('/stylist', lang)}#${anchor(g.branch, s.name)}`}
                   className="flex flex-col items-center gap-2 rounded-2xl border border-pearl-line bg-white/70 p-3 text-center transition-shadow sm:flex-row sm:gap-4 sm:p-4 sm:text-left hover:shadow-[0_14px_30px_-20px_rgba(92,56,32,.5)]">
                   <Avatar s={s} size="sm" />
                   <div className="min-w-0">
@@ -156,7 +158,7 @@ export function StylistPage({ c, lang }: { c: Content; lang: Lang }) {
             {g.team.map((s) => {
               const days = daysLabelL(s, lang);
               return (
-                <article key={s.name} id={s.name} className="scroll-mt-24 flex gap-3.5 rounded-2xl border border-pearl-line bg-white/70 p-3.5 md:gap-5 md:rounded-[22px] md:p-6">
+                <article key={s.name} id={anchor(g.branch, s.name)} className="scroll-mt-24 flex gap-3.5 rounded-2xl border border-pearl-line bg-white/70 p-3.5 md:gap-5 md:rounded-[22px] md:p-6">
                   <Avatar s={s} size="lg" />
                   <div className="flex min-w-0 flex-1 flex-col">
                     <h3 className="font-display text-[1.15rem] leading-tight md:text-[1.5rem]">{s.name}</h3>
