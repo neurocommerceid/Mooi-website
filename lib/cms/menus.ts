@@ -1,4 +1,4 @@
-// Menu booking per cabang, disalin dari price list resmi tiap cabang (Okt 2026).
+// Menu booking per cabang, disalin dari price list resmi tiap cabang (Kedoya & Alam Sutera: revisi 9 Okt 2026).
 // Harga = harga terendah; varian (panjang rambut / stylist) ada di keterangan.
 // DURASI ADALAH ESTIMASI — price list tidak mencantumkannya. Mohon dicek owner.
 // Item yang angkanya ambigu di price list sengaja belum dimasukkan.
@@ -10,13 +10,17 @@ const len = (a: number, b: number, c: number, d?: number) =>
   `Pendek ${a} · Sedang ${b} · Panjang ${c}${d ? ` · Sangat panjang ${d}` : ''} (ribu)`;
 
 export const menuKedoya: Cat[] = [
+  // Price list Kedoya revisi 9 Okt 2026.
   {
     name: 'Haircut & Blow',
     items: [
       s('Haircut Ladies', 348000, 60, 'Oscar / Eddy Casper / Shandy 348rb · Samuel 398rb (Rabu & Minggu) · termasuk Kérastase wash, hair oil & styling', true),
-      s('Haircut Men', 248000, 45, 'Oscar / Eddy Casper / Shandy 248rb · Samuel 298rb (Rabu & Minggu)', true),
+      s('Haircut Men', 248000, 45, 'Oscar / Eddy Casper / Shandy 248rb · Samuel 298rb (Rabu & Minggu) · termasuk Kérastase wash, hair oil & styling', true),
       s('Trim Cut', 118000, 30, 'Stylist mana saja'),
-      s('Wash & Blow-Dry', 158000, 45, '158–198rb', true),
+      s('Blow Natural', 158000, 45),
+      s('Blow Catok / Curly', 178000, 45),
+      s('Blow Extension', 198000, 60),
+      s('Dry (blow kering)', 88000, 30),
     ],
   },
   {
@@ -25,6 +29,7 @@ export const menuKedoya: Cat[] = [
       s('Basic Color', 700000, 120, len(700, 950, 1100, 1350), true),
       s('Fashion Color', 1700000, 240, 'Termasuk 1x bleaching · ' + len(1700, 2100, 2500, 2900), true),
       s('Balayage / Highlights', 1900000, 240, len(1900, 2300, 2700, 3100), true),
+      s('Root Color', 500000, 90),
     ],
   },
   {
@@ -33,6 +38,8 @@ export const menuKedoya: Cat[] = [
       s('Smoothing', 900000, 180, len(900, 1200, 1500, 1800), true),
       s('Keratin / Wave', 1100000, 180, len(1100, 1400, 1700, 2000), true),
       s('Perm', 600000, 150, len(600, 800, 1000, 1200), true),
+      s('Root Smoothing', 500000, 120),
+      s('Root Perm', 500000, 120),
     ],
   },
   {
@@ -45,16 +52,35 @@ export const menuKedoya: Cat[] = [
       s('Hair Mask Kérastase', 499000, 60),
       s('Davines Treatment 60 mnt', 499000, 60),
       s('Davines Treatment 90 mnt', 899000, 90),
+      s("L'Oréal Scalp Detox", 300000, 60),
+      s("L'Oréal Hair Spa", 200000, 60),
       s('Express Hair Mask', 150000, 30),
     ],
   },
   {
+    name: 'Nails & Eyelash',
+    items: [
+      s('Manicure', 178000, 45),
+      s('Pedicure', 258000, 60),
+      s('Gel Polish Basic', 128000, 45),
+      s('Eyelash Natural', 198000, 90),
+      s('Eyelash Double', 248000, 90),
+      s('Eyelash Volume', 298000, 120),
+      s('Remove Eyelash', 70000, 30),
+    ],
+  },
+  {
+    name: 'Face Treatment',
+    items: [s('Facial Acupressure', 118000, 30)],
+  },
+  {
     name: 'Hair Extension',
-    items: [s('Hair Extension (ring/lem)', 2000000, 180, '100 pcs · 50cm 2jt · 55cm 2,5jt · 60cm 3jt · versi ikat Super/Premium tersedia', true)],
+    items: [s('Hair Extension (ring/lem)', 2000000, 180, '100 pcs · 50cm 2jt · 55cm 2,5jt · 60cm 3jt · ikat Super 3 / 3,5 / 4jt · ikat Premium 3,5 / 4 / 4,5jt', true)],
   },
 ];
 
 export const menuAlamSutera: Cat[] = [
+  // Price list Alam Sutera revisi 9 Okt 2026.
   {
     name: 'Haircut',
     items: [
@@ -67,9 +93,9 @@ export const menuAlamSutera: Cat[] = [
     name: 'Blow & Styling',
     items: [
       s('Dry Blow (blow kering)', 70000, 30),
-      s('Natural Blow', 150000, 45),
-      s('Flat-Iron Blow (blow catok)', 175000, 45),
-      s('Extension Blow', 200000, 60),
+      s('Natural Blow', 130000, 45),
+      s('Flat-Iron Blow (blow catok)', 150000, 45),
+      s('Extension Blow', 180000, 60),
     ],
   },
   {
@@ -77,9 +103,17 @@ export const menuAlamSutera: Cat[] = [
     items: [
       s('Creambath', 150000, 60),
       s('Hair Spa', 180000, 60),
-      s("L'Oréal Expert", 300000, 60),
+      s("L'Oréal Expert", 350000, 60),
       s('Scalp Treatment by Davines', 500000, 60, '500 / 700 / 900rb', true),
       s('Hair Treatment by Davines', 500000, 60, '500 / 700 / 900rb', true),
+    ],
+  },
+  {
+    name: "Men's Section",
+    items: [
+      s("Men's Color / Root Color", 500000, 90),
+      s("Men's Balayage", 1000000, 180),
+      s("Men's Keratin / Wave", 500000, 120, '500–600rb', true),
     ],
   },
   {
@@ -93,13 +127,21 @@ export const menuAlamSutera: Cat[] = [
     ],
   },
   {
-    name: 'Nails & Lash',
+    name: 'Nails',
     items: [
       s('Manicure', 125000, 45),
       s('Pedicure', 150000, 60),
       s('Gel Polish', 100000, 45),
-      s('Nail Art', 150000, 60, '', true),
-      s('Eyelash Extension', 250000, 90, '250 / 350 / 450rb', true),
+      s('Nail Art', 150000, 60, 'Mulai dari 150rb', true),
+      s('Manicure Gehwol', 175000, 60),
+      s('Pedicure Gehwol', 250000, 75),
+    ],
+  },
+  {
+    name: 'Eyelash & Face',
+    items: [
+      s('Eyelash Extension', 200000, 90, '200 / 250 / 300rb', true),
+      s('Remove Eyelash', 70000, 30),
       s('Totok Wajah', 100000, 30),
     ],
   },
@@ -117,7 +159,7 @@ export const menuAlamSutera: Cat[] = [
   },
   {
     name: 'Hair Extension',
-    items: [s('Hair Extension (ring/lem)', 2000000, 180, '100 pcs · 50cm 2jt · 55cm 2,5jt · 60cm 3jt · versi ikat Super/Premium tersedia', true)],
+    items: [s('Hair Extension (ring/lem)', 2000000, 180, '100 pcs · 50cm 2jt · 55cm 2,5jt · 60cm 3jt · ikat Super 100 pcs 3 / 3,5 / 4jt · ikat Super 50 pcs 1,5 / 1,75 / 2jt · ikat Premium 3,5 / 4 / 4,5jt', true)],
   },
 ];
 
