@@ -13,6 +13,9 @@ const nextConfig = {
       { source: '/kontak', destination: '/cabang', permanent: true },
       { source: '/en/lokasi', destination: '/en/cabang', permanent: true },
       { source: '/en/kontak', destination: '/en/cabang', permanent: true },
+      // Panel admin hanya satu bahasa, di /admin.
+      { source: '/en/admin', destination: '/admin', permanent: false },
+      { source: '/en/admin/:path*', destination: '/admin/:path*', permanent: false },
     ];
   },
   async headers() {
